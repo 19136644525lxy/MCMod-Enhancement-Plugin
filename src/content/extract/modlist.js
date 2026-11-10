@@ -17,7 +17,7 @@ MP.extract.modlist = (function () {
     const nameEl = node.querySelector('.name') || link;
     const enEl = node.querySelector('.ename');
     const introEl = node.querySelector('.intro-content') || node.querySelector('.intro');
-    const coverEl = node.querySelector('.cover img');
+    const coverEl = node.querySelector('.cover img') || node.querySelector('img.cover');
 
     const name = text(nameEl.textContent) || text(link.getAttribute('title'));
     if (!name) return null;

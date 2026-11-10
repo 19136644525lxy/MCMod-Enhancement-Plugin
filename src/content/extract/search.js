@@ -63,7 +63,7 @@ MP.extract.search = (function () {
     if (!titleA) return null;
 
     const href = absUrl(titleA.getAttribute('href'));
-    const title = text(titleA.textContent) || text(titleA.getAttribute('title'));
+    const title = stripWiki(titleA.textContent) || text(titleA.getAttribute('title'));
     if (!title || !href) return null;
 
     const cat = parseCategory(head);
