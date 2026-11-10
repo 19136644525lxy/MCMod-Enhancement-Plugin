@@ -4,12 +4,13 @@ MC百科（mcmod.cn）全站增强浏览器扩展。目标是把 MC百科 的浏
 
 > 原型阶段（v0.1.0）：零构建原生 JS，可直接加载到 Chrome 试用。
 
-## 当前能力（M1）
+## 当前能力（M1 + M2 进行中）
 
 - **命令面板**：任意 MC百科 页面按 `Ctrl / ⌘ + K`，聚合全站搜索 + 模组结构化检索，支持 `mod:` `pack:` `item:` `post:` `user:` 前缀过滤。
 - **搜索页重绘**：`search.mcmod.cn` 结果列表接管渲染，支持关键词高亮、类型筛选、一键盘回滚原生视图。
+- **首页布局增强**：首页模组 / 教程卡片区重排为响应式网格，卡片统一圆角、封面比例与悬浮反馈（只动布局，不动 DOM 与链接）。
 - **设计系统**：tokens.css + base.css 两层，浅色 / 深色 / 跟随系统，紧凑模式。
-- **调试面板**：`Ctrl + Shift + D` 查看抽取结果、当前设置与样式注入状态。
+- **调试面板**：`Ctrl + Shift + D` 查看抽取结果、首页增强状态、当前设置与样式注入状态，可导出当前页面 HTML 快照。
 - **设置页 / 弹窗**：总开关、主题、面板、重绘、紧凑五项开关，`chrome.storage.sync` 同步。
 
 ## 安装（开发态）
@@ -36,10 +37,12 @@ src/content/
   extract/modlist.js          模组列表 DOM → JSON
   render/components.js        chip / button / card / skeleton / empty
   render/pages/search.js      搜索页重绘（含原始视图回滚）
+  render/pages/home.js        首页布局增强（网格化，不改 DOM 结构）
   widgets/command-palette.js  Cmd+K 命令面板
   router.js                   入口：分发、快捷键、设置响应
 styles/tokens.css             设计令牌
 styles/base.css               组件样式
+styles/pages/home.css         首页布局增强样式
 popup/ options/               弹窗与设置页
 ```
 
@@ -58,7 +61,7 @@ popup/ options/               弹窗与设置页
 | 里程碑 | 内容 | 状态 |
 | --- | --- | --- |
 | M1 | 骨架 + 设计系统 + Cmd+K + 搜索页重绘 | 已完成原型，待真机验证 |
-| M2 | 首页重绘 + Vite/Preact 迁移 | 待开始 |
+| M2 | 首页布局增强 + 结构重绘 + Vite/Preact 迁移 | 进行中（布局增强已完成） |
 | M3 | 物品页 + 模组页 | 待开始 |
 | M4 | 检索页 + 桥接层 + 打磨 | 待开始 |
 

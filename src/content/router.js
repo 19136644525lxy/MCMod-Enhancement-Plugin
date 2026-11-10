@@ -51,6 +51,21 @@ MP.router = (function () {
 
   /* ---------------- 调试面板 ---------------- */
 
+  function exportSnapshot() {
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const path = location.pathname === '/' ? 'home' : location.pathname.replace(/[\\/]+/g, '_').replace(/^_|_$/g, '');
+    a.href = url;
+    a.download = `${location.hostname}_${path || 'page'}.html`;
+    a.style.display = 'none';
+    document.documentElement.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  }
+
   function debugRow(label, value) {
     return h('div', { class: 'mp-debug-row' },
       h('span', { class: 'mp-debug-label' }, label),
@@ -74,6 +89,12 @@ MP.router = (function () {
       debugRow('页面', location.href),
       debugRow('设置', JSON.stringify(settings)),
       debugRow('样式', document.querySelectorAll('link[data-mp-style]').length + ' 个'),
+      debugRow(
+        '首页增强',
+        MP.pages.home && MP.pages.home.isHome()
+          ? document.querySelectorAll('.mp-grid').length + ' 个网格 / ' + document.querySelectorAll('.mp-block').length + ' 个板块'
+          : '—'
+      ),
       data ? debugRow('搜索结果', data.ok ? `${data.count} 条` : '抽取失败：' + data.error) : null,
       data && data.ok
         ? h('pre', { class: 'mp-debug-pre' }, JSON.stringify(data.items.slice(0, 3), (k, v) => (k === 'raw' ? undefined : v), 2))
@@ -81,7 +102,8 @@ MP.router = (function () {
       h('div', { class: 'mp-debug-actions' },
         isSearchHost() ? MP.ui.button('重新重绘', { onclick: () => MP.pages.search.mount(settings) }) : null,
         isSearchHost() ? MP.ui.button('恢复原始视图', { onclick: () => MP.pages.search.restore(document.querySelector('.search-result-list')) }) : null,
-        MP.ui.button('切换主题', { onclick: () => { MP.theme.cycle(); } })
+        MP.ui.button('切换主题', { onclick: () => { MP.theme.cycle(); } }),
+        MP.ui.button('导出页面 HTML', { variant: 'ghost', onclick: exportSnapshot })
       )
     );
     document.documentElement.appendChild(panel);
@@ -107,6 +129,7 @@ MP.router = (function () {
       MP.theme.injectCore();
       MP.theme.apply(s);
       bindKeys();
+      if (MP.pages.home) MP.pages.home.mount(s);
       tryMountSearch();
     });
 

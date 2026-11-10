@@ -1,0 +1,105 @@
+/* ============================================================
+   首页布局增强
+   仅改变排布与视觉，不改变 DOM 结构与链接行为
+   ============================================================ */
+
+.mp-home body {
+  background: var(--mp-bg-2);
+}
+
+.mp-home .mp-block {
+  margin-bottom: var(--mp-space-5);
+}
+
+/* 板块标题：不猜类名，只对板块内第一个标题类元素做轻微处理 */
+.mp-home .mp-block > .title,
+.mp-home .mp-block > h2,
+.mp-home .mp-block > h3 {
+  font-family: var(--mp-font);
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+/* ---------- 卡片网格 ---------- */
+.mp-home .mp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: var(--mp-space-3);
+  align-items: stretch;
+}
+
+.mp-home .mp-grid > .item,
+.mp-home .mp-grid .item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 8px;
+  background: var(--mp-bg);
+  border: 1px solid var(--mp-border-2);
+  border-radius: var(--mp-radius);
+  transition: border-color .16s, box-shadow .16s, transform .16s;
+}
+
+.mp-home .mp-grid .item:hover {
+  border-color: var(--mp-border);
+  box-shadow: var(--mp-shadow);
+  transform: translateY(-2px);
+}
+
+.mp-home .mp-grid .item a {
+  text-decoration: none;
+}
+
+.mp-home .mp-grid .item img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 170 / 115;
+  object-fit: cover;
+  border-radius: var(--mp-radius-sm);
+  display: block;
+}
+
+.mp-home .mp-grid .name {
+  margin-top: 6px;
+  font: 500 13px/1.4 var(--mp-font);
+  color: var(--mp-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-home .mp-grid .ename {
+  font: 400 11px/1.4 var(--mp-font);
+  color: var(--mp-text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 卡片内的时间戳等次要信息 */
+.mp-home .mp-grid .time,
+.mp-home .mp-grid .date,
+.mp-home .mp-grid .info {
+  font: 400 11px/1.4 var(--mp-font);
+  color: var(--mp-text-3);
+  margin-top: 2px;
+}
+
+/* ---------- 统计数字 ---------- */
+.mp-home .num {
+  font: 600 18px/1.2 var(--mp-font);
+  color: var(--mp-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 顶部导航条轻微收紧 ---------- */
+.mp-home .mp-block + .mp-block {
+  margin-top: var(--mp-space-4);
+}
+
+@media (max-width: 720px) {
+  .mp-home .mp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--mp-space-2);
+  }
+}

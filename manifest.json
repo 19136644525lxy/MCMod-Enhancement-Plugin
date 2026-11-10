@@ -32,6 +32,7 @@
         "src/content/extract/search.js",
         "src/content/extract/modlist.js",
         "src/content/render/pages/search.js",
+        "src/content/render/pages/home.js",
         "src/content/widgets/command-palette.js",
         "src/content/router.js"
       ]
