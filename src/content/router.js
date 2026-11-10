@@ -89,12 +89,7 @@ MP.router = (function () {
       debugRow('页面', location.href),
       debugRow('设置', JSON.stringify(settings)),
       debugRow('样式', document.querySelectorAll('link[data-mp-style]').length + ' 个'),
-      debugRow(
-        '首页排版',
-        MP.pages.home && MP.pages.home.isHome()
-          ? document.querySelectorAll('.mp-cards').length + ' 个卡区 / ' + document.querySelectorAll('.mp-cat').length + ' 个分类区'
-          : '—'
-      ),
+      debugRow('首页排版', '已停用（待重新设计）'),
       data ? debugRow('搜索结果', data.ok ? `${data.count} 条` : '抽取失败：' + data.error) : null,
       data && data.ok
         ? h('pre', { class: 'mp-debug-pre' }, JSON.stringify(data.items.slice(0, 3), (k, v) => (k === 'raw' ? undefined : v), 2))
@@ -126,11 +121,12 @@ MP.router = (function () {
     MP.store.getSync().then((s) => {
       settings = s;
       if (!s.enabled) return;
-      MP.theme.injectCore();
-      MP.theme.apply(s);
-      bindKeys();
-      if (MP.pages.home) MP.pages.home.mount(s);
-      tryMountSearch();
+      // 任一模块出错都不应影响其余模块与页面本身
+      try { MP.theme.injectCore(); } catch (e) { console.warn('[MCMod+] 样式注入失败', e); }
+      try { MP.theme.apply(s); } catch (e) { console.warn('[MCMod+] 主题应用失败', e); }
+      try { bindKeys(); } catch (e) { console.warn('[MCMod+] 快捷键绑定失败', e); }
+      try { if (MP.pages.home) MP.pages.home.mount(s); } catch (e) { console.warn('[MCMod+] 首页模块失败', e); }
+      try { tryMountSearch(); } catch (e) { console.warn('[MCMod+] 搜索页模块失败', e); }
     });
 
     MP.store.onChange(applySettings);
