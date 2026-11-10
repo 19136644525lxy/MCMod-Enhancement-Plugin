@@ -90,9 +90,9 @@ MP.router = (function () {
       debugRow('设置', JSON.stringify(settings)),
       debugRow('样式', document.querySelectorAll('link[data-mp-style]').length + ' 个'),
       debugRow(
-        '首页增强',
+        '首页排版',
         MP.pages.home && MP.pages.home.isHome()
-          ? document.querySelectorAll('.mp-grid').length + ' 个网格 / ' + document.querySelectorAll('.mp-block').length + ' 个板块'
+          ? document.querySelectorAll('.mp-cards').length + ' 个卡区 / ' + document.querySelectorAll('.mp-cat').length + ' 个分类区'
           : '—'
       ),
       data ? debugRow('搜索结果', data.ok ? `${data.count} 条` : '抽取失败：' + data.error) : null,

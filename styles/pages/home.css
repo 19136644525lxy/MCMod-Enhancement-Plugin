@@ -1,105 +1,206 @@
 /* ============================================================
-   首页布局增强
-   仅改变排布与视觉，不改变 DOM 结构与链接行为
+   首页排版增强（M2）
+   原则：只改排版，不动功能。所有规则限定在 .mp-home 下。
    ============================================================ */
 
-.mp-home body {
-  background: var(--mp-bg-2);
+/* ---------- 主体：统一区块间距 ---------- */
+.mp-home .mp-main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.mp-home .mp-block {
-  margin-bottom: var(--mp-space-5);
-}
-
-/* 板块标题：不猜类名，只对板块内第一个标题类元素做轻微处理 */
-.mp-home .mp-block > .title,
-.mp-home .mp-block > h2,
-.mp-home .mp-block > h3 {
-  font-family: var(--mp-font);
-  font-weight: 600;
-  letter-spacing: .01em;
-}
-
-/* ---------- 卡片网格 ---------- */
-.mp-home .mp-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
-  gap: var(--mp-space-3);
+/* ---------- 顶部导航条：横排胶囊 ---------- */
+.mp-home .mp-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   align-items: stretch;
 }
 
-.mp-home .mp-grid > .item,
-.mp-home .mp-grid .item {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: 8px;
-  background: var(--mp-bg);
-  border: 1px solid var(--mp-border-2);
-  border-radius: var(--mp-radius);
-  transition: border-color .16s, box-shadow .16s, transform .16s;
+.mp-home .mp-nav ul > li {
+  float: none !important;
+  margin: 0 !important;
+  border-radius: 10px;
+  transition: background-color .15s ease;
 }
 
-.mp-home .mp-grid .item:hover {
+.mp-home .mp-nav ul > li:hover {
+  background: rgba(47, 111, 79, .08);
+}
+
+/* ---------- 新闻区：三栏 ---------- */
+.mp-home .mp-news {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr) 250px;
+  gap: 14px;
+  align-items: start;
+}
+
+.mp-home .mp-news > .door,
+.mp-home .mp-news > .left,
+.mp-home .mp-news > .right {
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  min-width: 0;
+}
+
+/* 右栏：操作入口 2 列 */
+.mp-home .mp-news .addArea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+/* 右栏：统计数字 */
+.mp-home .mp-news .count {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* 右栏：编辑动态列表 */
+.mp-home .mp-news .editor ul {
+  overflow: auto;
+  max-height: 220px;
+}
+
+/* ---------- 模组卡区：响应式网格 ---------- */
+.mp-home .mp-cards {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+.mp-home .mp-cards > .block {
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 6px;
+  box-sizing: border-box;
+  background: var(--mp-bg);
+  border: 1px solid var(--mp-border-2);
+  border-radius: 10px;
+  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.mp-home .mp-cards > .block:hover {
   border-color: var(--mp-border);
   box-shadow: var(--mp-shadow);
   transform: translateY(-2px);
 }
 
-.mp-home .mp-grid .item a {
-  text-decoration: none;
-}
-
-.mp-home .mp-grid .item img {
-  width: 100%;
-  height: auto;
+.mp-home .mp-cards > .block img.img {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
   aspect-ratio: 170 / 115;
   object-fit: cover;
-  border-radius: var(--mp-radius-sm);
+  border-radius: 6px;
+}
+
+.mp-home .mp-cards .info {
+  padding: 6px 2px 2px;
+  min-width: 0;
+}
+
+.mp-home .mp-cards .name {
+  font-size: 12px;
+  line-height: 1.35;
+  overflow: hidden;
+}
+
+.mp-home .mp-cards .name a {
   display: block;
-}
-
-.mp-home .mp-grid .name {
-  margin-top: 6px;
-  font: 500 13px/1.4 var(--mp-font);
-  color: var(--mp-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.mp-home .mp-grid .ename {
-  font: 400 11px/1.4 var(--mp-font);
+.mp-home .mp-cards .enname {
+  font-size: 11px;
+  line-height: 1.3;
   color: var(--mp-text-3);
+  overflow: hidden;
+}
+
+.mp-home .mp-cards .enname a {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* 卡片内的时间戳等次要信息 */
-.mp-home .mp-grid .time,
-.mp-home .mp-grid .date,
-.mp-home .mp-grid .info {
-  font: 400 11px/1.4 var(--mp-font);
-  color: var(--mp-text-3);
-  margin-top: 2px;
+.mp-home .mp-cards .enname a:empty {
+  display: none;
 }
 
-/* ---------- 统计数字 ---------- */
-.mp-home .num {
-  font: 600 18px/1.2 var(--mp-font);
-  color: var(--mp-accent);
+/* 原版标签小圆点 */
+.mp-home .mp-cards .mojang {
+  display: inline-block;
+  margin-bottom: 3px;
+}
+
+/* ---------- 九组分类区：左介绍 + 右排行榜 ---------- */
+.mp-home .mp-cat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 14px;
+  align-items: start;
+}
+
+.mp-home .mp-cat > .left,
+.mp-home .mp-cat > .right {
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  min-width: 0;
+}
+
+/* 排行榜行：名次 + 昵称 + 百分比 */
+.mp-home .mp-cat .right ul.list > li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mp-home .mp-cat .right ul.list > li .name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-home .mp-cat .right ul.list > li .num {
+  flex: 0 0 auto;
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 顶部导航条轻微收紧 ---------- */
-.mp-home .mp-block + .mp-block {
-  margin-top: var(--mp-space-4);
+/* ---------- 响应式 ---------- */
+@media (max-width: 1100px) {
+  .mp-home .mp-news {
+    grid-template-columns: 170px minmax(0, 1fr) 220px;
+  }
+  .mp-home .mp-cat {
+    grid-template-columns: minmax(0, 1fr) 200px;
+  }
 }
 
-@media (max-width: 720px) {
-  .mp-home .mp-grid {
+@media (max-width: 900px) {
+  .mp-home .mp-news {
+    grid-template-columns: 1fr;
+  }
+  .mp-home .mp-cat {
+    grid-template-columns: 1fr;
+  }
+  .mp-home .mp-cards {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: var(--mp-space-2);
+    gap: 8px;
   }
 }

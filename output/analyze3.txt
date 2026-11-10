@@ -1,0 +1,779 @@
+=== #indexNew_random div.block 共 10 个，样本 2 ===
+div.block.mp-block [3] "   "
+  span.mojang
+  a [1]
+    img.img
+  div.info [2] "  "
+    div.name [1]
+      a "我的世界原版"
+    div.name [1]
+      div.enname [1]
+        a "(Minecraft)"
+
+div.block.mp-block [2] "  "
+  a [1]
+    img.img
+  div.info [2] "  "
+    div.name [1]
+      a "Reforged"
+    div.name [1]
+      div.enname [1]
+        a
+
+=== div.card_block ===
+div.card_block [2] "  "
+  div.title [2] "  "
+    div.icon.card [1] "最受欢迎"
+      i
+    div.text "This is the true summer!"
+  div.list [1] " "
+    ul [6] "      "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+
+=== div.list_block ===
+div.list_block [2] "  "
+  div.title [3] "   "
+    div.icon.category [1] "版本检索"
+      i
+    div.text "获得成就：翻箱倒柜！"
+    div.more [1]
+      a "更多 >"
+  div.block.mp-block [4] "     "
+    ul.menu [86] " "
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+    div.load [1] " "
+      div [1] "加载中.. ヽ(･ω･｡)ﾉ"
+    div.error [1] " "
+      div
+    ul.list [3] " "
+      div.farme [30]
+      link
+      div.pages_system [7] " "
+
+=== div.tag_block ===
+div.tag_block [2] "  "
+  div.title [2] "  "
+    div.icon.tag [1] "热门标签"
+      i
+    div.text "人对标签来说很有营养。"
+  div.list [1] " "
+    ul [15] "               "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+      li [1] " "
+
+=== div.star_block ===
+div.star_block [5] "   "
+  div.title [3] "   "
+    div.icon.tag [2]
+      i
+      a "贡献榜"
+    li.hover
+    ul.text [3] "   "
+      li.on "今日"
+      li "本周"
+      li "本月"
+  ul#day.list [18] "                  "
+    li [3] "   "
+      a [1]
+      a.name "QQ酱114514"
+      span.num "25.7%"
+    li [3] "   "
+      a [1]
+      a.name "Rain_Flying"
+      span.num "25.0%"
+    li [3] "   "
+      a [1]
+      a.name "afz52"
+      span.num "19.1%"
+    li [3] "   "
+      a [1]
+      a.name "直升钍兔"
+      span.num "17.5%"
+    li [3] "   "
+      a [1]
+      a.name "怽勿fightxl"
+      span.num "4.9%"
+    li [3] "   "
+      a [1]
+      a.name "ASLRDR"
+      span.num "3.7%"
+    li [3] "   "
+      a [1]
+      a.name "ZJH"
+      span.num "1.6%"
+    li [3] "   "
+      a [1]
+      a.name "6776"
+      span.num "0.8%"
+    li [3] "   "
+      a [1]
+      a.name "幽灵方块"
+      span.num "0.7%"
+    li [3] "   "
+      a [1]
+      a.name "QQ酱158632"
+      span.num "0.3%"
+    li [3] "   "
+      a [1]
+      a.name "mc开始下雪"
+      span.num "0.2%"
+    li [3] "   "
+      a [1]
+      a.name "瑶光Alkaid"
+      span.num "0.2%"
+    li [3] "   "
+      a [1]
+      a.name "金子円玖"
+      span.num "0.2%"
+    li [3] "   "
+      a [1]
+      a.name "兰秋仲玖"
+      span.num "0.1%"
+    li [3] "   "
+      a [1]
+      a.name "CrpBnrz"
+      span.num "0.1%"
+    li [3] "   "
+      a [1]
+      a.name "JDJades"
+      span.num "<0.1%"
+    li [3] "   "
+      a [1]
+      a.name "安基酸菌"
+      span.num "<0.1%"
+    li [3] "   "
+      a [1]
+      a.name "Xiris"
+      span.num "<0.1%"
+  ul#week.list [18] "                  "
+    li [3] "   "
+      a [1]
+      a.name "123"
+      span.num "9.3%"
+    li [3] "   "
+      a [1]
+      a.name "木偶师"
+      span.num "6.8%"
+    li [3] "   "
+      a [1]
+      a.name "InduEraEternal"
+      span.num "6.2%"
+    li [3] "   "
+      a [1]
+      a.name "QQ酱114514"
+      span.num "5.3%"
+    li [3] "   "
+      a [1]
+      a.name "lisheng233"
+      span.num "5.2%"
+    li [3] "   "
+      a [1]
+      a.name "QQ酱158632"
+      span.num "4.8%"
+    li [3] "   "
+      a [1]
+      a.name "Rain_Flying"
+      span.num "4.4%"
+    li [3] "   "
+      a [1]
+      a.name "大道-Herobrine"
+      span.num "4.0%"
+    li [3] "   "
+      a [1]
+      a.name "afz52"
+      span.num "3.4%"
+    li [3] "   "
+      a [1]
+      a.name "KMnO₄"
+      span.num "3.2%"
+    li [3] "   "
+      a [1]
+      a.name "直升钍兔"
+      span.num "3.1%"
+    li [3] "   "
+      a [1]
+      a.name "幽灵方块"
+      span.num "2.7%"
+    li [3] "   "
+      a [1]
+      a.name "cvrunmin"
+      span.num "2.5%"
+    li [3] "   "
+      a [1]
+      a.name "小逸檬"
+      span.num "2.0%"
+    li [3] "   "
+      a [1]
+      a.name "阿白同学ya"
+      span.num "2.0%"
+    li [3] "   "
+      a [1]
+      a.name "Coylocker123"
+      span.num "1.9%"
+    li [3] "   "
+      a [1]
+      a.name "雪泪寒"
+      span.num "1.6%"
+    li [3] "   "
+      a [1]
+      a.name "Fybs"
+      span.num "1.5%"
+  ul#moon.list [18] "                  "
+    li [3] "   "
+      a [1]
+      a.name "结城希亚"
+      span.num "9.4%"
+    li [3] "   "
+      a [1]
+      a.name "Rain_Flying"
+      span.num "5.0%"
+    li [3] "   "
+      a [1]
+      a.name "幽灵方块"
+      span.num "3.9%"
+    li [3] "   "
+      a [1]
+      a.name "大将柔情穿越古今"
+      span.num "3.7%"
+    li [3] "   "
+      a [1]
+      a.name "lisheng233"
+      span.num "3.3%"
+    li [3] "   "
+      a [1]
+      a.name "智子10086号"
+      span.num "2.2%"
+    li [3] "   "
+      a [1]
+      a.name "QQ酱158632"
+      span.num "2.0%"
+    li [3] "   "
+      a [1]
+      a.name "KMnO₄"
+      span.num "1.7%"
+    li [3] "   "
+      a [1]
+      a.name "QQ酱114514"
+      span.num "1.7%"
+    li [3] "   "
+      a [1]
+      a.name "WONDEO"
+      span.num "1.4%"
+    li [3] "   "
+      a [1]
+      a.name "叶听风"
+      span.num "1.4%"
+    li [3] "   "
+      a [1]
+      a.name "Xu233"
+      span.num "1.3%"
+    li [3] "   "
+      a [1]
+      a.name "景天的天_"
+      span.num "1.2%"
+    li [3] "   "
+      a [1]
+      a.name "uAu5"
+      span.num "1.2%"
+    li [3] "   "
+      a [1]
+      a.name "兰秋仲玖"
+      span.num "1.1%"
+    li [3] "   "
+      a [1]
+      a.name "umbrallaor"
+      span.num "1.0%"
+    li [3] "   "
+      a [1]
+      a.name "Phoebe_Real"
+      span.num "1.0%"
+    li [3] "   "
+      a [1]
+      a.name "肥鱼搬运工"
+      span.num "1.0%"
+  div.more [1] "[ ]"
+    a "更多贡献信息"
+
+=== div.chart_block ===
+div.chart_block [5] "     "
+  div.title [2] "  "
+    div.icon.chart [1] "评比排行"
+      i
+    div.text "不是每个MOD都拥有一个完整的世界。"
+  div#chart_1.block.mp-block [2] "  "
+    div.menu "趣味排行"
+    ul.list [5] "     "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+  div#chart_2.block.mp-block [2] "  "
+    div.menu "稳定排行"
+    ul.list [5] "     "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+  div#chart_3.block.mp-block [2] "  "
+    div.menu "美观排行"
+    ul.list [5] "     "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+  div#chart_4.block.mp-block [2] "  "
+    div.menu "难度排行"
+    ul.list [5] "     "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+      li [3] "   "
+
+=== div.az_block ===
+div.az_block [6] "      "
+  div.title [3] "   "
+    div.icon.pyaz [1] " "
+      div.item [2] "  "
+    div.text [2] "  "
+      p "获得成就：眼尖的筛选者！"
+      p "获得成就：谨慎的筛选家！"
+    ul.switch [2] "  "
+      li.on "拼音"
+      li "字母"
+  div.hover
+  div.area [2] "  "
+    ul#switch_py.menu [26] "                          "
+      li.on "a"
+      li "o"
+      li "e"
+      li "b"
+      li "p"
+      li "m"
+      li "f"
+      li "d"
+      li "t"
+      li "n"
+      li "l"
+      li "g"
+      li "k"
+      li "h"
+      li "j"
+      li "q"
+      li "x"
+      li "zh"
+      li "ch"
+      li "sh"
+      li "r"
+      li "z"
+      li "c"
+      li "s"
+      li "y"
+      li "w"
+    ul#switch_az.menu [26] "                          "
+      li.on "A"
+      li "B"
+      li "C"
+      li "D"
+      li "E"
+      li "F"
+      li "G"
+      li "H"
+      li "I"
+      li "J"
+      li "K"
+      li "L"
+      li "M"
+      li "N"
+      li "O"
+      li "P"
+      li "Q"
+      li "R"
+      li "S"
+      li "T"
+      li "U"
+      li "V"
+      li "W"
+      li "X"
+      li "Y"
+      li "Z"
+  div.load [1] " "
+    div [1] "加载中.. ヽ(･ω･｡)ﾉ"
+      img
+  div.error [1] " "
+    div
+  div.list_frame [1] " "
+    ul.list [32] " "
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+      li [1]
+
+=== div.video_block ===
+div.video_block [2] "  "
+  div.title [2] "  "
+    div.icon.video [2]
+      i
+      a "视频教程"
+    ul.text "擦亮眼睛。"
+  ul.list [4] "    "
+    li [3] "   "
+      span.img [2] "  "
+      span.name [1]
+      span.text [1] "投稿："
+    li [3] "   "
+      span.img [2] "  "
+      span.name [1]
+      span.text [1] "投稿："
+    li [3] "   "
+      span.img [2] "  "
+      span.name [1]
+      span.text [1] "投稿："
+    li [3] "   "
+      span.img [2] "  "
+      span.name [1]
+      span.text [1] "投稿："
+
+=== post_block ul.list 样本 ===
+ul.list [21] "                     "
+  li [2] "  "
+    div.postTitle [2]
+      a "神秘时代非官方移植版链接指南"
+      div.score [1]
+    div.postText [1] " "
+      ul [2] "  "
+  li [2] "  "
+    div.postTitle [2]
+      a "【滑翔伞Paragliders】--1.20.1版.."
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "如何使用hqm制作一本任务书"
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "亡者世界v5.11.19-建筑物容器&.."
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "丧心病狂，爆炸就是艺术！HBM的核.."
+      div.score [1]
+    div.postText [1] " "
+      ul [2] "  "
+  li [2] "  "
+    div.postTitle [2]
+      a "如何修复PCL CE的下载功能"
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "简易"永昼""永晴"装置——基于"新生.."
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "[模组揭缔]-深度分析TC系列世界观"
+      div.score [1]
+    div.postText [1] " "
+      ul [2] "  "
+  li [2] "  "
+    div.postTitle [2]
+      a "拾光漫辑:以一个全新的视角来理解.."
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "让Verity接入本地Ollama模型"
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "Vault Patcher从入门到精通"
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "高级物流元件怎么用？新版机械动.."
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "基于语义向量检索的HEI模糊搜索脚本"
+      div.score [1]
+    div.postText [1] " "
+      ul [2] "  "
+  li [2] "  "
+    div.postTitle [2]
+      a "贪婪整合包使用Cleanroom替换Forg.."
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "反应堆发电机制的简明梳理"
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "配置文件个人翻译（基于2.5.10版.."
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "如何让 1.12.2 等于高版本？"
+      div.score [1]
+    div.postText [1] " "
+      ul [2] "  "
+  li [2] "  "
+    div.postTitle [2]
+      a "如何给不可附魔的物品打上附魔"
+      div.score [1]
+    div.postText [1] " "
+      ul [2] "  "
+  li [2] "  "
+    div.postTitle [2]
+      a "宝石饰品属性一览表"
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "如何减少或者关闭攻击生物身上掉.."
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+  li [2] "  "
+    div.postTitle [2]
+      a "香草纪元2.7.1-模组推荐和使用"
+      div.score [1]
+    div.postText [1] " "
+      ul [1] " "
+
+=== news_block div.editor ===
+div.editor [1] " "
+  ul [21] " "
+    li [2] "由 编辑了资料 中的一张合成表 (ID:327299)。"
+      a "mc开始下雪"
+      a "附魔之魂"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:322889)。"
+      a "mc开始下雪"
+      a "吸收强化护符"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:327216)。"
+      a "mc开始下雪"
+      a "空更好的魂石"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:321322)。"
+      a "mc开始下雪"
+      a "霓光原浆"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:340281)。"
+      a "mc开始下雪"
+      a "附魔金苹果炖菜"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:340244)。"
+      a "mc开始下雪"
+      a "附魔金苹果炖菜"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:341256)。"
+      a "mc开始下雪"
+      a "永恒附魔金苹果"
+    li [3] "由 更新了模组 中的下载文件。"
+      span "📙"
+      a "行者つ"
+      a "终末核心"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:337888)。"
+      a "mc开始下雪"
+      a "传奇之剑"
+    li [3] "由 更新了模组 中的下载文件。"
+      span "📙"
+      a "太随意了吧"
+      a "生物生成控制器"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:342446)。"
+      a "mc开始下雪"
+      a "神灵金鳕鱼"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:341110)。"
+      a "mc开始下雪"
+      a "潘多拉果实"
+    li [3] "由 更新了模组 中的下载文件。"
+      span "📙"
+      a "太随意了吧"
+      a "天境魔法书"
+    li [3] "由 编辑了模组 中的 物品/方块。"
+      a "QQ酱114514"
+      a "Thaumaturge"
+      a "无尽之瓮"
+    li [3] "由 编辑了模组 中的 生物/实体。"
+      a "兰秋仲玖"
+      a "史前自然"
+      a "后斯普里格鱼"
+    li [3] "由 编辑了模组 中的 生物/实体。"
+      a "mc开始下雪"
+      a "神化"
+      a "神化Boss"
+    li [3] "由 更新了模组 中的下载文件。"
+      span "📙"
+      a "行者つ"
+      a "终焉之日-重铸"
+    li [3] "由 编辑了模组 中的 物品/方块。"
+      a "mc开始下雪"
+      a "神化"
+      a "恶意符石"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:343738)。"
+      a "mc开始下雪"
+      a "永恒之星"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:325046)。"
+      a "mc开始下雪"
+      a "超级附魔金苹果"
+    li [2] "由 编辑了资料 中的一张合成表 (ID:327299)。"
+      a "mc开始下雪"
+      a "附魔之魂"
+
+=== 模组卡 a/img 属性 ===
+card0: a.href=/class/1.html a.target=_blank img.src=//i.mcmod.cn/class/cover/20210220/1613753764_10167_HvjN.jpg@170x115.jpg img.w=null img.h=null
+  card classes=block mp-block style=
+card1: a.href=/class/18328.html a.target=_blank img.src=//i.mcmod.cn/class/cover/20250214/1739464538_2_FpQH.jpg@170x115.jpg img.w=null img.h=null
+  card classes=block mp-block style=
