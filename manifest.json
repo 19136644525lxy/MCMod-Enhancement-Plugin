@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "MC百科增强 · MCMod Plus",
+  "version": "0.1.0",
+  "description": "为 MC百科 提供全站视觉重做、Cmd+K 全局搜索与结构化检索。",
+  "permissions": ["storage"],
+  "host_permissions": ["https://*.mcmod.cn/*"],
+  "background": {
+    "service_worker": "src/bg.js"
+  },
+  "action": {
+    "default_title": "MC百科增强",
+    "default_popup": "popup/popup.html"
+  },
+  "options_page": "options/options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.mcmod.cn/*",
+        "https://search.mcmod.cn/*",
+        "https://bbs.mcmod.cn/*",
+        "https://play.mcmod.cn/*"
+      ],
+      "run_at": "document_end",
+      "js": [
+        "src/content/core/dom.js",
+        "src/content/core/store.js",
+        "src/content/core/selectors.js",
+        "src/content/core/theme.js",
+        "src/content/core/fetch-page.js",
+        "src/content/render/components.js",
+        "src/content/extract/search.js",
+        "src/content/extract/modlist.js",
+        "src/content/render/pages/search.js",
+        "src/content/widgets/command-palette.js",
+        "src/content/router.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["styles/*"],
+      "matches": ["https://*.mcmod.cn/*"]
+    }
+  ]
+}

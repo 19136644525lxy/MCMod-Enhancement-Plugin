@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MC百科增强 · 设置</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <div class="logo">MP</div>
+      <div>
+        <h1>MC百科增强 · MCMod Plus</h1>
+        <p class="sub">全站视觉重做 · Cmd+K 全局搜索 · 结构化检索</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>常规</h2>
+      <label class="row">
+        <div>
+          <div class="label">启用增强</div>
+          <div class="desc">关闭后所有样式与功能停用，页面回到原生状态</div>
+        </div>
+        <input type="checkbox" id="enabled" />
+      </label>
+      <label class="row">
+        <div>
+          <div class="label">命令面板</div>
+          <div class="desc">在任意 MC百科 页面按 Ctrl/⌘ K 打开全局搜索</div>
+        </div>
+        <input type="checkbox" id="palette" />
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>外观</h2>
+      <div class="row">
+        <div>
+          <div class="label">主题</div>
+          <div class="desc">跟随系统时自动适配浅色 / 深色</div>
+        </div>
+        <div class="seg" id="theme">
+          <button data-value="auto">跟随系统</button>
+          <button data-value="light">浅色</button>
+          <button data-value="dark">深色</button>
+        </div>
+      </div>
+      <label class="row">
+        <div>
+          <div class="label">紧凑模式</div>
+          <div class="desc">减小卡片间距与摘要行数，一屏显示更多结果</div>
+        </div>
+        <input type="checkbox" id="compact" />
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>搜索</h2>
+      <label class="row">
+        <div>
+          <div class="label">搜索页重绘</div>
+          <div class="desc">对 search.mcmod.cn 的结果列表重绘；随时可用「原始视图」回滚</div>
+        </div>
+        <input type="checkbox" id="redrawSearch" />
+      </label>
+      <div class="row">
+        <div>
+          <div class="label">调试面板</div>
+          <div class="desc">按 Ctrl+Shift+D 查看抽取结果与当前设置</div>
+        </div>
+        <span class="kbd">Ctrl + Shift + D</span>
+      </div>
+    </section>
+
+    <section class="card about">
+      <h2>关于</h2>
+      <p>本扩展只读接管展示层：编辑、评论、评分、登录等写操作保持 MC百科 原生界面。</p>
+      <p>页面数据通过你已登录的浏览器会话请求，不经过第三方服务器。</p>
+      <p class="meta">版本 <span id="version"></span> · <a href="https://github.com/19136644525lxy/MCMod-Enhancement-Plugin" target="_blank" rel="noopener">GitHub</a></p>
+    </section>
+
+    <div class="save-bar">
+      <span id="status">设置自动保存</span>
+    </div>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>

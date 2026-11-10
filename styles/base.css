@@ -1,0 +1,492 @@
+/* ============================================================
+   MC百科增强 · 基础组件样式（全部 mp- 前缀，避免污染原站）
+   ============================================================ */
+
+/* ---------- 通用 ---------- */
+.mp-root {
+  font-family: var(--mp-font);
+  color: var(--mp-text);
+  box-sizing: border-box;
+}
+
+.mp-root *,
+.mp-root *::before,
+.mp-root *::after {
+  box-sizing: inherit;
+}
+
+/* ---------- 高亮 ---------- */
+.mp-mark {
+  background: var(--mp-mark);
+  color: var(--mp-mark-text);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* ---------- 按钮 ---------- */
+.mp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-sm);
+  background: var(--mp-bg);
+  color: var(--mp-text);
+  font: 500 13px/1 var(--mp-font);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+  white-space: nowrap;
+}
+
+.mp-btn:hover {
+  background: var(--mp-bg-3);
+  border-color: var(--mp-text-3);
+}
+
+.mp-btn--primary {
+  background: var(--mp-accent);
+  border-color: var(--mp-accent);
+  color: #fff;
+}
+
+.mp-btn--primary:hover {
+  background: var(--mp-accent-2);
+  border-color: var(--mp-accent-2);
+}
+
+.mp-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--mp-text-2);
+  padding: 0 8px;
+}
+
+.mp-btn--ghost:hover {
+  background: var(--mp-bg-3);
+  color: var(--mp-text);
+}
+
+/* ---------- 标签 ---------- */
+.mp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--mp-border);
+  border-radius: 999px;
+  background: var(--mp-bg);
+  color: var(--mp-text-2);
+  font: 500 12px/1 var(--mp-font);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.mp-chip:hover {
+  border-color: var(--mp-accent);
+  color: var(--mp-accent);
+  text-decoration: none;
+}
+
+.mp-chip.is-active {
+  background: var(--mp-accent);
+  border-color: var(--mp-accent);
+  color: #fff;
+}
+
+.mp-chip.is-muted {
+  opacity: .55;
+}
+
+.mp-chip-count {
+  font-size: 11px;
+  opacity: .7;
+}
+
+/* ---------- 工具栏 ---------- */
+.mp-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mp-space-3);
+  flex-wrap: wrap;
+  padding: var(--mp-space-3) var(--mp-space-4);
+  margin-bottom: var(--mp-space-4);
+  background: var(--mp-bg-2);
+  border: 1px solid var(--mp-border-2);
+  border-radius: var(--mp-radius);
+}
+
+.mp-toolbar-left,
+.mp-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--mp-space-2);
+  flex-wrap: wrap;
+}
+
+/* ---------- 卡片 ---------- */
+.mp-card {
+  display: block;
+  padding: var(--mp-space-4);
+  margin-bottom: var(--mp-space-3);
+  background: var(--mp-bg);
+  border: 1px solid var(--mp-border-2);
+  border-radius: var(--mp-radius);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+
+.mp-card:hover {
+  border-color: var(--mp-border);
+  box-shadow: var(--mp-shadow);
+  transform: translateY(-1px);
+  text-decoration: none;
+  color: inherit;
+}
+
+.mp-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--mp-space-2);
+  margin-bottom: 6px;
+}
+
+.mp-card-type {
+  flex: none;
+  font: 600 11px/1 var(--mp-font);
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: var(--mp-accent-soft);
+  color: var(--mp-accent);
+  letter-spacing: .02em;
+}
+
+.mp-card-title {
+  font: 600 15px/1.45 var(--mp-font);
+  color: var(--mp-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-card-snippet {
+  font: 400 13px/1.6 var(--mp-font);
+  color: var(--mp-text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.mp-card-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--mp-space-3);
+  margin-top: var(--mp-space-2);
+  font: 400 12px/1 var(--mp-font);
+  color: var(--mp-text-3);
+  flex-wrap: wrap;
+}
+
+.mp-card-foot a {
+  color: var(--mp-text-3);
+  text-decoration: none;
+}
+
+.mp-card-foot a:hover {
+  color: var(--mp-accent);
+  text-decoration: underline;
+}
+
+/* ---------- 骨架屏 / 空状态 ---------- */
+.mp-skeleton {
+  padding: var(--mp-space-4);
+  border: 1px solid var(--mp-border-2);
+  border-radius: var(--mp-radius);
+  margin-bottom: var(--mp-space-3);
+}
+
+.mp-skeleton-line {
+  height: 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--mp-bg-3) 25%, var(--mp-bg-2) 50%, var(--mp-bg-3) 75%);
+  background-size: 200% 100%;
+  animation: mp-shimmer 1.4s infinite linear;
+}
+
+.mp-skeleton-line:nth-child(1) { width: 40%; height: 16px; }
+.mp-skeleton-line:nth-child(2) { width: 95%; }
+.mp-skeleton-line:nth-child(3) { width: 70%; }
+
+@keyframes mp-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.mp-empty {
+  padding: var(--mp-space-6) var(--mp-space-4);
+  text-align: center;
+  color: var(--mp-text-2);
+}
+
+.mp-empty-title {
+  font: 600 15px/1.5 var(--mp-font);
+  color: var(--mp-text);
+  margin-bottom: 6px;
+}
+
+.mp-empty-hint {
+  font: 400 13px/1.6 var(--mp-font);
+  color: var(--mp-text-3);
+}
+
+/* ---------- 搜索页重绘 ---------- */
+.mp-search-summary {
+  font: 400 13px/1.6 var(--mp-font);
+  color: var(--mp-text-3);
+}
+
+.mp-search-summary strong {
+  color: var(--mp-text);
+  font-weight: 600;
+}
+
+.mp-search-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ---------- 命令面板 ---------- */
+.mp-palette-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  background: rgba(10, 14, 18, .42);
+  backdrop-filter: blur(2px);
+  animation: mp-fade-in .12s ease-out;
+}
+
+.mp-palette {
+  width: min(680px, calc(100vw - 48px));
+  max-height: 64vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--mp-bg);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-lg);
+  box-shadow: var(--mp-shadow-lg);
+  overflow: hidden;
+  animation: mp-slide-in .14s ease-out;
+}
+
+.mp-palette-input {
+  width: 100%;
+  height: 52px;
+  padding: 0 var(--mp-space-4);
+  border: 0;
+  border-bottom: 1px solid var(--mp-border-2);
+  background: transparent;
+  color: var(--mp-text);
+  font: 400 16px/1 var(--mp-font);
+  outline: none;
+}
+
+.mp-palette-input::placeholder {
+  color: var(--mp-text-3);
+}
+
+.mp-palette-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--mp-space-2);
+  padding: 6px var(--mp-space-4);
+  border-bottom: 1px solid var(--mp-border-2);
+  font: 400 11px/1.4 var(--mp-font);
+  color: var(--mp-text-3);
+  flex-wrap: wrap;
+}
+
+.mp-palette-hint code {
+  font-family: var(--mp-mono);
+  font-size: 11px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: var(--mp-bg-3);
+  color: var(--mp-text-2);
+}
+
+.mp-palette-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--mp-space-2);
+}
+
+.mp-palette-group {
+  padding: 6px 8px 4px;
+  font: 600 11px/1.4 var(--mp-font);
+  color: var(--mp-text-3);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.mp-palette-item {
+  display: flex;
+  align-items: center;
+  gap: var(--mp-space-2);
+  padding: 9px 10px;
+  border-radius: var(--mp-radius-sm);
+  color: var(--mp-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mp-palette-item:hover,
+.mp-palette-item.is-selected {
+  background: var(--mp-bg-3);
+  text-decoration: none;
+  color: var(--mp-text);
+}
+
+.mp-palette-item-type {
+  flex: none;
+  font: 600 10px/1 var(--mp-font);
+  padding: 3px 5px;
+  border-radius: 4px;
+  background: var(--mp-accent-soft);
+  color: var(--mp-accent);
+}
+
+.mp-palette-item-title {
+  flex: 1;
+  min-width: 0;
+  font: 500 13px/1.4 var(--mp-font);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-palette-item-sub {
+  flex: none;
+  max-width: 38%;
+  font: 400 11px/1.4 var(--mp-font);
+  color: var(--mp-text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-palette-empty {
+  padding: var(--mp-space-5);
+  text-align: center;
+  font: 400 13px/1.6 var(--mp-font);
+  color: var(--mp-text-3);
+}
+
+.mp-palette-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px var(--mp-space-4);
+  border-top: 1px solid var(--mp-border-2);
+  background: var(--mp-bg-2);
+  font: 400 11px/1.4 var(--mp-font);
+  color: var(--mp-text-3);
+}
+
+/* ---------- 调试面板 ---------- */
+.mp-debug {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483001;
+  width: min(460px, calc(100vw - 32px));
+  max-height: 60vh;
+  overflow: auto;
+  padding: var(--mp-space-4);
+  background: var(--mp-bg);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius);
+  box-shadow: var(--mp-shadow-lg);
+  font: 400 12px/1.6 var(--mp-mono);
+  color: var(--mp-text);
+}
+
+.mp-debug-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--mp-space-2);
+  font-family: var(--mp-font);
+}
+
+.mp-debug-row {
+  display: flex;
+  gap: var(--mp-space-2);
+  padding: 3px 0;
+  border-top: 1px solid var(--mp-border-2);
+}
+
+.mp-debug-label {
+  flex: none;
+  width: 72px;
+  color: var(--mp-text-3);
+}
+
+.mp-debug-value {
+  flex: 1;
+  min-width: 0;
+  word-break: break-all;
+  color: var(--mp-text-2);
+}
+
+.mp-debug-pre {
+  margin: var(--mp-space-2) 0 0;
+  padding: var(--mp-space-2);
+  max-height: 200px;
+  overflow: auto;
+  background: var(--mp-bg-2);
+  border-radius: var(--mp-radius-sm);
+  font-size: 11px;
+  white-space: pre-wrap;
+}
+
+.mp-debug-actions {
+  display: flex;
+  gap: var(--mp-space-2);
+  margin-top: var(--mp-space-2);
+  flex-wrap: wrap;
+}
+
+/* ---------- 动画 ---------- */
+@keyframes mp-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes mp-slide-in {
+  from { opacity: 0; transform: translateY(-6px) scale(.99); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- 紧凑模式 ---------- */
+:root[data-mp-compact="1"] .mp-card {
+  padding: var(--mp-space-3);
+  margin-bottom: var(--mp-space-2);
+}
+
+:root[data-mp-compact="1"] .mp-card-snippet {
+  -webkit-line-clamp: 2;
+}

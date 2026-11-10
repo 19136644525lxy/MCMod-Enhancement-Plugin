@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MC百科增强</title>
+  <link rel="stylesheet" href="../popup/popup.css" />
+</head>
+<body>
+  <div class="head">
+    <div class="brand">
+      <span class="logo">MP</span>
+      <div>
+        <div class="title">MC百科增强</div>
+        <div class="sub">MCMod Plus <span id="version"></span></div>
+      </div>
+    </div>
+    <label class="switch" title="总开关">
+      <input type="checkbox" id="enabled" />
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="section">
+    <div class="row">
+      <span class="label">主题</span>
+      <div class="seg" id="theme">
+        <button data-value="auto">跟随</button>
+        <button data-value="light">浅色</button>
+        <button data-value="dark">深色</button>
+      </div>
+    </div>
+    <label class="row toggle">
+      <span class="label">命令面板 <kbd>Ctrl/⌘ K</kbd></span>
+      <input type="checkbox" id="palette" />
+    </label>
+    <label class="row toggle">
+      <span class="label">搜索页重绘</span>
+      <input type="checkbox" id="redrawSearch" />
+    </label>
+    <label class="row toggle">
+      <span class="label">紧凑模式</span>
+      <input type="checkbox" id="compact" />
+    </label>
+  </div>
+
+  <div class="foot">
+    <a href="#" id="options">更多设置</a>
+    <span id="status">就绪</span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

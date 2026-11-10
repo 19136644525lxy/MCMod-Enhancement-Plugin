@@ -1,0 +1,96 @@
+/* ============================================================
+   MC百科增强 · 设计令牌
+   浅色为基准，深色通过 [data-mp-theme="dark"] 或系统偏好覆盖
+   ============================================================ */
+
+:root {
+  --mp-font: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  --mp-mono: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+
+  --mp-radius-sm: 6px;
+  --mp-radius: 10px;
+  --mp-radius-lg: 16px;
+
+  --mp-space-1: 4px;
+  --mp-space-2: 8px;
+  --mp-space-3: 12px;
+  --mp-space-4: 16px;
+  --mp-space-5: 24px;
+  --mp-space-6: 32px;
+
+  --mp-text: #1b1f24;
+  --mp-text-2: #57606a;
+  --mp-text-3: #8b949e;
+  --mp-bg: #ffffff;
+  --mp-bg-2: #f6f8fa;
+  --mp-bg-3: #eef1f4;
+  --mp-border: #d8dee4;
+  --mp-border-2: #eaeef2;
+  --mp-accent: #2f6f4f;
+  --mp-accent-2: #3d8b64;
+  --mp-accent-soft: #e6f2ec;
+  --mp-danger: #c0392b;
+  --mp-shadow: 0 1px 2px rgba(27, 31, 36, .06), 0 8px 24px rgba(27, 31, 36, .08);
+  --mp-shadow-lg: 0 24px 64px rgba(27, 31, 36, .18);
+  --mp-mark: #ffe58f;
+  --mp-mark-text: #1b1f24;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mp-text: #e6edf3;
+    --mp-text-2: #9da7b3;
+    --mp-text-3: #6e7681;
+    --mp-bg: #0f1318;
+    --mp-bg-2: #161b22;
+    --mp-bg-3: #1c232b;
+    --mp-border: #2d333b;
+    --mp-border-2: #21262d;
+    --mp-accent: #57b98a;
+    --mp-accent-2: #6fd3a0;
+    --mp-accent-soft: #12261c;
+    --mp-danger: #f85149;
+    --mp-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .45);
+    --mp-shadow-lg: 0 24px 64px rgba(0, 0, 0, .6);
+    --mp-mark: #6b5411;
+    --mp-mark-text: #ffe58f;
+  }
+}
+
+:root[data-mp-theme="light"] {
+  --mp-text: #1b1f24;
+  --mp-text-2: #57606a;
+  --mp-text-3: #8b949e;
+  --mp-bg: #ffffff;
+  --mp-bg-2: #f6f8fa;
+  --mp-bg-3: #eef1f4;
+  --mp-border: #d8dee4;
+  --mp-border-2: #eaeef2;
+  --mp-accent: #2f6f4f;
+  --mp-accent-2: #3d8b64;
+  --mp-accent-soft: #e6f2ec;
+  --mp-danger: #c0392b;
+  --mp-shadow: 0 1px 2px rgba(27, 31, 36, .06), 0 8px 24px rgba(27, 31, 36, .08);
+  --mp-shadow-lg: 0 24px 64px rgba(27, 31, 36, .18);
+  --mp-mark: #ffe58f;
+  --mp-mark-text: #1b1f24;
+}
+
+:root[data-mp-theme="dark"] {
+  --mp-text: #e6edf3;
+  --mp-text-2: #9da7b3;
+  --mp-text-3: #6e7681;
+  --mp-bg: #0f1318;
+  --mp-bg-2: #161b22;
+  --mp-bg-3: #1c232b;
+  --mp-border: #2d333b;
+  --mp-border-2: #21262d;
+  --mp-accent: #57b98a;
+  --mp-accent-2: #6fd3a0;
+  --mp-accent-soft: #12261c;
+  --mp-danger: #f85149;
+  --mp-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .45);
+  --mp-shadow-lg: 0 24px 64px rgba(0, 0, 0, .6);
+  --mp-mark: #6b5411;
+  --mp-mark-text: #ffe58f;
+}
