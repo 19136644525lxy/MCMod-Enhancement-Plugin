@@ -9,6 +9,12 @@
   display: none !important;
 }
 
+/* 原站 .center 用 60px 上边距补偿 fixed 顶栏；我们换成 sticky 顶栏后
+   这段留白会变成空档，归零。 */
+body.mp-home-mode .center {
+  margin-top: 0 !important;
+}
+
 body.mp-home-mode {
   background:
     radial-gradient(1200px 600px at 15% -10%, rgba(87, 185, 138, 0.16), transparent 60%),
@@ -16,11 +22,6 @@ body.mp-home-mode {
     radial-gradient(700px 600px at 50% 100%, rgba(120, 140, 200, 0.10), transparent 60%),
     #f3f1ec;
   background-attachment: fixed;
-}
-
-html[data-mp-theme="dark"] body.mp-home-mode,
-@media (prefers-color-scheme: dark) {
-  /* 占位：下方用 html 选择器覆盖 */
 }
 
 html[data-mp-theme="dark"] body.mp-home-mode {
