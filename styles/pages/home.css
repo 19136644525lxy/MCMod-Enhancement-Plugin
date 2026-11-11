@@ -1298,7 +1298,7 @@ html[data-mp-theme="dark"] .mp-friend:hover {
 }
 
 #mp-home-topbar {
-  animation: mp-topbar-in var(--mp-dur) var(--mp-ease) both;
+  animation: mp-topbar-in .42s var(--mp-ease) both;
 }
 
 @keyframes mp-topbar-in {
@@ -1327,4 +1327,45 @@ html[data-mp-theme="dark"] .mp-friend:hover {
   #mp-home-host,
   #mp-home-topbar,
   .mp-home > * { animation: none; }
+}
+
+/* ---------- 图标：逐个弹出 + hover 弹性 ---------- */
+
+#mp-home-topbar .mp-brand-mark {
+  animation: mp-mark-in .74s var(--mp-ease-spring) backwards .08s;
+}
+
+@keyframes mp-mark-in {
+  from { opacity: 0; transform: scale(.5) rotate(-18deg); }
+  65% { opacity: 1; transform: scale(1.08) rotate(3deg); }
+  to { opacity: 1; transform: none; }
+}
+
+.mp-quick-item .mp-quick-icon {
+  animation: mp-ico-pop .54s var(--mp-ease-spring) backwards;
+  transition: transform var(--mp-dur) var(--mp-ease-spring), color .24s ease;
+}
+
+.mp-quick-item:nth-child(1) .mp-quick-icon { animation-delay: .24s; }
+.mp-quick-item:nth-child(2) .mp-quick-icon { animation-delay: .29s; }
+.mp-quick-item:nth-child(3) .mp-quick-icon { animation-delay: .34s; }
+.mp-quick-item:nth-child(4) .mp-quick-icon { animation-delay: .39s; }
+.mp-quick-item:nth-child(5) .mp-quick-icon { animation-delay: .44s; }
+.mp-quick-item:nth-child(6) .mp-quick-icon { animation-delay: .49s; }
+.mp-quick-item:nth-child(7) .mp-quick-icon { animation-delay: .54s; }
+.mp-quick-item:nth-child(8) .mp-quick-icon { animation-delay: .59s; }
+
+@keyframes mp-ico-pop {
+  from { opacity: 0; transform: scale(.45) rotate(-16deg); }
+  68% { opacity: 1; transform: scale(1.14) rotate(5deg); }
+  to { opacity: 1; transform: none; }
+}
+
+.mp-quick-item:hover .mp-quick-icon {
+  transform: rotate(-10deg) scale(1.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mp-home-topbar .mp-brand-mark,
+  .mp-quick-item .mp-quick-icon { animation: none; }
 }

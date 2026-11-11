@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 启动过渡层冒烟测试：显示 → 收起 → DOM 清理。
  * 运行：$env:NODE_PATH="$env:TEMP\mp-test\node_modules"; node tools/test-splash.js
  */
@@ -40,8 +40,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   ok('图标元素存在', !!w.document.querySelector('.mp-splash-icon'));
   ok('光环存在', !!w.document.querySelector('.mp-splash-glow'));
   ok('暴露 MP.splash', typeof w.MP.splash.done === 'function');
-  w.MP.splash.done();
-  await sleep(600);
+  w.MP.splash.done(true);
+  await sleep(720);
   ok('done 后移除遮罩', !w.document.getElementById('mp-splash'));
   ok('done 后移除样式', !w.document.getElementById('mp-splash-style'));
 
@@ -57,7 +57,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const w3 = makeWindow('https://www.mcmod.cn/');
   w3.chrome.storage.sync.get = (defaults, cb) => cb({ enabled: false });
   w3.eval(SRC);
-  await sleep(600);
+  await sleep(720);
   ok('遮罩已移除', !w3.document.getElementById('mp-splash'));
 
   console.log(`\n结果：${pass} 通过 / ${fail} 失败`);

@@ -20,6 +20,8 @@
 
   var HOST_ID = 'mp-splash';
   var MAX_MS = 6000;
+  var MIN_MS = 1100;
+  var shownAt = 0;
   var timer = null;
   var host = null;
 
@@ -46,7 +48,7 @@
     'position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;',
     'background:radial-gradient(900px 500px at 20% 0%,rgba(139,195,74,.16),transparent 60%),',
     'radial-gradient(800px 500px at 90% 10%,rgba(99,179,216,.16),transparent 55%),var(--s-bg);',
-    'opacity:1;transition:opacity .42s ease,transform .42s ease;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}',
+    'opacity:1;transition:opacity .62s cubic-bezier(.16,1,.3,1),transform .62s cubic-bezier(.16,1,.3,1);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}',
     '#mp-splash.mp-splash-dark{--s-bg:#14130f;--s-ink:#f2efe9;--s-sub:#8d867a;--s-accent:#57b98a;--s-bar:rgba(255,255,255,.12)}',
     '@media (prefers-color-scheme:dark){#mp-splash{--s-bg:#14130f;--s-ink:#f2efe9;--s-sub:#8d867a;--s-accent:#57b98a;--s-bar:rgba(255,255,255,.12)}}',
     '#mp-splash.mp-splash-out{opacity:0;transform:scale(1.03);pointer-events:none}',
@@ -112,25 +114,38 @@
     return node;
   }
 
-  function done() {
+  function done(force) {
     if (timer) {
       clearTimeout(timer);
       timer = null;
     }
     if (!host) return;
-    host.classList.add('mp-splash-out');
+    // 最短显示时长：logo 弹入 + 光环旋转至少走完一轮，避免「一闪而过」
+    // force=true 用于「插件已禁用」等必须立刻消失的场景
+    var left = force ? 0 : MIN_MS - (Date.now() - shownAt);
+    if (left > 0) {
+      timer = setTimeout(finish, left);
+      return;
+    }
+    finish();
+  }
+
+  function finish() {
+    if (!host) return;
     var el = host;
     host = null;
+    el.classList.add('mp-splash-out');
     setTimeout(function () {
       if (el && el.parentNode) el.parentNode.removeChild(el);
       var s = document.getElementById('mp-splash-style');
       if (s && s.parentNode) s.parentNode.removeChild(s);
-    }, 460);
+    }, 640);
   }
 
   function show() {
     if (host) return;
     host = build();
+    shownAt = Date.now();
     // 兜底：任何异常都不该让页面被遮罩长期占住
     timer = setTimeout(done, MAX_MS);
   }
@@ -140,7 +155,7 @@
     show();
     if (window.chrome && chrome.storage && chrome.storage.sync) {
       chrome.storage.sync.get({ enabled: true }, function (s) {
-        if (s && s.enabled === false) done();
+        if (s && s.enabled === false) done(true);
       });
     }
   } catch (e) {

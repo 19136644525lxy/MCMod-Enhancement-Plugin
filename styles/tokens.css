@@ -14,9 +14,10 @@
   /* 动效：三档时长 + expo-out 曲线（先快后慢，收尾不拖） */
   --mp-dur-fast: .18s;
   --mp-dur: .35s;
-  --mp-dur-slow: .58s;
+  --mp-dur-slow: .72s;
   --mp-ease: cubic-bezier(.16, 1, .3, 1);
   --mp-ease-soft: cubic-bezier(.23, 1, .32, 1);
+  --mp-ease-spring: cubic-bezier(.3, 1.5, .5, 1);
 
   --mp-space-1: 4px;
   --mp-space-2: 8px;
