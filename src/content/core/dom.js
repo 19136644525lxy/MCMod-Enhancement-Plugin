@@ -6,13 +6,17 @@ window.MP = window.MP || {};
 
 MP.dom = (function () {
   const SVG_NS = 'http://www.w3.org/2000/svg';
+  const SVG_TAGS = ['svg', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse', 'g', 'defs', 'use'];
 
   function h(tag, attrs, ...children) {
-    const el = document.createElement(tag);
+    // 动态创建的 <svg> 必须走 createElementNS，否则是 HTMLUnknownElement，浏览器不渲染
+    const el = SVG_TAGS.indexOf(tag) !== -1
+      ? document.createElementNS(SVG_NS, tag)
+      : document.createElement(tag);
     if (attrs) {
       for (const [k, v] of Object.entries(attrs)) {
         if (v === null || v === undefined || v === false) continue;
-        if (k === 'class' || k === 'className') el.className = v;
+        if (k === 'class' || k === 'className') el.setAttribute('class', v);
         else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
         else if (k === 'dataset') Object.assign(el.dataset, v);
         else if (k.startsWith('on') && typeof v === 'function') {
