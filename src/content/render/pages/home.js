@@ -56,15 +56,18 @@
   // ---- banner 底部的导航条 + 时钟（原站是两条绝对定位的浮层）----
   var clockTimer = null;
 
-  // 苦力怕脸是 8×8 像素图，按 4 倍放大到 32 网格：
-  //   眼睛 2×2 于 (1,1) 与 (5,1)；嘴是 4×4 方块于 (2,4)，中间挖掉 2×1 的缺口。
+  // 苦力怕脸：照官方图标的 16×16 像素网格量出来的形状，再按 2 倍放大到 32 网格。
+  //   眼睛 3×3 于 (3,3) 与 (10,3)
+  //   嘴：顶 4×1 于 (6,7)，主体 6×3 于 (5,8)，两条腿 1×2 于 (5,11) 与 (10,11)
   function creeperFace() {
     return h('svg', { viewBox: '0 0 32 32', class: 'mp-creeper-svg', 'aria-hidden': 'true' },
-      h('rect', { x: 0, y: 0, width: 32, height: 32, rx: 7, fill: '#6aa84f' }),
-      h('rect', { x: 4, y: 4, width: 8, height: 8, fill: '#161616' }),
-      h('rect', { x: 20, y: 4, width: 8, height: 8, fill: '#161616' }),
-      h('rect', { x: 8, y: 16, width: 16, height: 16, fill: '#161616' }),
-      h('rect', { x: 12, y: 24, width: 8, height: 4, fill: '#6aa84f' })
+      h('rect', { x: 0, y: 0, width: 32, height: 32, rx: 4, fill: '#6aa84f' }),
+      h('rect', { x: 6, y: 6, width: 6, height: 6, fill: '#161616' }),
+      h('rect', { x: 20, y: 6, width: 6, height: 6, fill: '#161616' }),
+      h('rect', { x: 12, y: 14, width: 8, height: 2, fill: '#161616' }),
+      h('rect', { x: 10, y: 16, width: 12, height: 6, fill: '#161616' }),
+      h('rect', { x: 10, y: 22, width: 2, height: 4, fill: '#161616' }),
+      h('rect', { x: 20, y: 22, width: 2, height: 4, fill: '#161616' })
     );
   }
 
