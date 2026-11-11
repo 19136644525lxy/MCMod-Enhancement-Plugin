@@ -56,34 +56,18 @@
   // ---- banner 底部的导航条 + 时钟（原站是两条绝对定位的浮层）----
   var clockTimer = null;
 
-  // 苦力怕图标：直接用官方图标的矢量/位图副本（assets/creeper.png），
-  // 不用手画，避免每次调整都跟原图差一点点；无扩展环境时退回内置 SVG。
-  var CREEPER = (function () {
-    try {
-      return (window.chrome && chrome.runtime && chrome.runtime.getURL)
-        ? chrome.runtime.getURL('assets/creeper.png')
-        : '';
-    } catch (e) {
-      return '';
-    }
-  })();
-
+  // 苦力怕脸：照官方图标在 16×16 网格上的像素形状画，
+  // 眼睛 3×3，嘴是「顶部 4×2 窄条 → 中间 6×2 宽条 → 底部两条 2×2 的腿」。
   function creeperFace() {
-    if (CREEPER) {
-      return h('span', {
-        class: 'mp-creeper-img',
-        style: 'background-image:url("' + CREEPER + '")'
-      });
-    }
     var K = '#101010';
     return h('svg', { viewBox: '0 0 16 16', class: 'mp-creeper-svg', 'aria-hidden': 'true' },
       h('rect', { x: 0, y: 0, width: 16, height: 16, rx: 1.2, fill: '#5cae3c' }),
-      h('rect', { x: 3.3, y: 3.2, width: 3.1, height: 3.4, fill: K }),
-      h('rect', { x: 9.7, y: 3.2, width: 3.1, height: 3.4, fill: K }),
-      h('rect', { x: 6.4, y: 6.6, width: 3.3, height: 1.9, fill: K }),
-      h('rect', { x: 4.8, y: 8.5, width: 6.4, height: 2.4, fill: K }),
-      h('rect', { x: 4.8, y: 10.9, width: 1.6, height: 1.6, fill: K }),
-      h('rect', { x: 9.7, y: 10.9, width: 1.6, height: 1.6, fill: K })
+      h('rect', { x: 3, y: 3, width: 3, height: 3, fill: K }),
+      h('rect', { x: 10, y: 3, width: 3, height: 3, fill: K }),
+      h('rect', { x: 6, y: 6, width: 4, height: 2, fill: K }),
+      h('rect', { x: 5, y: 8, width: 6, height: 2, fill: K }),
+      h('rect', { x: 5, y: 10, width: 2, height: 2, fill: K }),
+      h('rect', { x: 9, y: 10, width: 2, height: 2, fill: K })
     );
   }
 

@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    首页 · 毛玻璃重绘（mp-home 作用域）
    设计：半透明玻璃卡 + 模糊背景 + 柔和阴影；
    浅色为暖白底，深色为暖黑底，两套都保证卡片可读。
@@ -1718,14 +1718,4 @@ html[data-mp-theme="dark"] .mp-bb-search {
   }
 }
 
-/* 官方苦力怕图标（assets/creeper.png）：160px 缩到 34px，加一点内描边压住截图边缘的暗边 */
-.mp-creeper-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-}
+
