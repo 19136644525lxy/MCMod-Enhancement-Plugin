@@ -1273,3 +1273,58 @@ html[data-mp-theme="dark"] .mp-friend:hover {
   .mp-home .mp-mod-grid.is-in .mp-mod-card { animation: none; }
   .mp-home .mp-mod-grid.is-swap { opacity: 1; transform: none; }
 }
+
+/* ============================================================
+   入场动效：整页揭示 + 顶栏滑入 + 分区错峰
+   参考 MARGIN 的做法：全部用 clip-path / transform / opacity，
+   不用任何图片素材。时长与曲线统一走 tokens.css 的 --mp-dur / --mp-ease。
+   ============================================================ */
+
+#mp-home-host {
+  animation: mp-host-reveal var(--mp-dur-slow) var(--mp-ease) both;
+}
+
+@keyframes mp-host-reveal {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 84% round 26px);
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+#mp-home-topbar {
+  animation: mp-topbar-in var(--mp-dur) var(--mp-ease) both;
+}
+
+@keyframes mp-topbar-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.mp-home > * {
+  animation: mp-sec-in .5s var(--mp-ease) both;
+}
+
+.mp-home > *:nth-child(1) { animation-delay: .04s; }
+.mp-home > *:nth-child(2) { animation-delay: .1s; }
+.mp-home > *:nth-child(3) { animation-delay: .16s; }
+.mp-home > *:nth-child(4) { animation-delay: .22s; }
+.mp-home > *:nth-child(5) { animation-delay: .28s; }
+.mp-home > *:nth-child(6) { animation-delay: .34s; }
+.mp-home > *:nth-child(n+7) { animation-delay: .4s; }
+
+@keyframes mp-sec-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mp-home-host,
+  #mp-home-topbar,
+  .mp-home > * { animation: none; }
+}
