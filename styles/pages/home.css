@@ -1369,3 +1369,8 @@ html[data-mp-theme="dark"] .mp-friend:hover {
   #mp-home-topbar .mp-brand-mark,
   .mp-quick-item .mp-quick-icon { animation: none; }
 }
+
+/* 编辑动态：不再跟左侧模组卡等高，按自身内容定高，整体更紧凑 */
+.mp-home .mp-cols-2-1 { align-items: start; }
+.mp-home .mp-feed-scroll { height: 236px; min-height: 0; flex: 0 0 auto; }
+.mp-home .mp-feed-item { padding: 7px 0; font-size: 12px; }
