@@ -17,6 +17,14 @@
     {
       "matches": [
         "https://www.mcmod.cn/*",
+        "https://search.mcmod.cn/*"
+      ],
+      "run_at": "document_start",
+      "js": ["src/content/boot-splash.js"]
+    },
+    {
+      "matches": [
+        "https://www.mcmod.cn/*",
         "https://search.mcmod.cn/*",
         "https://bbs.mcmod.cn/*",
         "https://play.mcmod.cn/*"

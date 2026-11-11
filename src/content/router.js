@@ -171,7 +171,10 @@ MP.router = (function () {
   function boot() {
     MP.store.getSync().then((s) => {
       settings = s;
-      if (!s.enabled) return;
+      if (!s.enabled) {
+        try { MP.splash.done(); } catch (e) { /* ignore */ }
+        return;
+      }
       // 任一模块出错都不应影响其余模块与页面本身
       try { MP.theme.injectCore(); } catch (e) { console.warn('[MCMod+] 样式注入失败', e); }
       try { MP.theme.apply(s); } catch (e) { console.warn('[MCMod+] 主题应用失败', e); }
@@ -179,6 +182,10 @@ MP.router = (function () {
       try { if (MP.pages.home) MP.pages.home.mount(s); } catch (e) { console.warn('[MCMod+] 首页模块失败', e); }
       try { tryMountSearch(); } catch (e) { console.warn('[MCMod+] 搜索页模块失败', e); }
       try { tryMountPage(); } catch (e) { console.warn('[MCMod+] 页面重绘失败', e); }
+      try { MP.splash.done(); } catch (e) { /* ignore */ }
+    }).catch((e) => {
+      console.warn('[MCMod+] 设置读取失败', e);
+      try { MP.splash.done(); } catch (err) { /* ignore */ }
     });
 
     MP.store.onChange(applySettings);
