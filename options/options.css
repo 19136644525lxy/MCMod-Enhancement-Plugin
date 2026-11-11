@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --bg: #ffffff;
   --bg-2: #f6f8fa;
   --text: #1b1f24;
@@ -90,6 +90,7 @@ input[type="checkbox"] {
   accent-color: var(--accent);
   flex: none;
 }
+
 
 .seg {
   display: inline-flex;

@@ -1,0 +1,82 @@
+/* ---- 胶囊滑块开关 -------------------------------------------------------
+   参照 MARGIN 的质感：深色胶囊轨道带多层弧光，白色圆球上撒三颗灰点。
+   用原生 checkbox 做，保留语义与键盘可达性。
+   引用方式：<input type="checkbox" class="mp-toggle" /> */
+
+input[type="checkbox"].mp-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 62px;
+  height: 34px;
+  border-radius: 999px;
+  flex: none;
+  cursor: pointer;
+  border: 0;
+  outline: none;
+  background:
+    radial-gradient(130% 180% at 92% 50%, rgba(255, 255, 255, .16), transparent 42%),
+    radial-gradient(90% 140% at 60% 50%, rgba(255, 255, 255, .07), transparent 58%),
+    linear-gradient(100deg, #0a0a0c 0%, #232328 46%, #35353b 70%, #17171a 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, .65),
+    inset 0 -1px 0 rgba(255, 255, 255, .05),
+    0 1px 2px rgba(0, 0, 0, .18);
+  transition: background .34s cubic-bezier(.3, 1, .4, 1), box-shadow .34s;
+}
+
+input[type="checkbox"].mp-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 40% 52%, #c9ced3 0 30%, transparent 31%),
+    radial-gradient(circle at 76% 30%, #d9dde0 0 11%, transparent 12%),
+    radial-gradient(circle at 78% 74%, #d9dde0 0 8%, transparent 9%),
+    linear-gradient(160deg, #ffffff 0%, #f2f4f6 60%, #e6e9ec 100%);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, .38),
+    0 0 0 1px rgba(255, 255, 255, .4) inset;
+  transition: transform .38s cubic-bezier(.3, 1.35, .5, 1);
+}
+
+input[type="checkbox"].mp-toggle:checked::after {
+  transform: translateX(28px);
+}
+
+/* 未选中：轨道转浅，弧光减弱，球回到左侧 */
+input[type="checkbox"].mp-toggle:not(:checked) {
+  background:
+    radial-gradient(130% 180% at 92% 50%, rgba(255, 255, 255, .5), transparent 45%),
+    linear-gradient(100deg, #d7d5d0 0%, #e6e4df 46%, #efece6 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, .18),
+    0 1px 2px rgba(0, 0, 0, .08);
+}
+
+input[type="checkbox"].mp-toggle:focus-visible {
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, .5),
+    0 0 0 3px rgba(47, 111, 79, .35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  input[type="checkbox"].mp-toggle,
+  input[type="checkbox"].mp-toggle::after {
+    transition: none;
+  }
+}
+
+/* 深色主题下的未选中态：浅色轨道在深底上太亮，压成中性灰 */
+html[data-mp-theme="dark"] input[type="checkbox"].mp-toggle:not(:checked) {
+  background:
+    radial-gradient(130% 180% at 92% 50%, rgba(255, 255, 255, .1), transparent 45%),
+    linear-gradient(100deg, #3a3a3e 0%, #4a4a50 46%, #3f3f45 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, .5),
+    0 1px 2px rgba(0, 0, 0, .2);
+}
