@@ -315,26 +315,22 @@
   }
 
   function themeSwitch() {
-    return h('label', { class: 'mp-theme-switch', title: '深色 / 浅色' },
-      h('input', {
-        type: 'checkbox',
-        class: 'mp-toggle mp-toggle-sm',
-        checked: isDarkNow() ? 'checked' : null,
-        'aria-label': '切换深色主题',
-        onchange: function (e) {
-          var next = e.target.checked ? 'dark' : 'light';
-          try {
-            MP.theme.apply({ theme: next });
-            if (MP.store && MP.store.setSync) {
-              var p = MP.store.setSync({ theme: next });
-              if (p && p.catch) p.catch(function () {});
-            }
-          } catch (err) {
-            /* 主题切换失败不影响页面 */
+    return MP.ui.dayNight({
+      dark: isDarkNow(),
+      class: 'mp-theme-switch',
+      onChange: function (dark) {
+        try {
+          var next = dark ? 'dark' : 'light';
+          MP.theme.apply({ theme: next });
+          if (MP.store && MP.store.setSync) {
+            var p = MP.store.setSync({ theme: next });
+            if (p && p.catch) p.catch(function () {});
           }
+        } catch (err) {
+          /* 主题切换失败不影响页面 */
         }
-      })
-    );
+      }
+    });
   }
 
   function topbar(d) {
@@ -616,6 +612,7 @@
       });
 
       MP.theme.inject('styles/mp-toggle.css');
+      MP.theme.inject('styles/day-night.css');
       MP.theme.inject('styles/pages/home.css');
       document.body.classList.add('mp-home-mode');
 

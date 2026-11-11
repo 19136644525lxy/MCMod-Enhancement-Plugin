@@ -260,10 +260,8 @@ html[data-mp-theme="dark"] .mp-search { background: rgba(255, 255, 255, 0.06); }
   flex: none;
 }
 
-/* 顶栏里的深色 / 浅色滑块 */
+/* 顶栏里的日/夜开关（尺寸与样式在 styles/day-night.css） */
 .mp-theme-switch {
-  display: inline-flex;
-  align-items: center;
   flex: none;
   margin-left: auto;
   cursor: pointer;

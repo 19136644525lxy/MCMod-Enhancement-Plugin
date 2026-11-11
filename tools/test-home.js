@@ -10,6 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const SNAPSHOT = path.join(ROOT, 'output', 'www.mcmod.cn_home.html');
 const FILES = [
   'src/content/core/dom.js',
+  'src/content/render/components.js',
   'src/content/extract/home.js',
   'src/content/widgets/footprint.js',
   'src/content/render/pages/home.js',
