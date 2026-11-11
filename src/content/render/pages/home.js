@@ -337,7 +337,52 @@
       h('div', { class: 'mp-cols mp-cols-1-1' }, posts, topics),
       h('div', { class: 'mp-cols mp-cols-3' }, popular, versions, stars),
       h('div', { class: 'mp-cols mp-cols-1-1' }, tags, charts),
-      cats
+      cats,
+      footer(d)
+    );
+  }
+
+  // 页脚：原站底部是深色长条 + 图片友链墙，与毛玻璃页面不搭，这里整体重绘。
+  // 链接全部指回原站地址，不做任何改写。
+  function footer(d) {
+    var f = d.footer || {};
+    var cols = (f.cols || []).map(function (c) {
+      return h('div', { class: 'mp-foot-col' },
+        h('h3', null, c.title),
+        h('ul', null, c.items.map(function (it) {
+          return h('li', null, a(it.href, it.label));
+        }))
+      );
+    });
+
+    var friends = (f.friends || []).map(function (x) {
+      return h('a', {
+        class: 'mp-friend',
+        href: x.href || undefined,
+        target: '_blank',
+        rel: 'noopener',
+        title: x.title
+      }, h('img', { src: x.img, alt: x.title, loading: 'lazy' }));
+    });
+
+    return h('footer', { class: 'mp-footer' },
+      h('div', { class: 'mp-foot-main mp-glass' },
+        h('div', { class: 'mp-foot-brand' },
+          h('a', { class: 'mp-foot-mark-link', href: 'https://www.mcmod.cn/', target: '_blank', rel: 'noopener' },
+            h('span', { class: 'mp-foot-mark', style: brandMarkStyle() }, LOGO ? '' : 'MC'),
+            h('span', { class: 'mp-foot-name' }, 'MC百科')
+          ),
+          h('p', { class: 'mp-foot-slogan' }, 'Minecraft 中文 MOD 百科'),
+          h('p', { class: 'mp-foot-desc' }, '收集、整理、分享 Minecraft 模组的中文资料')
+        ),
+        h('div', { class: 'mp-foot-cols' }, cols)
+      ),
+      friends.length ? h('div', { class: 'mp-foot-friends' }, friends) : null,
+      h('div', { class: 'mp-foot-meta' },
+        f.copyright ? h('p', null, f.copyright) : null,
+        f.license ? h('p', { class: 'mp-foot-license' },
+          f.license.href ? a(f.license.href, f.license.text) : f.license.text) : null
+      )
     );
   }
 
@@ -421,6 +466,12 @@
       var host = h('div', { id: 'mp-home-host', class: 'mp-home-host' });
       host.appendChild(render(d));
 
+      // 原站页脚是独立的两块，跟着一起隐藏，避免增强视图下面再拖一条异色长条
+      ['.un_links', '.under'].forEach(function (sel) {
+        var el = document.querySelector(sel);
+        if (el) el.classList.add('mp-origin-hidden');
+      });
+
       if (anchor && anchor.parentNode) {
         anchor.parentNode.insertBefore(host, anchor);
         anchor.classList.add('mp-origin-hidden');
@@ -442,6 +493,10 @@
       if (host) host.remove();
       var main = document.querySelector('.center > .main');
       if (main) main.classList.remove('mp-origin-hidden');
+      ['.un_links', '.under'].forEach(function (sel) {
+        var el = document.querySelector(sel);
+        if (el) el.classList.remove('mp-origin-hidden');
+      });
       document.body.classList.remove('mp-home-mode');
       mounted = false;
     }

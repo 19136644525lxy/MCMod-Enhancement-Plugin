@@ -244,6 +244,55 @@ MP.extract.home = (function () {
       };
     });
 
+    out.footer = parseFooter(doc);
+    return out;
+  }
+
+  // 站内链接有的是 javascript:void(0) + onclick 跳转，这里统一取真实地址。
+  function linkHref(a) {
+    var h = attr(a, 'href');
+    if (h && !/^javascript:/i.test(h) && h !== '#') return abs(h);
+    var oc = attr(a, 'onclick');
+    var m = oc.match(/window\.open\(\s*['"]([^'"]+)['"]/i) || oc.match(/location(?:\.href)?\s*=\s*['"]([^'"]+)['"]/i);
+    return m ? abs(m[1]) : '';
+  }
+
+  function parseFooter(doc) {
+    var out = { cols: [], friends: [], copyright: '', icp: null, police: '', license: null };
+    var under = pick(doc, '.under');
+    if (!under) return out;
+
+    out.cols = map(all(under, '.un_info > ul.block > li'), function (li) {
+      var strong = pick(li, 'strong');
+      var items = map(all(li, 'p > a'), function (a) {
+        return { label: txt(a), href: linkHref(a) };
+      });
+      return { title: txt(strong), items: items };
+    }).filter(function (c) { return c.title && c.items.length; });
+
+    var links = pick(doc, '.un_links');
+    out.friends = map(all(links, 'ul.block > li > a'), function (a) {
+      return { title: attr(a, 'title') || txt(a), href: linkHref(a), img: imgOf(a) };
+    }).filter(function (f) { return f.title && f.img; });
+
+    var copyright = pick(under, '.copyright');
+    if (copyright) {
+      out.copyright = txt(copyright).replace(/\s*\[\s*响应时间.*$/,'').trim();
+      var icp = copyright.querySelector('a[href*="beian.miit.gov.cn"]');
+      if (icp) out.icp = { text: txt(icp), href: attr(icp, 'href') };
+      var police = out.copyright.match(/鄂公网安备\s*[\d]+号/);
+      out.police = police ? police[0] : '';
+    }
+
+    var copyleft = pick(under, '.copyleft');
+    if (copyleft) {
+      var lic = copyleft.querySelector('a');
+      out.license = {
+        text: txt(copyleft).replace(/^\[\s*|\s*\]$/g, ''),
+        href: lic ? linkHref(lic) : ''
+      };
+    }
+
     return out;
   }
 

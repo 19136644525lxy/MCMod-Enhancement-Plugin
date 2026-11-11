@@ -92,6 +92,17 @@ const mark = w.document.querySelector('.mp-brand-mark');
 ok('品牌图标用扩展内 logo', !!mark && /assets\/logo\.png/.test(mark.getAttribute('style') || ''),
   mark ? mark.getAttribute('style') : 'no mark');
 
+console.log('\n[3c] 页脚');
+const foot = w.document.querySelector('.mp-footer');
+ok('页脚存在', !!foot);
+ok('页脚 4 列', q('.mp-foot-col').length === 4, 'got ' + q('.mp-foot-col').length);
+ok('页脚链接可用', Array.from(q('.mp-foot-col a')).every((n) => /^(https?:|mailto:)/.test(n.href)),
+  q('.mp-foot-col a')[0] ? q('.mp-foot-col a')[0].href : 'none');
+ok('友链 ≥ 10', q('.mp-friend').length >= 10, 'got ' + q('.mp-friend').length);
+ok('版权文字', (w.document.querySelector('.mp-foot-meta') || {}).textContent.includes('mcmod.cn'));
+ok('原友链墙隐藏', w.document.querySelector('.un_links').classList.contains('mp-origin-hidden'));
+ok('原页脚隐藏', w.document.querySelector('.under').classList.contains('mp-origin-hidden'));
+
 console.log('\n[4] tab 切换');
 const tabs = q('.mp-tab');
 ok('三个 tab', tabs.length === 3, 'got ' + tabs.length);
@@ -102,6 +113,8 @@ console.log('\n[5] 卸载');
 w.MP.pages.home.unmount();
 ok('宿主已移除', !w.document.getElementById('mp-home-host'));
 ok('顶栏已移除', !w.document.getElementById('mp-home-topbar'));
+ok('原友链墙恢复', !w.document.querySelector('.un_links').classList.contains('mp-origin-hidden'));
+ok('原页脚恢复', !w.document.querySelector('.under').classList.contains('mp-origin-hidden'));
 ok('原顶栏恢复', !top.classList.contains('mp-origin-hidden'));
 ok('原首页恢复', !main.classList.contains('mp-origin-hidden'));
 ok('body 标记移除', !w.document.body.classList.contains('mp-home-mode'));
