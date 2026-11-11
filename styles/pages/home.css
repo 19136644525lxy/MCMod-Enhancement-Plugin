@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    首页 · 毛玻璃重绘（mp-home 作用域）
    设计：半透明玻璃卡 + 模糊背景 + 柔和阴影；
    浅色为暖白底，深色为暖黑底，两套都保证卡片可读。
@@ -1748,16 +1748,6 @@ html.mp-home-root {
   background-color: #f3f1ec;
 }
 
-/* 主题切换的 260ms 内关掉毛玻璃，避免 19 张卡片同时重算背景导致白闪 */
-html.mp-theme-fade .mp-glass,
-html.mp-theme-fade .mp-topbar,
-html.mp-theme-fade .mp-bannerbar,
-html.mp-theme-fade .mp-bannerbar > *,
-html.mp-theme-fade .mp-clock,
-html.mp-theme-fade .mp-search {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
 html.mp-home-root[data-mp-theme="dark"] {
   background-color: #14130f;
 }
@@ -1780,16 +1770,6 @@ html.mp-home-root[data-mp-theme="dark"] {
 }
 
 
-/* 主题切换遮罩：先盖住整屏再换主题，避免黑底翻白底时的一帧重绘瑕疵 */
-.mp-theme-veil {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-  will-change: opacity;
-}
 
 
 
@@ -1833,3 +1813,4 @@ html.mp-home-root .mp-float-bar {
     transition: none;
   }
 }
+
