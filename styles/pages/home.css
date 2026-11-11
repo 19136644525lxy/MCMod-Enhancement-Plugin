@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    首页 · 毛玻璃重绘（mp-home 作用域）
    设计：半透明玻璃卡 + 模糊背景 + 柔和阴影；
    浅色为暖白底，深色为暖黑底，两套都保证卡片可读。
@@ -16,34 +16,35 @@ body.mp-home-mode .center {
 }
 
 body.mp-home-mode {
-  background:
+  background-color: #f3f1ec;
+  background-image:
     radial-gradient(1200px 600px at 15% -10%, rgba(87, 185, 138, 0.16), transparent 60%),
     radial-gradient(900px 500px at 95% 5%, rgba(214, 168, 96, 0.14), transparent 55%),
-    radial-gradient(700px 600px at 50% 100%, rgba(120, 140, 200, 0.10), transparent 60%),
-    #f3f1ec;
+    radial-gradient(700px 600px at 50% 100%, rgba(120, 140, 200, 0.10), transparent 60%);
   /* 不要用 background-attachment: fixed —— 它和 backdrop-filter 在 Windows Chrome 上
      会互相抢合成层，滚动时出现整屏闪烁。光斑固定留在文档顶部即可。 */
   background-size: 100% 1600px;
   background-repeat: no-repeat;
+  transition: background-color 0.3s ease;
 }
 
 html[data-mp-theme="dark"] body.mp-home-mode {
-  background:
+  background-color: #14130f;
+  background-image:
     radial-gradient(1200px 600px at 15% -10%, rgba(87, 185, 138, 0.14), transparent 60%),
     radial-gradient(900px 500px at 95% 5%, rgba(196, 140, 60, 0.12), transparent 55%),
-    radial-gradient(700px 600px at 50% 100%, rgba(90, 110, 170, 0.14), transparent 60%),
-    #14130f;
+    radial-gradient(700px 600px at 50% 100%, rgba(90, 110, 170, 0.14), transparent 60%);
   background-size: 100% 1600px;
   background-repeat: no-repeat;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not([data-mp-theme="light"]) body.mp-home-mode {
-    background:
+    background-color: #14130f;
+    background-image:
       radial-gradient(1200px 600px at 15% -10%, rgba(87, 185, 138, 0.14), transparent 60%),
       radial-gradient(900px 500px at 95% 5%, rgba(196, 140, 60, 0.12), transparent 55%),
-      radial-gradient(700px 600px at 50% 100%, rgba(90, 110, 170, 0.14), transparent 60%),
-      #14130f;
+      radial-gradient(700px 600px at 50% 100%, rgba(90, 110, 170, 0.14), transparent 60%);
     background-size: 100% 1600px;
     background-repeat: no-repeat;
   }
@@ -1799,4 +1800,36 @@ html.mp-home-root[data-mp-theme="dark"] {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background: var(--glass-bg-strong);
+}
+
+/* 主题切换的过渡：所有会变色的面走同一个时长和曲线，
+   属性一换颜色自己渐变，不需要遮罩也不会闪。 */
+html.mp-home-root,
+html.mp-home-root body.mp-home-mode,
+html.mp-home-root .mp-glass,
+html.mp-home-root .mp-topbar,
+html.mp-home-root .mp-bannerbar,
+html.mp-home-root .mp-clock,
+html.mp-home-root .mp-search,
+html.mp-home-root .mp-panel,
+html.mp-home-root .mp-float-bar {
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.mp-home-root,
+  html.mp-home-root body.mp-home-mode,
+  html.mp-home-root .mp-glass,
+  html.mp-home-root .mp-topbar,
+  html.mp-home-root .mp-bannerbar,
+  html.mp-home-root .mp-clock,
+  html.mp-home-root .mp-search,
+  html.mp-home-root .mp-panel,
+  html.mp-home-root .mp-float-bar {
+    transition: none;
+  }
 }

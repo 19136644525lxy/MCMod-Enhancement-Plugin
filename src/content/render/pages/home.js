@@ -410,33 +410,13 @@
       onChange: function (dark) {
         try {
           var next = dark ? 'dark' : 'light';
-          var html = document.documentElement;
-
-          // 整页重绘在深→浅这一下最明显（黑底翻白底，一帧滞后就看得见）。
-          // 用一个目标色的全屏遮罩先盖住，等主题换完再揭开，视觉上就是一次平滑过渡，
-          // 底下的重绘瑕疵全被盖住。
-          var old = document.getElementById('mp-theme-veil');
-          if (old && old.parentNode) old.parentNode.removeChild(old);
-
-          var veil = document.createElement('div');
-          veil.id = 'mp-theme-veil';
-          veil.className = 'mp-theme-veil';
-          veil.style.background = dark ? '#14130f' : '#f3f1ec';
-          html.appendChild(veil);
-          void veil.offsetHeight;            // 先落一帧，opacity 过渡才会生效
-          veil.style.opacity = '1';
-
-          setTimeout(function () {
-            MP.theme.apply({ theme: next });
-            if (MP.store && MP.store.setSync) {
-              var p = MP.store.setSync({ theme: next });
-              if (p && p.catch) p.catch(function () {});
-            }
-            veil.style.opacity = '0';
-            setTimeout(function () {
-              if (veil.parentNode) veil.parentNode.removeChild(veil);
-            }, 240);
-          }, 150);
+          // 不再用全屏遮罩（深→浅看着像"先黑一下再亮"，很怪）。
+          // 改成让所有颜色走 CSS transition，主题属性一换，颜色自己平滑过渡。
+          MP.theme.apply({ theme: next });
+          if (MP.store && MP.store.setSync) {
+            var p = MP.store.setSync({ theme: next });
+            if (p && p.catch) p.catch(function () {});
+          }
         } catch (err) {
           /* 主题切换失败不影响页面 */
         }
