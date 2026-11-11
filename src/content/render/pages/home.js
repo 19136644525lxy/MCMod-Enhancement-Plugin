@@ -61,13 +61,13 @@
   //   嘴：顶 4×1 于 (6,7)，主体 6×3 于 (5,8)，两条腿 1×2 于 (5,11) 与 (10,11)
   function creeperFace() {
     return h('svg', { viewBox: '0 0 32 32', class: 'mp-creeper-svg', 'aria-hidden': 'true' },
-      h('rect', { x: 0, y: 0, width: 32, height: 32, rx: 4, fill: '#6aa84f' }),
-      h('rect', { x: 6, y: 6, width: 6, height: 6, fill: '#161616' }),
-      h('rect', { x: 20, y: 6, width: 6, height: 6, fill: '#161616' }),
-      h('rect', { x: 12, y: 14, width: 8, height: 2, fill: '#161616' }),
-      h('rect', { x: 10, y: 16, width: 12, height: 6, fill: '#161616' }),
-      h('rect', { x: 10, y: 22, width: 2, height: 4, fill: '#161616' }),
-      h('rect', { x: 20, y: 22, width: 2, height: 4, fill: '#161616' })
+      h('rect', { x: 0, y: 0, width: 32, height: 32, rx: 2, fill: '#5cae3c' }),
+      h('rect', { x: 6, y: 6, width: 6, height: 6, fill: '#101010' }),
+      h('rect', { x: 20, y: 6, width: 6, height: 6, fill: '#101010' }),
+      h('rect', { x: 12, y: 14, width: 8, height: 2, fill: '#101010' }),
+      h('rect', { x: 10, y: 16, width: 12, height: 6, fill: '#101010' }),
+      h('rect', { x: 10, y: 22, width: 2, height: 4, fill: '#101010' }),
+      h('rect', { x: 20, y: 22, width: 2, height: 4, fill: '#101010' })
     );
   }
 
