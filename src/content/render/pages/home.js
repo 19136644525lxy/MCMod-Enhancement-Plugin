@@ -342,6 +342,37 @@
     );
   }
 
+  // 我的足迹：只有拿到用户 UID 才渲染，未登录直接跳过。
+  function uidOf(d) {
+    var href = d && d.user && d.user.href;
+    if (!href) return '';
+    var m = /\/(\d+)\/?$/.exec(String(href));
+    return m ? m[1] : '';
+  }
+
+  function footprintCard(d) {
+    var uid = uidOf(d);
+    if (!uid) return null;
+
+    return h('section', { class: 'mp-glass mp-footprint', id: 'mp-fp' },
+      h('div', { class: 'mp-fp-head' },
+        h('div', { class: 'mp-fp-title' },
+          h('h2', null, '我的足迹'),
+          h('p', { class: 'mp-fp-note' }, '正在读取编辑记录…')
+        ),
+        a('https://www.mcmod.cn/history.html?userid=' + uid, '全部记录 →', 'mp-fp-all')
+      ),
+      h('div', { class: 'mp-fp-body' },
+        h('div', { class: 'mp-fp-stats' }),
+        h('div', { class: 'mp-fp-chart' },
+          h('div', { class: 'mp-fp-months' }),
+          h('div', { class: 'mp-fp-heat' })
+        ),
+        h('ul', { class: 'mp-fp-recent' })
+      )
+    );
+  }
+
   function render(d) {
     var tabItems = [
       { key: 'random', label: '随便看看' },
@@ -411,8 +442,11 @@
       categoryGrid(d.categories)
     );
 
+    var fp = footprintCard(d);
+
     return h('div', { id: 'mp-home', class: 'mp-home' },
       hero,
+      fp,
       h('div', { class: 'mp-cols mp-cols-2-1' }, mods, feed),
       h('div', { class: 'mp-cols mp-cols-1-1' }, posts, topics),
       h('div', { class: 'mp-cols mp-cols-3' }, popular, versions, stars),
@@ -573,6 +607,13 @@
       }
 
       startRotation(d, host);
+
+      // 足迹卡异步填充（只发一次请求，6 小时本地缓存）
+      var fpHost = document.getElementById('mp-fp');
+      if (fpHost && MP.footprint) {
+        try { MP.footprint.load(fpHost, uidOf(d)); } catch (e) { console.warn('[MCMod+] 足迹加载失败', e); }
+      }
+
       mounted = true;
       return true;
     },

@@ -1,4 +1,4 @@
-{
+﻿{
   "manifest_version": 3,
   "name": "MC百科增强 · MCMod Plus",
   "version": "0.2.0",
@@ -46,6 +46,7 @@
         "src/content/extract/home.js",
         "src/content/render/page-shell.js",
         "src/content/render/pages/search.js",
+        "src/content/widgets/footprint.js",
         "src/content/render/pages/home.js",
         "src/content/render/pages/item.js",
         "src/content/render/pages/klass.js",

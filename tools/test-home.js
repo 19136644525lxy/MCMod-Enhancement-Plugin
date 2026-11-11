@@ -11,6 +11,7 @@ const SNAPSHOT = path.join(ROOT, 'output', 'www.mcmod.cn_home.html');
 const FILES = [
   'src/content/core/dom.js',
   'src/content/extract/home.js',
+  'src/content/widgets/footprint.js',
   'src/content/render/pages/home.js',
 ];
 
@@ -20,7 +21,10 @@ const w = dom.window;
 
 w.MP = {};
 w.MP.theme = { inject() {} };
-w.chrome = { runtime: { getURL: (p) => 'chrome-extension://test/' + p } };
+w.chrome = {
+  runtime: { getURL: (p) => 'chrome-extension://test/' + p, sendMessage() {} },
+  storage: { local: { get(k, cb) { cb && cb({}); }, set() {} } }
+};
 for (const f of FILES) {
   w.eval(fs.readFileSync(path.join(ROOT, f), 'utf8'));
 }
@@ -111,6 +115,16 @@ ok('友链 ≥ 10', q('.mp-friend').length >= 10, 'got ' + q('.mp-friend').lengt
 ok('版权文字', (w.document.querySelector('.mp-foot-meta') || {}).textContent.includes('mcmod.cn'));
 ok('原友链墙隐藏', w.document.querySelector('.un_links').classList.contains('mp-origin-hidden'));
 ok('原页脚隐藏', w.document.querySelector('.under').classList.contains('mp-origin-hidden'));
+
+console.log('\n[3d] 足迹卡');
+const fp = w.document.getElementById('mp-fp');
+ok('足迹卡存在', !!fp);
+ok('热力图容器', q('.mp-fp-heat').length === 1);
+ok('统计容器', q('.mp-fp-stats').length === 1);
+const fpAll = w.document.querySelector('.mp-fp-all');
+ok('全部记录链接带 userid', !!fpAll && /userid=\d+/.test(fpAll.getAttribute('href')),
+  fpAll ? fpAll.getAttribute('href') : 'none');
+ok('未登录时的快照也能识别 uid', w.MP.footprint && typeof w.MP.footprint.load === 'function');
 
 console.log('\n[4] tab 切换');
 const tabs = q('.mp-tab');

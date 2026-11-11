@@ -14,6 +14,7 @@
 const ALLOWED = [
   /^https:\/\/search\.mcmod\.cn\/s\?/i,
   /^https:\/\/www\.mcmod\.cn\/modlist\.html\?/i,
+  /^https:\/\/www\.mcmod\.cn\/history\.html\?[^#]*\buserid=\d+/i,
   /^https:\/\/www\.mcmod\.cn\/(item|class|post)\/\d+\.html$/i
 ];
 
