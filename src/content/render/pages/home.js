@@ -56,14 +56,15 @@
   // ---- banner 底部的导航条 + 时钟（原站是两条绝对定位的浮层）----
   var clockTimer = null;
 
+  // 苦力怕脸是 8×8 像素图，按 4 倍放大到 32 网格：
+  //   眼睛 2×2 于 (1,1) 与 (5,1)；嘴是 4×4 方块于 (2,4)，中间挖掉 2×1 的缺口。
   function creeperFace() {
     return h('svg', { viewBox: '0 0 32 32', class: 'mp-creeper-svg', 'aria-hidden': 'true' },
       h('rect', { x: 0, y: 0, width: 32, height: 32, rx: 7, fill: '#6aa84f' }),
-      h('rect', { x: 7, y: 8, width: 7, height: 7, fill: '#161616' }),
-      h('rect', { x: 18, y: 8, width: 7, height: 7, fill: '#161616' }),
-      h('rect', { x: 11, y: 17, width: 4, height: 9, fill: '#161616' }),
-      h('rect', { x: 17, y: 17, width: 4, height: 9, fill: '#161616' }),
-      h('rect', { x: 14, y: 21, width: 4, height: 4, fill: '#161616' })
+      h('rect', { x: 4, y: 4, width: 8, height: 8, fill: '#161616' }),
+      h('rect', { x: 20, y: 4, width: 8, height: 8, fill: '#161616' }),
+      h('rect', { x: 8, y: 16, width: 16, height: 16, fill: '#161616' }),
+      h('rect', { x: 12, y: 24, width: 8, height: 4, fill: '#6aa84f' })
     );
   }
 
