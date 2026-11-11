@@ -410,7 +410,12 @@
       onChange: function (dark) {
         try {
           var next = dark ? 'dark' : 'light';
+          var html = document.documentElement;
+          // 切换瞬间先关掉所有毛玻璃：Chrome 切换主题时要重新采样这些卡片的背景，
+          // 19 张卡片同时重算会有肉眼可见的白闪。停 260ms 再恢复。
+          html.classList.add('mp-theme-fade');
           MP.theme.apply({ theme: next });
+          setTimeout(function () { html.classList.remove('mp-theme-fade'); }, 260);
           if (MP.store && MP.store.setSync) {
             var p = MP.store.setSync({ theme: next });
             if (p && p.catch) p.catch(function () {});
