@@ -48,6 +48,23 @@ input[type="checkbox"].mp-toggle:checked::after {
   transform: translateX(28px);
 }
 
+/* 大号：弹窗顶部的总开关 */
+input[type="checkbox"].mp-toggle.mp-toggle-lg {
+  width: 78px;
+  height: 42px;
+}
+
+input[type="checkbox"].mp-toggle.mp-toggle-lg::after {
+  top: 3px;
+  left: 3px;
+  width: 36px;
+  height: 36px;
+}
+
+input[type="checkbox"].mp-toggle.mp-toggle-lg:checked::after {
+  transform: translateX(36px);
+}
+
 /* 未选中：轨道转浅，弧光减弱，球回到左侧 */
 input[type="checkbox"].mp-toggle:not(:checked) {
   background:
