@@ -116,7 +116,9 @@ for (const [key, file, url, cssKind] of CASES) {
   doc.body.appendChild(note);
 
   const outFile = path.join(OUT, 'preview-' + key + '.html');
-  fs.writeFileSync(outFile, '<!DOCTYPE html>\n' + doc.documentElement.outerHTML, 'utf8');
+  const html = ('<!DOCTYPE html>\n' + doc.documentElement.outerHTML).replace(/chrome-extension:\/\/test\//g, '../');
+  fs.writeFileSync(outFile, html, 'utf8');
   console.log('written ' + outFile + ' (' + fs.statSync(outFile).size + ' B)');
   dom.window.close();
 }
+
