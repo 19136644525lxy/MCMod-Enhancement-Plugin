@@ -20,6 +20,7 @@ const w = dom.window;
 
 w.MP = {};
 w.MP.theme = { inject() {} };
+w.chrome = { runtime: { getURL: (p) => 'chrome-extension://test/' + p } };
 for (const f of FILES) {
   w.eval(fs.readFileSync(path.join(ROOT, f), 'utf8'));
 }
@@ -87,6 +88,9 @@ ok('导航链接指向原站', Array.from(q('.mp-nav-item')).every((n) => /mcmod
 ok('搜索表单', q('.mp-search input[name="key"]').length === 1);
 ok('用户区', q('.mp-user-link').length === 1);
 ok('头像存在', q('.mp-user-link img').length === 1);
+const mark = w.document.querySelector('.mp-brand-mark');
+ok('品牌图标用扩展内 logo', !!mark && /assets\/logo\.png/.test(mark.getAttribute('style') || ''),
+  mark ? mark.getAttribute('style') : 'no mark');
 
 console.log('\n[4] tab 切换');
 const tabs = q('.mp-tab');

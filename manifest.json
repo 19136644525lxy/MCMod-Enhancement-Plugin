@@ -58,7 +58,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["styles/*", "styles/pages/*"],
+      "resources": ["styles/*", "styles/pages/*", "assets/*"],
       "matches": ["https://*.mcmod.cn/*"]
     }
   ]

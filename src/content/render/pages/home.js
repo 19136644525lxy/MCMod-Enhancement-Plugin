@@ -10,6 +10,24 @@
     return MP.dom.h.apply(null, [tag, attrs].concat(Array.prototype.slice.call(arguments, 2)));
   }
 
+  // 原版 MC百科 logo（扩展内置副本，避免每次页面加载再向站点取图）。
+  var LOGO = (function () {
+    try {
+      return (window.chrome && chrome.runtime && chrome.runtime.getURL)
+        ? chrome.runtime.getURL('assets/logo.png')
+        : '';
+    } catch (e) {
+      return '';
+    }
+  })();
+
+  // 只截取原图左侧 278×278 的图标块：容器 36px 时整图放大到 36*800/278 ≈ 104px。
+  function brandMarkStyle() {
+    if (!LOGO) return '';
+    return 'background-image:url("' + LOGO + '");background-size:104px 36px;' +
+      'background-position:left center;background-repeat:no-repeat;background-color:transparent;';
+  }
+
   function txt(s) { return s == null ? '' : String(s); }
 
   function a(href, label, cls, extra) {
@@ -226,7 +244,7 @@
     return h('header', { class: 'mp-topbar', id: 'mp-home-topbar' },
       h('div', { class: 'mp-topbar-inner' },
         a('https://www.mcmod.cn/', [
-          h('span', { class: 'mp-brand-mark' }, 'MC'),
+          h('span', { class: 'mp-brand-mark', style: brandMarkStyle() }, LOGO ? '' : 'MC'),
           h('span', { class: 'mp-brand-name' }, '百科')
         ], 'mp-brand'),
         h('nav', { class: 'mp-nav' }, navItems),

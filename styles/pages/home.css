@@ -154,16 +154,18 @@ html[data-mp-theme="dark"] .mp-topbar {
 }
 
 .mp-brand-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   display: grid;
   place-items: center;
+  /* 原版 logo 以背景图注入；没有图时回退为绿色方块 */
   background: #2f6f4f;
   color: #fff;
   font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.02em;
+  flex: none;
 }
 
 .mp-brand-name {

@@ -2,6 +2,9 @@
  * 启动过渡层：document_start 注入，先盖住页面，等增强视图挂载完再淡出。
  * 目的：页面加载与重绘期间给一个明确的「正在处理」信号，减少反复刷新。
  * 独立于其它模块，不依赖任何外部 CSS，避免样式未到位时闪烁。
+ *
+ * 视觉：原版 MC百科 logo（assets/logo.png 裁出图标）+ 逐字上浮的名称 +
+ * conic-gradient 光环 + 细进度条；深浅色跟随系统。
  */
 (function () {
   'use strict';
@@ -20,27 +23,61 @@
   var timer = null;
   var host = null;
 
+  function logoUrl() {
+    try {
+      return (window.chrome && chrome.runtime && chrome.runtime.getURL)
+        ? chrome.runtime.getURL('assets/logo.png')
+        : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  var LOGO = logoUrl();
+  // 原图 800×278，左侧图标是 278×278 的方块；容器 h 高时整图缩放为 h*800/278 宽。
+  var ICON = 56;
+  var ICON_BG = LOGO
+    ? 'background-image:url("' + LOGO + '");background-size:' + Math.round((ICON * 800) / 278) + 'px ' + ICON + 'px;' +
+      'background-position:left center;background-repeat:no-repeat;'
+    : 'background:linear-gradient(135deg,#8bc34a 0%,#63b3d8 100%);';
+
   var CSS = [
-    '#mp-splash{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;',
-    'background:radial-gradient(900px 500px at 20% 0%,rgba(87,185,138,.16),transparent 60%),',
-    'radial-gradient(800px 500px at 90% 10%,rgba(214,168,96,.14),transparent 55%),#f3f1ec;',
-    'opacity:1;transition:opacity .45s ease,visibility .45s ease;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}',
-    '#mp-splash.mp-splash-dark{background:radial-gradient(900px 500px at 20% 0%,rgba(87,185,138,.14),transparent 60%),',
-    'radial-gradient(800px 500px at 90% 10%,rgba(196,140,60,.12),transparent 55%),#14130f}',
-    '#mp-splash.mp-splash-out{opacity:0;visibility:hidden}',
-    '.mp-splash-box{display:flex;flex-direction:column;align-items:center;gap:18px}',
-    '.mp-splash-mark{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;',
-    'background:#2f6f4f;color:#fff;font-size:22px;font-weight:700;letter-spacing:.02em;',
-    'box-shadow:0 12px 30px rgba(47,111,79,.28);animation:mp-splash-pulse 1.6s ease-in-out infinite}',
-    '.mp-splash-dark .mp-splash-mark{background:#57b98a;color:#12211a;box-shadow:0 12px 30px rgba(87,185,138,.25)}',
-    '.mp-splash-text{font-size:13px;letter-spacing:.08em;color:#8b8478}',
-    '.mp-splash-dark .mp-splash-text{color:#8d867a}',
-    '.mp-splash-bar{width:168px;height:3px;border-radius:99px;overflow:hidden;background:rgba(120,110,100,.18)}',
-    '.mp-splash-bar i{display:block;width:40%;height:100%;border-radius:99px;background:#2f6f4f;animation:mp-splash-slide 1.15s cubic-bezier(.4,0,.2,1) infinite}',
-    '.mp-splash-dark .mp-splash-bar i{background:#57b98a}',
-    '@keyframes mp-splash-pulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.03)}}',
-    '@keyframes mp-splash-slide{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}',
-    '@media (prefers-reduced-motion:reduce){#mp-splash,.mp-splash-mark,.mp-splash-bar i{animation:none!important;transition:none!important}}'
+    '#mp-splash{--s-bg:#f3f1ec;--s-ink:#1d1b18;--s-sub:#8b8478;--s-accent:#2f6f4f;--s-bar:rgba(120,110,100,.16);',
+    'position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;',
+    'background:radial-gradient(900px 500px at 20% 0%,rgba(139,195,74,.16),transparent 60%),',
+    'radial-gradient(800px 500px at 90% 10%,rgba(99,179,216,.16),transparent 55%),var(--s-bg);',
+    'opacity:1;transition:opacity .42s ease,transform .42s ease;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}',
+    '#mp-splash.mp-splash-dark{--s-bg:#14130f;--s-ink:#f2efe9;--s-sub:#8d867a;--s-accent:#57b98a;--s-bar:rgba(255,255,255,.12)}',
+    '@media (prefers-color-scheme:dark){#mp-splash{--s-bg:#14130f;--s-ink:#f2efe9;--s-sub:#8d867a;--s-accent:#57b98a;--s-bar:rgba(255,255,255,.12)}}',
+    '#mp-splash.mp-splash-out{opacity:0;transform:scale(1.03);pointer-events:none}',
+
+    '.mp-splash-glow{position:absolute;width:560px;height:560px;border-radius:50%;opacity:.7;',
+    'background:conic-gradient(from 0deg,rgba(139,195,74,.30),rgba(99,179,216,.18),rgba(214,168,96,.22),rgba(139,195,74,.30));',
+    'filter:blur(56px);animation:mp-splash-spin 9s linear infinite}',
+
+    '.mp-splash-box{position:relative;display:flex;flex-direction:column;align-items:center;gap:20px;z-index:1}',
+    '.mp-splash-logo{display:flex;align-items:center;gap:13px;animation:mp-splash-rise .7s cubic-bezier(.16,1,.3,1) both}',
+    '.mp-splash-icon{position:relative;width:' + ICON + 'px;height:' + ICON + 'px;flex:0 0 auto;display:grid;place-items:center;' + ICON_BG + '}',
+    '.mp-splash-icon b{font-size:22px;font-weight:800;color:#fff;letter-spacing:.01em}',
+    '.mp-splash-icon::after{content:"";position:absolute;inset:-11px;border-radius:50%;padding:1.5px;',
+    'background:conic-gradient(from 0deg,transparent 0deg,var(--s-accent) 90deg,transparent 200deg,transparent 360deg);',
+    '-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);',
+    '-webkit-mask-composite:xor;mask-composite:exclude;animation:mp-splash-spin 2.6s linear infinite}',
+    '.mp-splash-name{font-size:30px;font-weight:700;letter-spacing:.02em;color:var(--s-ink);line-height:1}',
+    '.mp-splash-name i{display:inline-block;font-style:normal;animation:mp-splash-char .58s cubic-bezier(.16,1,.3,1) both}',
+    '.mp-splash-name i:nth-child(2){animation-delay:.07s}',
+    '.mp-splash-tag{font-size:12.5px;letter-spacing:.18em;color:var(--s-sub);animation:mp-splash-fade .8s .15s ease both}',
+    '.mp-splash-bar{width:172px;height:2px;border-radius:99px;overflow:hidden;background:var(--s-bar);animation:mp-splash-fade .8s .2s ease both}',
+    '.mp-splash-bar i{display:block;width:100%;height:100%;border-radius:99px;transform-origin:left center;',
+    'background:linear-gradient(90deg,transparent,var(--s-accent),transparent);animation:mp-splash-slide 1.35s cubic-bezier(.4,0,.2,1) infinite}',
+
+    '@keyframes mp-splash-spin{to{transform:rotate(360deg)}}',
+    '@keyframes mp-splash-rise{from{opacity:0;transform:translateY(10px) scale(.92)}to{opacity:1;transform:none}}',
+    '@keyframes mp-splash-char{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}',
+    '@keyframes mp-splash-fade{from{opacity:0}to{opacity:1}}',
+    '@keyframes mp-splash-slide{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}',
+
+    '@media (prefers-reduced-motion:reduce){#mp-splash,.mp-splash-glow,.mp-splash-logo,.mp-splash-name i,.mp-splash-tag,.mp-splash-bar,.mp-splash-bar i,.mp-splash-icon::after{animation:none!important;transition:none!important}}'
   ].join('');
 
   function dark() {
@@ -59,11 +96,14 @@
     var node = document.createElement('div');
     node.id = HOST_ID;
     if (dark()) node.className = 'mp-splash-dark';
+
+    var icon = LOGO ? '<span class="mp-splash-icon"></span>' : '<span class="mp-splash-icon"><b>MC</b></span>';
     node.innerHTML =
+      '<div class="mp-splash-glow"></div>' +
       '<div class="mp-splash-box">' +
-      '<div class="mp-splash-mark">MC</div>' +
-      '<div class="mp-splash-text">正在准备增强视图</div>' +
-      '<div class="mp-splash-bar"><i></i></div>' +
+        '<div class="mp-splash-logo">' + icon + '<span class="mp-splash-name"><i>百</i><i>科</i></span></div>' +
+        '<div class="mp-splash-tag">正在准备增强视图</div>' +
+        '<div class="mp-splash-bar"><i></i></div>' +
       '</div>';
 
     var root = document.head || document.documentElement;
@@ -85,7 +125,7 @@
       if (el && el.parentNode) el.parentNode.removeChild(el);
       var s = document.getElementById('mp-splash-style');
       if (s && s.parentNode) s.parentNode.removeChild(s);
-    }, 480);
+    }, 460);
   }
 
   function show() {

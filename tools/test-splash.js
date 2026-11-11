@@ -15,6 +15,7 @@ function makeWindow(url) {
   });
   dom.window.chrome = {
     storage: { sync: { get: (defaults, cb) => cb(Object.assign({ enabled: true }, defaults)) } },
+    runtime: { getURL: (p) => 'chrome-extension://test/' + p },
   };
   return dom.window;
 }
@@ -34,7 +35,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   w.eval(SRC);
   ok('注入遮罩', !!w.document.getElementById('mp-splash'));
   ok('注入样式', !!w.document.getElementById('mp-splash-style'));
-  ok('含标记文字', w.document.body.textContent.includes('MC'));
+  ok('含名称文字', w.document.body.textContent.includes('百科'));
+  ok('使用扩展内 logo', w.document.getElementById('mp-splash-style').textContent.includes('assets/logo.png'));
+  ok('图标元素存在', !!w.document.querySelector('.mp-splash-icon'));
+  ok('光环存在', !!w.document.querySelector('.mp-splash-glow'));
   ok('暴露 MP.splash', typeof w.MP.splash.done === 'function');
   w.MP.splash.done();
   await sleep(600);
