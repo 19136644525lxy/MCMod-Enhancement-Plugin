@@ -12,11 +12,12 @@ MC百科（mcmod.cn）全站增强浏览器扩展。目标是把 MC百科 的浏
 - **模组页重绘**：模组介绍富文本、状态徽章、分类、基本信息、标签、相关链接、互动数据、评分、更新日志、管理/编辑/贡献者。
 - **整合包检索页重绘**：保留原生筛选条，卡片列表与分页按自有网格渲染。
 - **分类页重绘**：保留原生「模组元素列表」，模组卡列表 + 日/周/月榜 + 分页重绘。
+- **首页重绘**：毛玻璃卡片风格，全部区块自绘（模组卡三 tab、编辑动态、教程、社群动态、最受欢迎、版本检索、贡献榜、热门标签、评比排行、九大分类），原首页整块隐藏，可一键回滚。
 - **设计系统**：tokens.css + base.css + pages.css，浅色 / 深色 / 跟随系统，紧凑模式。
 - **调试面板**：`Ctrl + Shift + D` 查看抽取结果、当前接管状态、网络请求统计与设置，可导出当前页面 HTML 快照。
 - **设置页 / 弹窗**：总开关、主题、面板、重绘、紧凑五项开关，`chrome.storage.sync` 同步。
 
-> 首页布局增强（M2 第一版）因与站点原有 float 布局冲突，已暂时停用（`home.js` 的 `mount` 直接返回 false），待用抓到的原始 CSS 重新设计后再开。
+> 结构重绘（物品 / 模组 / 整合包 / 分类四页）仍处于实验状态，默认关闭，可在设置页「实验性」中打开。首页重绘默认开启。
 
 ## 安装（开发态）
 
@@ -30,7 +31,7 @@ MC百科（mcmod.cn）全站增强浏览器扩展。目标是把 MC百科 的浏
 ## 目录结构
 
 ```
-manifest.json                 MV3 清单（21 个内容脚本按序注入）
+manifest.json                 MV3 清单（22 个内容脚本按序注入）
 src/bg.js                     service worker：跨子域抓取代理 + 缓存 + 限流
 src/content/
   core/dom.js                 h() 渲染、文本清理、safeHtml、关键词高亮
@@ -44,10 +45,11 @@ src/content/
   extract/klass.js            模组页 DOM → JSON
   extract/modpack.js          整合包检索页 DOM → JSON
   extract/category.js         分类页 DOM → JSON
+  extract/home.js             首页 DOM → JSON
   render/components.js        chip / button / card / skeleton / empty
   render/page-shell.js        页面外壳：标题区 + 双栏 + 增强/原始切换
   render/pages/search.js      搜索页重绘
-  render/pages/home.js        首页布局增强（当前停用）
+  render/pages/home.js        首页毛玻璃重绘
   render/pages/item.js        物品页重绘
   render/pages/klass.js       模组页重绘
   render/pages/modpack.js     整合包检索页重绘
@@ -57,7 +59,7 @@ src/content/
 styles/tokens.css             设计令牌
 styles/base.css               组件样式
 styles/pages/pages.css        结构重绘页面样式
-styles/pages/home.css         首页布局样式（当前停用）
+styles/pages/home.css         首页毛玻璃样式
 popup/ options/               弹窗与设置页
 docs/                         方案、设计分析、WAF 事件记录
 ```
@@ -101,3 +103,4 @@ docs/                         方案、设计分析、WAF 事件记录
 ## 许可
 
 暂未确定，等作者决定后补充。
+

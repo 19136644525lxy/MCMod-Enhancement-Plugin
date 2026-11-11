@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 生成可双击打开的离线预览：真实快照 + 插件重绘 + 内联样式。
  * 运行：$env:NODE_PATH="$env:TEMP\mp-test\node_modules"; node tools/make-preview.js
  */
@@ -24,32 +24,41 @@ const SCRIPTS = [
   'src/content/extract/klass.js',
   'src/content/extract/modpack.js',
   'src/content/extract/category.js',
+  'src/content/extract/home.js',
   'src/content/render/page-shell.js',
   'src/content/render/pages/item.js',
   'src/content/render/pages/klass.js',
   'src/content/render/pages/modpack.js',
   'src/content/render/pages/category.js',
+  'src/content/render/pages/home.js',
 ];
 
 const CASES = [
-  ['item', 'www.mcmod.cn_item_462367.html.html', 'https://www.mcmod.cn/item/462367.html'],
-  ['klass', 'www.mcmod.cn_class_17140.html.html', 'https://www.mcmod.cn/class/17140.html'],
-  ['modpack', 'www.mcmod.cn_modpack.html.html', 'https://www.mcmod.cn/modpack.html'],
-  ['category', 'www.mcmod.cn_class_category_1-1.html.html', 'https://www.mcmod.cn/class/category/1-1.html'],
+  ['home', 'www.mcmod.cn_home.html', 'https://www.mcmod.cn/', 'home'],
+  ['item', 'www.mcmod.cn_item_462367.html.html', 'https://www.mcmod.cn/item/462367.html', 'pages'],
+  ['klass', 'www.mcmod.cn_class_17140.html.html', 'https://www.mcmod.cn/class/17140.html', 'pages'],
+  ['modpack', 'www.mcmod.cn_modpack.html.html', 'https://www.mcmod.cn/modpack.html', 'pages'],
+  ['category', 'www.mcmod.cn_class_category_1-1.html.html', 'https://www.mcmod.cn/class/category/1-1.html', 'pages'],
 ];
 
 function readCss(rel) {
   return fs.readFileSync(path.join(ROOT, rel), 'utf8');
 }
 
-const CSS_BLOCK = [
-  readCss('styles/tokens.css'),
-  readCss('styles/base.css'),
-  readCss('styles/pages/pages.css'),
-].join('\n\n');
+function cssBlock(kind) {
+  const base = [readCss('styles/tokens.css'), readCss('styles/base.css')];
+  if (kind === 'home') base.push(readCss('styles/pages/home.css'));
+  else base.push(readCss('styles/pages/pages.css'));
+  return base.join('\n\n');
+}
 
-for (const [key, file, url] of CASES) {
-  const dom = new JSDOM(fs.readFileSync(path.join(OUT, file), 'utf8'), {
+for (const [key, file, url, cssKind] of CASES) {
+  const src = path.join(OUT, file);
+  if (!fs.existsSync(src)) {
+    console.log('skip ' + key + ' (missing ' + file + ')');
+    continue;
+  }
+  const dom = new JSDOM(fs.readFileSync(src, 'utf8'), {
     url, runScripts: 'outside-only', pretendToBeVisual: true,
   });
   dom.window.chrome = {
@@ -74,7 +83,7 @@ for (const [key, file, url] of CASES) {
 
   // 3. 注入我们的样式（内联，确保离线可见）
   const style = doc.createElement('style');
-  style.textContent = CSS_BLOCK;
+  style.textContent = cssBlock(cssKind);
   doc.head.appendChild(style);
 
   // 4. 去掉插件注入的 <link>（已内联）
@@ -90,4 +99,3 @@ for (const [key, file, url] of CASES) {
   fs.writeFileSync(outFile, '<!DOCTYPE html>\n' + doc.documentElement.outerHTML, 'utf8');
   console.log('written ' + outFile + ' (' + fs.statSync(outFile).size + ' B)');
 }
-

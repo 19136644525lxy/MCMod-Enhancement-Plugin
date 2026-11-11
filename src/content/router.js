@@ -72,6 +72,10 @@ MP.router = (function () {
     tryMountPage();
   }
 
+  function homeActive() {
+    return !!(document.getElementById('mp-home-host') && document.body.classList.contains('mp-home-mode'));
+  }
+
   /* ---------------- 调试面板 ---------------- */
 
   function exportSnapshot() {
@@ -117,7 +121,7 @@ MP.router = (function () {
       debugRow('设置', JSON.stringify(settings)),
       debugRow('样式', document.querySelectorAll('link[data-mp-style]').length + ' 个'),
       debugRow('结构重绘', pageKey ? pageKey + ' 页已接管' : '此页未接管'),
-      debugRow('首页排版', '已停用（待重新设计）'),
+      debugRow('首页排版', homeActive() ? '已重绘（毛玻璃）' : '未接管'),
       netRow,
       data ? debugRow('搜索结果', data.ok ? `${data.count} 条` : '抽取失败：' + data.error) : null,
       data && data.ok
@@ -153,6 +157,7 @@ MP.router = (function () {
     MP.theme.apply(settings);
     if (!settings.enabled) {
       document.querySelectorAll('link[data-mp-style]').forEach((l) => l.remove());
+      try { if (MP.pages.home && MP.pages.home.unmount) MP.pages.home.unmount(); } catch (e) { /* ignore */ }
       try { if (MP.shell) MP.shell.restore(); } catch (e) { /* ignore */ }
     } else {
       MP.theme.injectCore();

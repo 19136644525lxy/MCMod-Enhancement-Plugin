@@ -35,6 +35,7 @@
         "src/content/extract/klass.js",
         "src/content/extract/modpack.js",
         "src/content/extract/category.js",
+        "src/content/extract/home.js",
         "src/content/render/page-shell.js",
         "src/content/render/pages/search.js",
         "src/content/render/pages/home.js",
