@@ -97,13 +97,33 @@
     );
   }
 
+  // 原站时间组件左边有个 16×16 的像素小钟（images/banner/time/{h}.png），
+  // 这里用同一张素材，保持像素锐利。
+  var CLOCK_ICON = (function () {
+    try {
+      return (window.chrome && chrome.runtime && chrome.runtime.getURL)
+        ? chrome.runtime.getURL('assets/clock.png')
+        : '';
+    } catch (e) {
+      return '';
+    }
+  })();
+
   function startClock(host) {
     var el = h('div', { class: 'mp-clock', id: 'mp-clock', title: '当前时间' });
+    if (CLOCK_ICON) {
+      el.appendChild(h('i', {
+        class: 'mp-clock-ico',
+        style: 'background-image:url("' + CLOCK_ICON + '")'
+      }));
+    }
+    var txt = h('span', { class: 'mp-clock-txt' });
+    el.appendChild(txt);
     host.appendChild(el);
     function pad(n) { return (n < 10 ? '0' : '') + n; }
     function tick() {
       var t = new Date();
-      el.textContent = pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds());
+      txt.textContent = pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds());
     }
     tick();
     clockTimer = setInterval(tick, 1000);

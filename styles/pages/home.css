@@ -1719,3 +1719,24 @@ html[data-mp-theme="dark"] .mp-bb-search {
 }
 
 
+
+/* 时间组件左边的像素小钟：原站的 16×16 素材，放大时保持硬边 */
+.mp-clock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mp-clock-ico {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+.mp-clock-txt {
+  font-variant-numeric: tabular-nums;
+}
