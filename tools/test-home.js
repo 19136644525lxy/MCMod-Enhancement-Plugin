@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 首页重绘 jsdom 冒烟测试：真实快照 + 三个脚本，断言抽取字段与渲染结果。
  * 运行：$env:NODE_PATH="$env:TEMP\mp-test\node_modules"; node tools/test-home.js
  */
@@ -115,7 +115,7 @@ console.log('\n[3e] banner 条');
 ok('banner 条存在', !!w.document.getElementById('mp-bannerbar'));
 ok('banner 导航项 ≥ 8', q('.mp-bb-item').length >= 8, 'got ' + q('.mp-bb-item').length);
 ok('banner 搜索表单', q('.mp-bb-search input[name="key"]').length === 1);
-ok('苦力怕按钮', q('.mp-bb-rand svg').length === 1);
+ok('苦力怕按钮', q('.mp-bb-rand .mp-creeper-img, .mp-bb-rand svg').length === 1);
 ok('时钟存在', !!w.document.getElementById('mp-clock'));
 ok('时钟带秒 HH:MM:SS', /^\d{2}:\d{2}:\d{2}$/.test(
   (w.document.getElementById('mp-clock') || {}).textContent || ''),
@@ -168,4 +168,5 @@ setTimeout(function () {
   console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
   process.exit(fail ? 1 : 0);
 }, 320);
+
 

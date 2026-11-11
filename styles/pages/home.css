@@ -1717,3 +1717,15 @@ html[data-mp-theme="dark"] .mp-bb-search {
     font-size: 12px;
   }
 }
+
+/* 官方苦力怕图标（assets/creeper.png）：160px 缩到 34px，加一点内描边压住截图边缘的暗边 */
+.mp-creeper-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
