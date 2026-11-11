@@ -92,7 +92,12 @@
           placeholder: b.search.placeholder,
           autocomplete: 'off'
         }),
-        h('button', { type: 'submit', 'aria-label': '搜索' }, '⌕')
+        h('button', { type: 'submit', 'aria-label': '搜索' },
+          h('svg', { viewBox: '0 0 16 16', width: 13, height: 13, 'aria-hidden': 'true' },
+            h('circle', { cx: 7, cy: 7, r: 4.2, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.6 }),
+            h('path', { d: 'M10.3 10.3 L13.5 13.5', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.6, 'stroke-linecap': 'round' })
+          )
+        )
       )
     );
   }
@@ -699,6 +704,7 @@
       MP.theme.inject('styles/day-night.css');
       MP.theme.inject('styles/pages/home.css');
       document.body.classList.add('mp-home-mode');
+      document.documentElement.classList.add('mp-home-root');
 
       // 顶部导航接管
       var top = document.querySelector('.top-main');
@@ -777,7 +783,9 @@
         if (el) el.classList.remove('mp-origin-hidden');
       });
       document.body.classList.remove('mp-home-mode');
+      document.documentElement.classList.remove('mp-home-root');
       mounted = false;
     }
   };
 })();
+

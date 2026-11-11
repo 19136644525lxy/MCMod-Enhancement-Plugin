@@ -1740,3 +1740,29 @@ html[data-mp-theme="dark"] .mp-bb-search {
 .mp-clock-txt {
   font-variant-numeric: tabular-nums;
 }
+
+/* 主题切换时 <html> 也要有底色，否则 body 背景重绘的瞬间会露出浏览器默认白底，看起来像闪屏 */
+html.mp-home-root {
+  background-color: #f3f1ec;
+  transition: background-color 0.22s ease;
+}
+html.mp-home-root[data-mp-theme="dark"] {
+  background-color: #14130f;
+}
+@media (prefers-color-scheme: dark) {
+  html.mp-home-root:not([data-mp-theme="light"]) {
+    background-color: #14130f;
+  }
+}
+
+/* 搜索按钮里的放大镜：用 13px 的 SVG，线宽 1.6，别用字符 ⌕（不同字体形状差很多） */
+.mp-bb-search button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mp-bb-search button svg {
+  display: block;
+  width: 13px;
+  height: 13px;
+}
