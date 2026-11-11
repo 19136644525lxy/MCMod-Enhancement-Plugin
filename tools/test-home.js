@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 首页重绘 jsdom 冒烟测试：真实快照 + 三个脚本，断言抽取字段与渲染结果。
  * 运行：$env:NODE_PATH="$env:TEMP\mp-test\node_modules"; node tools/test-home.js
  */
@@ -70,11 +70,23 @@ const q = (sel) => w.document.querySelectorAll(sel);
 ok('玻璃卡 ≥ 8', q('.mp-glass').length >= 8, 'got ' + q('.mp-glass').length);
 ok('页头标题', w.document.querySelector('.mp-hero-title').textContent.includes('找到你想要的模组'));
 ok('快捷入口 8', q('.mp-quick-item').length === 8, 'got ' + q('.mp-quick-item').length);
+ok('快捷入口有图标', q('.mp-quick-item svg').length === 8, 'got ' + q('.mp-quick-item svg').length);
 ok('首屏模组卡 10', q('.mp-mod-card').length === 10, 'got ' + q('.mp-mod-card').length);
 ok('编辑动态 20', q('.mp-feed-item').length === 20, 'got ' + q('.mp-feed-item').length);
 ok('分类卡 9', q('.mp-cat-card').length === 9, 'got ' + q('.mp-cat-card').length);
 ok('榜单有行', q('.mp-rank-item').length > 0);
 ok('标签有 chip', q('.mp-tag').length > 0);
+
+console.log('\n[3b] 顶栏');
+ok('顶栏存在', !!w.document.getElementById('mp-home-topbar'));
+ok('顶栏在最前', w.document.body.firstElementChild.id === 'mp-home-topbar');
+const top = w.document.querySelector('.top-main');
+ok('原顶栏隐藏', !!top && top.classList.contains('mp-origin-hidden'));
+ok('导航项 6', q('.mp-nav-item').length === 6, 'got ' + q('.mp-nav-item').length);
+ok('导航链接指向原站', Array.from(q('.mp-nav-item')).every((n) => /mcmod\.cn/.test(n.href)));
+ok('搜索表单', q('.mp-search input[name="key"]').length === 1);
+ok('用户区', q('.mp-user-link').length === 1);
+ok('头像存在', q('.mp-user-link img').length === 1);
 
 console.log('\n[4] tab 切换');
 const tabs = q('.mp-tab');
@@ -85,6 +97,8 @@ ok('切到最新收录仍有 10 张', q('.mp-mod-card').length === 10, 'got ' + 
 console.log('\n[5] 卸载');
 w.MP.pages.home.unmount();
 ok('宿主已移除', !w.document.getElementById('mp-home-host'));
+ok('顶栏已移除', !w.document.getElementById('mp-home-topbar'));
+ok('原顶栏恢复', !top.classList.contains('mp-origin-hidden'));
 ok('原首页恢复', !main.classList.contains('mp-origin-hidden'));
 ok('body 标记移除', !w.document.body.classList.contains('mp-home-mode'));
 

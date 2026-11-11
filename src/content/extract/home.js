@@ -75,6 +75,8 @@ MP.extract.home = (function () {
         edited: cards(pick(newsLeft, '#indexNew_edit'))
       },
       quick: [],
+      nav: [],
+      user: null,
       stats: [],
       feed: [],
       posts: [],
@@ -92,6 +94,32 @@ MP.extract.home = (function () {
     out.quick = map(all(pick(newsRight, '.addArea'), 'a'), function (a) {
       return { href: abs(attr(a, 'href')), label: txt(a), cls: a.className || '' };
     });
+
+    /* 顶部导航与用户区 */
+    out.nav = map(all(pick(doc, '.top-main .navs'), '.def-nav'), function (n) {
+      var a = n.tagName === 'A' ? n : n.querySelector('a');
+      var label = txt(a || n).split(/\s+/)[0];
+      return {
+        label: label,
+        href: abs(attr(a, 'href')),
+        active: /(^|\s)on(\s|$)/.test(n.className || '')
+      };
+    });
+
+    out.user = (function () {
+      var info = pick(doc, '.top-main .info');
+      if (!info) return null;
+      var av = info.querySelector('.info-icon img') || info.querySelector('img');
+      var nm = pick(info, '.info-icon .name') || pick(info, '.name');
+      var profile = info.querySelector('.info-icon a[href*="center.mcmod.cn"]') ||
+        info.querySelector('a[href*="center.mcmod.cn"]');
+      return {
+        name: txt(nm) || '未登录',
+        avatar: av ? abs(attr(av, 'src')) : '',
+        href: abs(attr(profile, 'href')),
+        notice: abs(attr(info.querySelector('a[href*="notice"]'), 'href'))
+      };
+    })();
 
     out.stats = map(all(pick(newsRight, '.count'), 'span'), function (s) {
       return { text: txt(s), title: attr(s, 'title') };

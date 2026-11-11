@@ -98,4 +98,5 @@ for (const [key, file, url, cssKind] of CASES) {
   const outFile = path.join(OUT, 'preview-' + key + '.html');
   fs.writeFileSync(outFile, '<!DOCTYPE html>\n' + doc.documentElement.outerHTML, 'utf8');
   console.log('written ' + outFile + ' (' + fs.statSync(outFile).size + ' B)');
+  dom.window.close();
 }

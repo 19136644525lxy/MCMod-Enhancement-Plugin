@@ -43,8 +43,29 @@
 
   function quickGrid(quick) {
     return h('div', { class: 'mp-quick' }, quick.map(function (q) {
-      return a(q.href, q.label, 'mp-quick-item ' + (q.cls || ''));
+      return a(q.href, [
+        h('span', { class: 'mp-quick-icon', 'aria-hidden': 'true' }, iconFor(q.href)),
+        h('span', { class: 'mp-quick-label' }, q.label)
+      ], 'mp-quick-item ' + (q.cls || ''));
     }));
+  }
+
+  /* 快捷入口图标：按目标地址映射，避免依赖原站 CSS 背景图 */
+  function iconFor(href) {
+    var svg = { class: 'mp-ico', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor',
+      'stroke-width': '1.8', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' };
+    function path(d, extra) {
+      return h('svg', Object.assign({}, svg, extra || {}), h('path', { d: d }));
+    }
+    if (/\/class\/add\//.test(href)) return path('M12 5v14M5 12h14');
+    if (/\/post\/add\//.test(href)) return path('M4 5h11a3 3 0 0 1 3 3v11H7a3 3 0 0 1-3-3V5zM8 9h6M8 13h4');
+    if (/\/verify\//.test(href)) return path('M20 6 9 17l-5-5');
+    if (/\/history\//.test(href)) return path('M12 8v5l3 2M3 12a9 9 0 1 0 3-6.7M3 4v4h4');
+    if (/\/modpack\/add\//.test(href)) return path('M12 3 3 8l9 5 9-5-9-5zM3 8v8l9 5 9-5V8');
+    if (/modlist\.html/.test(href)) return path('M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 21l-4-4');
+    if (/oredict\.html/.test(href)) return path('M4 6h7a2 2 0 0 1 2 2v10a2 2 0 0 0-2-2H4V6zM20 6h-7a2 2 0 0 0-2 2v10a2 2 0 0 1 2-2h7V6z');
+    if (/worldgen\.html/.test(href)) return path('M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6zM9 3v15M15 6v15');
+    return path('M12 5v14M5 12h14');
   }
 
   function modCards(list) {
@@ -184,6 +205,45 @@
     }));
   }
 
+  function topbar(d) {
+    var navItems = (d.nav || []).map(function (n) {
+      return a(n.href, n.label, 'mp-nav-item' + (n.active ? ' is-on' : ''));
+    });
+
+    var userBlock = d.user
+      ? h('div', { class: 'mp-user' },
+          d.user.notice
+            ? h('a', { class: 'mp-bell', href: d.user.notice, target: '_blank', rel: 'noopener', title: '提醒' },
+                h('span', { 'aria-hidden': 'true' }, '◔'))
+            : null,
+          a(d.user.href, [
+            d.user.avatar ? h('img', { src: d.user.avatar, alt: '', loading: 'lazy' }) : null,
+            h('span', { class: 'mp-user-name' }, d.user.name)
+          ], 'mp-user-link')
+        )
+      : null;
+
+    return h('header', { class: 'mp-topbar', id: 'mp-home-topbar' },
+      h('div', { class: 'mp-topbar-inner' },
+        a('https://www.mcmod.cn/', [
+          h('span', { class: 'mp-brand-mark' }, 'MC'),
+          h('span', { class: 'mp-brand-name' }, '百科')
+        ], 'mp-brand'),
+        h('nav', { class: 'mp-nav' }, navItems),
+        h('form', {
+          class: 'mp-search',
+          action: 'https://search.mcmod.cn/s',
+          method: 'get',
+          target: '_blank'
+        },
+          h('input', { name: 'key', type: 'search', placeholder: '搜索 MOD / 资料 / 教程…', autocomplete: 'off' }),
+          h('button', { type: 'submit', class: 'mp-search-btn' }, '搜索')
+        ),
+        userBlock
+      )
+    );
+  }
+
   function render(d) {
     var tabItems = [
       { key: 'random', label: '随便看看' },
@@ -266,6 +326,54 @@
   MP.pages = MP.pages || {};
 
   var mounted = false;
+  var rotTimer = null;
+  var ROT_KEYS = ['random', 'latest', 'edited'];
+
+  function setActiveTab(host, idx) {
+    var tabs = host.querySelectorAll('.mp-tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('is-on', i === idx);
+  }
+
+  /**
+   * 站点的「随便看看」原本靠 AJAX 定时换一批，会持续打请求。
+   * 这里改为纯前端轮换：在已抽取的三组卡片里切换，零网络请求。
+   * 鼠标悬停或手动点 tab 后停止，避免和用户操作打架。
+   */
+  function startRotation(d, host) {
+    stopRotation();
+    var idx = 0;
+    var paused = false;
+
+    host.addEventListener('mouseenter', function () { paused = true; });
+    host.addEventListener('mouseleave', function () { paused = false; });
+    host.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t && t.closest && t.closest('.mp-tab')) paused = true;
+    }, true);
+
+    rotTimer = setInterval(function () {
+      if (paused || document.hidden) return;
+      var grid = host.querySelector('.mp-tab-body .mp-mod-grid');
+      if (!grid) return;
+      idx = (idx + 1) % ROT_KEYS.length;
+      var list = (d.cards[ROT_KEYS[idx]] || []).slice();
+      for (var i = list.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+      }
+      MP.dom.clear(grid);
+      var fresh = modCards(list);
+      while (fresh.firstChild) grid.appendChild(fresh.firstChild);
+      setActiveTab(host, idx);
+    }, 8000);
+  }
+
+  function stopRotation() {
+    if (rotTimer) {
+      clearInterval(rotTimer);
+      rotTimer = null;
+    }
+  }
 
   MP.pages.home = {
     match: function () {
@@ -285,6 +393,12 @@
       MP.theme.inject('styles/pages/home.css');
       document.body.classList.add('mp-home-mode');
 
+      // 顶部导航接管
+      var top = document.querySelector('.top-main');
+      if (top) top.classList.add('mp-origin-hidden');
+      var bar = topbar(d);
+      document.body.insertBefore(bar, document.body.firstChild);
+
       var anchor = document.querySelector('.center > .main') || document.querySelector('.main');
       var host = h('div', { id: 'mp-home-host', class: 'mp-home-host' });
       host.appendChild(render(d));
@@ -296,10 +410,16 @@
         document.body.insertBefore(host, document.body.firstChild);
       }
 
+      startRotation(d, host);
       mounted = true;
       return true;
     },
     unmount: function () {
+      stopRotation();
+      var bar = document.getElementById('mp-home-topbar');
+      if (bar) bar.remove();
+      var top = document.querySelector('.top-main');
+      if (top) top.classList.remove('mp-origin-hidden');
       var host = document.getElementById('mp-home-host');
       if (host) host.remove();
       var main = document.querySelector('.center > .main');
