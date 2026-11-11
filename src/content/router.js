@@ -62,6 +62,7 @@ MP.router = (function () {
   }
 
   function tryMountPage() {
+    if (!settings || !settings.redrawPages) return false;
     const key = currentPageModule();
     if (!key) return false;
     return MP.pages[key].mount(settings) !== false;
@@ -155,7 +156,10 @@ MP.router = (function () {
       try { if (MP.shell) MP.shell.restore(); } catch (e) { /* ignore */ }
     } else {
       MP.theme.injectCore();
-      try { restyleAll(); } catch (e) { console.warn('[MCMod+] 重绘失败', e); }
+      try {
+        if (MP.shell && !settings.redrawPages) MP.shell.restore();
+        restyleAll();
+      } catch (e) { console.warn('[MCMod+] 重绘失败', e); }
     }
   }
 

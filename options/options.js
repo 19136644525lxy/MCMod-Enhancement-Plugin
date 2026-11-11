@@ -3,6 +3,7 @@ const DEFAULTS = {
   theme: 'auto',
   palette: true,
   redrawSearch: true,
+  redrawPages: false,
   compact: false,
   debug: false
 };
@@ -14,6 +15,7 @@ function paint() {
   $('enabled').checked = !!state.enabled;
   $('palette').checked = !!state.palette;
   $('redrawSearch').checked = !!state.redrawSearch;
+  $('redrawPages').checked = !!state.redrawPages;
   $('compact').checked = !!state.compact;
   document.querySelectorAll('#theme button').forEach((b) => {
     b.classList.toggle('active', b.dataset.value === (state.theme || 'auto'));
@@ -28,7 +30,7 @@ function save() {
 }
 
 function bind() {
-  ['enabled', 'palette', 'redrawSearch', 'compact'].forEach((id) => {
+  ['enabled', 'palette', 'redrawSearch', 'redrawPages', 'compact'].forEach((id) => {
     $(id).addEventListener('change', () => {
       state[id] = $(id).checked;
       save();
@@ -52,3 +54,4 @@ document.addEventListener('DOMContentLoaded', () => {
     bind();
   });
 });
+
