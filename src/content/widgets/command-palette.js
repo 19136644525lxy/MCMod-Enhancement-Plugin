@@ -109,6 +109,15 @@ MP.palette = (function () {
       return;
     }
 
+    // 单字搜索既没有意义，又会放大请求量，直接拦在本地
+    if (parsed.keyword.length < 2) {
+      clear(resultsEl);
+      resultsEl.appendChild(
+        MP.ui.empty('再多输入一个字', '单字搜索范围太大，且会产生多余请求')
+      );
+      return;
+    }
+
     const seq = ++state.seq;
     clear(resultsEl);
     resultsEl.appendChild(MP.ui.skeleton(3));

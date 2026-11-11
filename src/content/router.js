@@ -80,6 +80,7 @@ MP.router = (function () {
       return;
     }
     const data = isSearchHost() ? MP.extract.search(document) : null;
+    const netRow = debugRow('网络请求', '…');
 
     const panel = h('div', { class: 'mp-debug mp-root' },
       h('div', { class: 'mp-debug-head' },
@@ -90,6 +91,7 @@ MP.router = (function () {
       debugRow('设置', JSON.stringify(settings)),
       debugRow('样式', document.querySelectorAll('link[data-mp-style]').length + ' 个'),
       debugRow('首页排版', '已停用（待重新设计）'),
+      netRow,
       data ? debugRow('搜索结果', data.ok ? `${data.count} 条` : '抽取失败：' + data.error) : null,
       data && data.ok
         ? h('pre', { class: 'mp-debug-pre' }, JSON.stringify(data.items.slice(0, 3), (k, v) => (k === 'raw' ? undefined : v), 2))
@@ -103,6 +105,16 @@ MP.router = (function () {
     );
     document.documentElement.appendChild(panel);
     debugEl = panel;
+
+    try {
+      chrome.runtime.sendMessage({ type: 'mp:stats' }, (res) => {
+        if (chrome.runtime.lastError || !res || !res.ok) return;
+        const v = netRow.querySelector('.mp-debug-value');
+        if (v) v.textContent = `${res.fetched} 次（拦截 ${res.blocked}）`;
+      });
+    } catch (e) {
+      /* 拿不到统计不影响面板 */
+    }
   }
 
   /* ---------------- 生命周期 ---------------- */
