@@ -62,12 +62,12 @@
     var K = '#101010';
     return h('svg', { viewBox: '0 0 16 16', class: 'mp-creeper-svg', 'aria-hidden': 'true' },
       h('rect', { x: 0, y: 0, width: 16, height: 16, rx: 1.2, fill: '#5cae3c' }),
-      h('rect', { x: 3, y: 3, width: 3, height: 3, fill: K }),
-      h('rect', { x: 10, y: 3, width: 3, height: 3, fill: K }),
-      h('rect', { x: 6, y: 6, width: 4, height: 2, fill: K }),
-      h('rect', { x: 5, y: 8, width: 6, height: 2, fill: K }),
-      h('rect', { x: 5, y: 10, width: 2, height: 2, fill: K }),
-      h('rect', { x: 9, y: 10, width: 2, height: 2, fill: K })
+      h('rect', { x: 3, y: 5, width: 3, height: 3, fill: K }),
+      h('rect', { x: 10, y: 5, width: 3, height: 3, fill: K }),
+      h('rect', { x: 6, y: 8, width: 4, height: 2, fill: K }),
+      h('rect', { x: 5, y: 10, width: 6, height: 2, fill: K }),
+      h('rect', { x: 5, y: 12, width: 2, height: 2, fill: K }),
+      h('rect', { x: 9, y: 12, width: 2, height: 2, fill: K })
     );
   }
 
