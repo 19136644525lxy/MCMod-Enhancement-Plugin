@@ -109,6 +109,7 @@
       icon: d.icon,
       crumbs: d.crumbs,
       badges: badges,
+      actions: MP.ui.button('原始视图（编辑 / 评论）', { variant: 'ghost', onclick: function () { MP.shell.toggleView(true); } }),
       main: main,
       side: side
     });

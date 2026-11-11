@@ -80,6 +80,7 @@
       icon: d.cover,
       crumbs: d.crumbs,
       badges: d.badges.map(badgeChip),
+      actions: MP.ui.button('原始视图（下载 / 编辑）', { variant: 'ghost', onclick: function () { MP.shell.toggleView(true); } }),
       main: main,
       side: side.length ? side : null
     });
