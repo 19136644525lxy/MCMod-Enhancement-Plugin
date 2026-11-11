@@ -652,3 +652,55 @@
     text-align: center;
   }
 }
+
+/* ============================================================
+   原生互动区块：搬到增强视图侧栏时使用
+   保留站点原有卡片结构（红黑票 / 评分 / 更新日志 / 组员 / 点赞），
+   只重置浮动与宽度，让它们在 .mp-side 里正常堆叠。
+   ============================================================ */
+.mp-native-zone {
+  float: none !important;
+  width: auto !important;
+  margin: 0 0 16px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.mp-native-zone > .common-rowlist-block,
+.mp-native-zone > .common-imglist-block,
+.mp-native-zone > .class-card,
+.mp-native-zone > ul {
+  margin: 0 0 12px !important;
+  background: var(--mp-surface, #ffffff);
+  border: 1px solid var(--mp-border, #e6e3dd);
+  border-radius: 12px;
+  padding: 12px 14px;
+  list-style: none;
+}
+
+.mp-native-zone > ul {
+  display: flex;
+  gap: 10px;
+}
+
+.mp-native-zone > ul > li {
+  margin: 0;
+}
+
+.mp-native-zone a {
+  color: var(--mp-accent, #2f6f4f);
+}
+
+.mp-native-zone img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.mp-native-zone .common-rowlist-block .title,
+.mp-native-zone .common-imglist-block .title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mp-text, #2a2724);
+  margin-bottom: 8px;
+}

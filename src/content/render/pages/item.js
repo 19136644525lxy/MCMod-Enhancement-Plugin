@@ -65,11 +65,6 @@
 
     var badges = [];
     if (d.jump) badges.push(MP.ui.chip(d.jump, { muted: true }));
-    if (d.views) side.push(MP.shell.card('浏览数据', h('div', { class: 'mp-stats' },
-      h('div', { class: 'mp-stat' }, h('div', { class: 'mp-stat-num' }, d.views), h('div', { class: 'mp-stat-label' }, '浏览量')),
-      d.recommend ? h('div', { class: 'mp-stat' }, h('div', { class: 'mp-stat-num' }, d.recommend), h('div', { class: 'mp-stat-label' }, '推荐')) : null,
-      d.like ? h('div', { class: 'mp-stat' }, h('div', { class: 'mp-stat-num' }, d.like), h('div', { class: 'mp-stat-label' }, '收藏')) : null
-    )));
 
     if (d.data.length) {
       main.push(MP.shell.card('基本信息', MP.shell.kv(d.data)));
@@ -130,9 +125,11 @@
       }
       MP.theme.inject('styles/pages/pages.css');
       var page = render(d);
-      MP.shell.mount(page, ['.common-center > .common-nav', '.center', '.right'], function () {
+      MP.shell.mount(page, ['.common-center > .common-nav', '.right > .item-row', '.center'], function () {
         MP.pages.item.mount(settings);
-      }, document.querySelector('.common-center'));
+      }, document.querySelector('.common-center'), [
+        { from: '.center > .left', into: '.mp-side' }
+      ]);
       return true;
     }
   };

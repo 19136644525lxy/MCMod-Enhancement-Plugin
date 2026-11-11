@@ -16,16 +16,6 @@
     var main = [];
     var side = [];
 
-    if (d.introHtml) {
-      var prose = h('div', { class: 'mp-prose' });
-      MP.dom.append(prose, [MP.dom.safeHtml(d.introHtml)]);
-      main.push(MP.shell.card('模组介绍', prose, {
-        aside: d.tabs && d.tabs.length > 1
-          ? h('span', { class: 'mp-pager-info' }, '共 ' + d.tabs.length + ' 个标签页')
-          : null
-      }));
-    }
-
     if (d.info.length) main.push(MP.shell.card('基本信息', MP.shell.kv(d.info)));
 
     if (d.categories.length) {
@@ -58,20 +48,10 @@
     }
 
     if (d.votes.length) {
-      side.push(MP.shell.card('评分', h('div', { class: 'mp-chips' }, d.votes.map(function (v) {
+      side.push(MP.shell.card('属性评比', h('div', { class: 'mp-chips' }, d.votes.map(function (v) {
         return h('span', { class: 'mp-chip is-muted' }, v);
       }))));
     }
-
-    if (d.logs.length) {
-      side.push(MP.shell.card('更新日志', h('ul', { class: 'mp-plain-list' }, d.logs.map(function (l) {
-        return h('li', null, l);
-      }))));
-    }
-
-    d.groups.forEach(function (g) {
-      side.push(MP.shell.card(g.title, MP.shell.iconGrid(g.list, 'is-avatar')));
-    });
 
     return MP.shell.build({
       kind: 'klass',
@@ -99,9 +79,11 @@
       }
       MP.theme.inject('styles/pages/pages.css');
       var page = render(d);
-      MP.shell.mount(page, ['.common-center > .common-nav', '.center'], function () {
+      MP.shell.mount(page, ['.common-center > .common-nav'], function () {
         MP.pages.klass.mount(settings);
-      }, document.querySelector('.common-center'));
+      }, document.querySelector('.common-center'), [
+        { from: '.center > .left', into: '.mp-side' }
+      ]);
       return true;
     }
   };

@@ -10,8 +10,46 @@ MP.shell = (function () {
 
   let mountedPage = null;
   let hiddenEls = [];
+  let movedEls = [];
   let remountFn = null;
   let toolbarEl = null;
+
+  /**
+   * 把原生区块「搬」进重绘页面，而不是隐藏它们。
+   * 搬移保留节点上的事件监听器，所以点赞 / 投票 / 下载等交互仍然有效。
+   * @param {Element} page
+   * @param {{from:string|Element[], into?:string}[]} adopt
+   */
+  function adoptNative(page, adopt) {
+    (adopt || []).forEach((rule) => {
+      let target = page.querySelector(rule.into || '.mp-side');
+      if (!target) {
+        const body = page.querySelector('.mp-body');
+        if (!body) return;
+        target = h('aside', { class: 'mp-side' });
+        body.appendChild(target);
+      }
+      const list = typeof rule.from === 'string' ? document.querySelectorAll(rule.from) : rule.from;
+      Array.prototype.forEach.call(list, (el) => {
+        if (!el || !el.parentNode) return;
+        movedEls.push({ el: el, parent: el.parentNode, next: el.nextSibling });
+        el.classList.add('mp-native-zone');
+        target.appendChild(el);
+      });
+    });
+  }
+
+  function restoreNative() {
+    movedEls.forEach((m) => {
+      m.el.classList.remove('mp-native-zone');
+      if (m.parent && (!m.next || m.next.parentNode !== m.parent)) {
+        m.parent.appendChild(m.el);
+      } else if (m.parent && m.next) {
+        m.parent.insertBefore(m.el, m.next);
+      }
+    });
+    movedEls = [];
+  }
 
   function injectPageCss(name) {
     MP.theme.inject('styles/pages/' + name + '.css');
@@ -105,6 +143,7 @@ MP.shell = (function () {
   }
 
   function restore() {
+    restoreNative();
     if (mountedPage) {
       const host = document.getElementById('mp-page-host');
       if (host) clear(host);
@@ -118,15 +157,20 @@ MP.shell = (function () {
    * @param {Element} page shell.build() 的产物
    * @param {string[]} hideSelectors 需要隐藏的原生区块
    * @param {Function} remount 供「恢复增强视图」调用
+   * @param {Element} anchorEl 插入锚点
+   * @param {object[]} adopt 需要搬进重绘页面的原生互动区块
    */
-  function mount(page, hideSelectors, remount, anchorEl) {
+  function mount(page, hideSelectors, remount, anchorEl, adopt) {
     restore();
     ensureToolbar();
+
+    adoptNative(page, adopt);
 
     (hideSelectors || []).forEach((sel) => {
       const list = typeof sel === 'string' ? document.querySelectorAll(sel) : [sel];
       Array.prototype.forEach.call(list, (el) => {
         if (!el || !el.classList) return;
+        if (el.classList.contains('mp-native-zone')) return;
         el.classList.add('mp-origin-hidden');
         hiddenEls.push(el);
       });

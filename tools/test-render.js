@@ -22,6 +22,7 @@ const CASES = [
       ['.mp-craft', '>0', '合成表'],
       ['.mp-give', 1, '物品命令'],
       ['.mp-panel', '>0', '面板'],
+      ['.mp-native-zone', '>0', '原生侧栏搬入'],
     ],
     text: ['.mp-head-title', '深层煤矿石'],
   },
@@ -32,7 +33,7 @@ const CASES = [
     asserts: [
       ['.mp-page--klass', 1, '页面外壳'],
       ['.mp-head-title', 1, '标题'],
-      ['.mp-prose', 1, '介绍正文'],
+      ['.mp-native-zone', '>0', '原生侧栏搬入'],
       ['.mp-panel', '>0', '面板'],
     ],
     text: ['.mp-head-title', 'Hydrological'],
@@ -164,4 +165,5 @@ for (const c of CASES) {
 
 console.log('\n通过 ' + pass + ' / 失败 ' + fail);
 process.exit(fail === 0 ? 0 : 1);
+
 
