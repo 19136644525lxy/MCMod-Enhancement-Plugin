@@ -61,6 +61,12 @@ MP.settingsPanel = (function () {
     });
   }
 
+  function group(title, rows) {
+    return h('div', { class: 'mp-sp-group' },
+      h('div', { class: 'mp-sp-group-title' }, title),
+      rows.filter(Boolean));
+  }
+
   function build(s) {
     var box = h('div', {
       class: 'mp-sp',
@@ -81,7 +87,8 @@ MP.settingsPanel = (function () {
 
     var body = h('div', { class: 'mp-sp-body' });
 
-    body.appendChild(row('增强视图', '关掉后回到原站样式', sw(s.enabled, function (v) {
+    // 主开关单独一行，视觉上和下面的分组分开
+    var master = row('增强视图', '关掉后回到原站样式', sw(s.enabled, function (v) {
       save({ enabled: v });
       try {
         if (!v) {
@@ -93,37 +100,41 @@ MP.settingsPanel = (function () {
       } catch (err) {
         console.warn('[MCMod+] 切换增强视图失败', err);
       }
-    })));
+    }));
+    master.classList.add('is-master');
+    body.appendChild(master);
 
-    body.appendChild(row('主题', '跟随系统时由这个开关接管', themeRow()));
+    body.appendChild(group('外观', [
+      row('主题', '跟随系统时由这个开关接管', themeRow()),
+      row('紧凑模式', '收紧卡片间距', sw(s.compact, function (v) {
+        save({ compact: v });
+        try { MP.theme.apply(Object.assign({}, s, { compact: v })); } catch (e) { /* ignore */ }
+      }))
+    ]));
 
-    body.appendChild(row('紧凑模式', '收紧卡片间距', sw(s.compact, function (v) {
-      save({ compact: v });
-      try { MP.theme.apply(Object.assign({}, s, { compact: v })); } catch (e) { /* ignore */ }
-    })));
+    body.appendChild(group('功能', [
+      row('命令面板', 'Ctrl / ⌘ + K 唤起', sw(s.palette, function (v) {
+        save({ palette: v });
+      })),
+      row('随便看看轮换', '每 8 秒在三个分组间轮换', sw(s.homeRotate, function (v) {
+        save({ homeRotate: v });
+        try {
+          if (MP.pages && MP.pages.home && MP.pages.home.setRotate) MP.pages.home.setRotate(v);
+        } catch (e) { /* ignore */ }
+      })),
+      row('我的足迹', '首页展示最近 100 条编辑', sw(s.footprint, function (v) {
+        save({ footprint: v });
+      }))
+    ]));
 
-    body.appendChild(row('命令面板', 'Ctrl / ⌘ + K 唤起', sw(s.palette, function (v) {
-      save({ palette: v });
-    })));
-
-    body.appendChild(row('随便看看轮换', '每 8 秒在三个分组间轮换', sw(s.homeRotate, function (v) {
-      save({ homeRotate: v });
-      try {
-        if (MP.pages && MP.pages.home && MP.pages.home.setRotate) MP.pages.home.setRotate(v);
-      } catch (e) { /* ignore */ }
-    })));
-
-    body.appendChild(row('我的足迹', '首页展示最近 100 条编辑', sw(s.footprint, function (v) {
-      save({ footprint: v });
-    })));
-
-    body.appendChild(row('搜索页重绘', '重写搜索结果列表', sw(s.redrawSearch, function (v) {
-      save({ redrawSearch: v });
-    })));
-
-    body.appendChild(row('结构重绘（实验）', '物品 / 模组 / 整合包 / 分类页', sw(s.redrawPages, function (v) {
-      save({ redrawPages: v });
-    })));
+    body.appendChild(group('高级', [
+      row('搜索页重绘', '重写搜索结果列表', sw(s.redrawSearch, function (v) {
+        save({ redrawSearch: v });
+      })),
+      row('结构重绘（实验）', '物品 / 模组 / 整合包 / 分类页', sw(s.redrawPages, function (v) {
+        save({ redrawPages: v });
+      }))
+    ]));
 
     box.appendChild(body);
 
