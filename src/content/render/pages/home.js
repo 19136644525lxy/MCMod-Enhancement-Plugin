@@ -252,10 +252,17 @@
 
   function tagCloud(tags) {
     return h('div', { class: 'mp-tag-cloud' }, tags.map(function (t) {
-      return a(t.href, t.label + (t.count ? ' ' + t.count : ''), 'mp-tag', {
-        style: 'font-size:' + Math.min(20, Math.max(13, t.size)) + 'px;' +
-          (t.color ? 'color:' + t.color : '')
-      });
+      // 原站用 12~20px 的字号表达热度，排出来大小乱跳；统一 13px，热度靠颜色和数字弱化
+      return h('a', {
+        class: 'mp-tag',
+        href: t.href || undefined,
+        target: '_blank',
+        rel: 'noopener',
+        style: t.color ? 'color:' + t.color : null
+      },
+        h('span', { class: 'mp-tag-name' }, t.label),
+        t.count ? h('span', { class: 'mp-tag-count' }, t.count) : null
+      );
     }));
   }
 
