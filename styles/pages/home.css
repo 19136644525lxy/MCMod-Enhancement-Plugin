@@ -92,6 +92,36 @@ html[data-mp-theme="dark"] .mp-home {
   }
 }
 
+/* ---------- 基础复位（隔离站点全局样式） ---------- */
+
+.mp-home,
+.mp-home *,
+.mp-home *::before,
+.mp-home *::after {
+  box-sizing: border-box;
+}
+
+.mp-home a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mp-home img {
+  border: 0;
+  max-width: 100%;
+}
+
+.mp-home button {
+  font-family: inherit;
+}
+
+.mp-home h1,
+.mp-home h2,
+.mp-home h3,
+.mp-home p {
+  margin: 0;
+}
+
 /* ---------- 玻璃卡 ---------- */
 
 .mp-home .mp-glass {
