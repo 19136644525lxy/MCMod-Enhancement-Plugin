@@ -73,10 +73,19 @@ ok('页头标题', w.document.querySelector('.mp-hero-title').textContent.includ
 ok('快捷入口 8', q('.mp-quick-item').length === 8, 'got ' + q('.mp-quick-item').length);
 ok('快捷入口有图标', q('.mp-quick-item svg').length === 8, 'got ' + q('.mp-quick-item svg').length);
 ok('首屏模组卡 10', q('.mp-mod-card').length === 10, 'got ' + q('.mp-mod-card').length);
-ok('编辑动态 20', q('.mp-feed-item').length === 20, 'got ' + q('.mp-feed-item').length);
+ok('编辑动态滚筒容器', q('.mp-feed-scroll').length === 1);
+ok('编辑动态 20+20（复制一份无缝滚动）', q('.mp-feed-item').length === 40, 'got ' + q('.mp-feed-item').length);
+ok('副本对读屏隐藏', q('.mp-feed[aria-hidden="true"]').length === 1);
 ok('分类卡 9', q('.mp-cat-card').length === 9, 'got ' + q('.mp-cat-card').length);
 ok('榜单有行', q('.mp-rank-item').length > 0);
 ok('标签有 chip', q('.mp-tag').length > 0);
+ok('版本 chip 可点', q('.mp-version-chip').length > 0 &&
+  Array.from(q('.mp-version-chip')).every((n) => n.tagName === 'A' && /modlist\.html\?mcver=/.test(n.getAttribute('href'))),
+  q('.mp-version-chip')[0] ? q('.mp-version-chip')[0].getAttribute('href') : 'none');
+ok('分类卡整卡可点', q('.mp-cat-card').length === 9 &&
+  Array.from(q('.mp-cat-card')).every((n) => n.tagName === 'A' && /\/class\/category\//.test(n.getAttribute('href'))));
+ok('首卡为我的世界原版', q('.mp-mod-card')[0].textContent.includes('我的世界原版'),
+  q('.mp-mod-card')[0].textContent.trim().slice(0, 20));
 
 console.log('\n[3b] 顶栏');
 ok('顶栏存在', !!w.document.getElementById('mp-home-topbar'));
@@ -107,18 +116,24 @@ console.log('\n[4] tab 切换');
 const tabs = q('.mp-tab');
 ok('三个 tab', tabs.length === 3, 'got ' + tabs.length);
 tabs[1].dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
-ok('切到最新收录仍有 10 张', q('.mp-mod-card').length === 10, 'got ' + q('.mp-mod-card').length);
 
-console.log('\n[5] 卸载');
-w.MP.pages.home.unmount();
-ok('宿主已移除', !w.document.getElementById('mp-home-host'));
-ok('顶栏已移除', !w.document.getElementById('mp-home-topbar'));
-ok('原友链墙恢复', !w.document.querySelector('.un_links').classList.contains('mp-origin-hidden'));
-ok('原页脚恢复', !w.document.querySelector('.under').classList.contains('mp-origin-hidden'));
-ok('原顶栏恢复', !top.classList.contains('mp-origin-hidden'));
-ok('原首页恢复', !main.classList.contains('mp-origin-hidden'));
-ok('body 标记移除', !w.document.body.classList.contains('mp-home-mode'));
+// tab 切换有 190ms 淡出延时，等它完成再断言
+setTimeout(function () {
+  ok('切到最新收录仍有 10 张', q('.mp-mod-card').length === 10, 'got ' + q('.mp-mod-card').length);
+  ok('切组后首卡仍是我的世界原版', q('.mp-mod-card')[0].textContent.includes('我的世界原版'),
+    q('.mp-mod-card')[0].textContent.trim().slice(0, 20));
 
-console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
-process.exit(fail ? 1 : 0);
+  console.log('\n[5] 卸载');
+  w.MP.pages.home.unmount();
+  ok('宿主已移除', !w.document.getElementById('mp-home-host'));
+  ok('顶栏已移除', !w.document.getElementById('mp-home-topbar'));
+  ok('原友链墙恢复', !w.document.querySelector('.un_links').classList.contains('mp-origin-hidden'));
+  ok('原页脚恢复', !w.document.querySelector('.under').classList.contains('mp-origin-hidden'));
+  ok('原顶栏恢复', !top.classList.contains('mp-origin-hidden'));
+  ok('原首页恢复', !main.classList.contains('mp-origin-hidden'));
+  ok('body 标记移除', !w.document.body.classList.contains('mp-home-mode'));
+
+  console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
+  process.exit(fail ? 1 : 0);
+}, 320);
 

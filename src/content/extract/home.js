@@ -172,7 +172,16 @@ MP.extract.home = (function () {
     });
 
     out.versions = map(all(pick(main, '.list_block .menu'), 'li > a'), function (a) {
-      return { label: txt(a), ver: attr(a, 'ver'), on: a.className.indexOf('on') !== -1 };
+      var label = txt(a);
+      var ver = attr(a, 'ver') || attr(a, 'title') || label;
+      // 原站这些是 javascript:void(0) + AJAX 随机，没有真实链接；
+      // 直接指到「按版本检索」页面，行为可预期也能被中键打开。
+      return {
+        label: label,
+        ver: ver,
+        href: 'https://www.mcmod.cn/modlist.html?mcver=' + encodeURIComponent(label),
+        on: a.className.indexOf('on') !== -1
+      };
     });
 
     out.tags = map(all(pick(main, '.tag_block .list'), 'li a'), function (a) {

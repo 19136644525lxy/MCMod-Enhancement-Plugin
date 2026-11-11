@@ -86,8 +86,8 @@
     return path('M12 5v14M5 12h14');
   }
 
-  function modCards(list) {
-    return h('div', { class: 'mp-mod-grid' }, list.map(function (c) {
+  function modCards(list, animate) {
+    return h('div', { class: 'mp-mod-grid' }, list.map(function (c, i) {
       return a(c.href, [
         h('div', { class: 'mp-mod-cover' },
           c.cover ? h('img', { src: c.cover, alt: '', loading: 'lazy' }) : null,
@@ -97,13 +97,71 @@
           h('div', { class: 'mp-mod-name' }, c.title),
           c.enname ? h('div', { class: 'mp-mod-en' }, c.enname) : null
         )
-      ], 'mp-mod-card');
+      ], 'mp-mod-card', animate ? { style: 'animation-delay:' + (i * 26) + 'ms' } : null);
     }));
+  }
+
+  // 「我的世界原版」是固定卡片，任何一组轮换里都保持在左上角。
+  function isMinecraft(c) {
+    var name = (c && c.title || '').trim();
+    var en = (c && c.enname || '').trim();
+    return /^我的世界原版$/.test(name) || /^minecraft$/i.test(en);
+  }
+
+  function pinMinecraft(list) {
+    var arr = (list || []).slice();
+    for (var i = 0; i < arr.length; i++) {
+      if (isMinecraft(arr[i])) {
+        var card = arr.splice(i, 1)[0];
+        arr.unshift(card);
+        break;
+      }
+    }
+    return arr;
+  }
+
+  function shuffle(list) {
+    for (var i = list.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+    }
+    return list;
+  }
+
+  // 某一组里没有「我的世界原版」时，从随机组借一张补到首位，
+  // 保证它不论切哪个 tab、轮换几次都固定在左上角。
+  function groupCards(d, key) {
+    var list = (d.cards[key] || []).slice();
+    if (list.some(isMinecraft)) return pinMinecraft(list);
+    var pin = (d.cards.random || []).filter(isMinecraft)[0];
+    return pin ? [pin].concat(list.slice(0, 9)) : list;
   }
 
   function tabs(items, renderer) {
     var wrap = h('div', { class: 'mp-tabs' });
     var body = h('div', { class: 'mp-tab-body' });
+    var seq = 0;
+
+    function swap(it) {
+      var grid = body.querySelector('.mp-mod-grid');
+      if (!grid) {
+        MP.dom.clear(body);
+        body.appendChild(renderer(it));
+        return;
+      }
+      // 淡出 → 换内容 → stagger 淡入，避免「啪」地整块替换
+      var my = ++seq;
+      grid.classList.add('is-swap');
+      setTimeout(function () {
+        if (my !== seq) return;
+        MP.dom.clear(body);
+        var fresh = renderer(it);
+        if (fresh.classList) fresh.classList.add('is-in');
+        body.appendChild(fresh);
+        if (fresh.classList) setTimeout(function () { fresh.classList.remove('is-in'); }, 560);
+      }, 190);
+    }
+
     items.forEach(function (it, i) {
       var btn = h('button', {
         class: 'mp-tab' + (i === 0 ? ' is-on' : ''),
@@ -111,8 +169,7 @@
         onclick: function () {
           wrap.querySelectorAll('.mp-tab').forEach(function (b) { b.classList.remove('is-on'); });
           btn.classList.add('is-on');
-          MP.dom.clear(body);
-          body.appendChild(renderer(it));
+          swap(it);
         }
       }, it.label);
       wrap.appendChild(btn);
@@ -121,12 +178,22 @@
     return h('div', { class: 'mp-tab-wrap' }, wrap, body);
   }
 
+  // 原站编辑动态是「滚筒」：固定高度，条目自下而上循环滚动。
+  // 这里用 CSS 动画还原：把列表复制一份首尾相接，滚到 -50% 时正好接上。
   function feedList(feed) {
-    return h('ul', { class: 'mp-feed' }, feed.map(function (html) {
+    var items = (feed || []).map(function (html) {
       var li = h('li', { class: 'mp-feed-item' });
       li.appendChild(MP.dom.safeHtml(html));
       return li;
-    }));
+    });
+    if (!items.length) return h('div', { class: 'mp-feed-scroll' }, h('p', { class: 'mp-empty' }, '暂无动态'));
+
+    var ul = h('ul', { class: 'mp-feed' }, items);
+    var clone = ul.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    return h('div', { class: 'mp-feed-scroll' },
+      h('div', { class: 'mp-feed-track' }, ul, clone)
+    );
   }
 
   function postList(posts) {
@@ -179,7 +246,7 @@
 
   function versionCloud(versions) {
     return h('div', { class: 'mp-version-cloud' }, versions.map(function (v) {
-      return h('span', { class: 'mp-version-chip' + (v.on ? ' is-on' : '') }, v.label);
+      return a(v.href, v.label, 'mp-version-chip' + (v.on ? ' is-on' : ''));
     }));
   }
 
@@ -213,13 +280,19 @@
 
   function categoryGrid(cats) {
     return h('div', { class: 'mp-cat-grid' }, cats.map(function (c) {
-      return glass('mp-cat-card', [
+      // 整张卡都是链接：原站卡片只有标题可点，空白处没反应，体感像「点不动」
+      return h('a', {
+        class: 'mp-glass mp-cat-card',
+        href: c.href || undefined,
+        target: '_blank',
+        rel: 'noopener'
+      },
         h('div', { class: 'mp-cat-head' },
-          a(c.href, c.title, 'mp-cat-title'),
+          h('span', { class: 'mp-cat-title' }, c.title),
           h('span', { class: 'mp-cat-more' }, '进入 →')
         ),
         h('p', { class: 'mp-cat-desc' }, c.desc)
-      ]);
+      );
     }));
   }
 
@@ -281,7 +354,7 @@
 
     var mods = glass('mp-mods', [
       sectionHead('模组', '共 ' + (d.stats[0] ? d.stats[0].text.replace(/^共\s*/, '') : '') + ' ', null),
-      tabs(tabItems, function (it) { return modCards(d.cards[it.key] || []); })
+      tabs(tabItems, function (it) { return modCards(groupCards(d, it.key)); })
     ]);
 
     var feed = glass('mp-feed-card', [
@@ -419,14 +492,22 @@
       var grid = host.querySelector('.mp-tab-body .mp-mod-grid');
       if (!grid) return;
       idx = (idx + 1) % ROT_KEYS.length;
-      var list = (d.cards[ROT_KEYS[idx]] || []).slice();
-      for (var i = list.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = list[i]; list[i] = list[j]; list[j] = tmp;
-      }
-      MP.dom.clear(grid);
-      var fresh = modCards(list);
-      while (fresh.firstChild) grid.appendChild(fresh.firstChild);
+      var list = groupCards(d, ROT_KEYS[idx]);
+      // 第一张（我的世界原版）固定，其余打乱，避免它被随机冲掉
+      var head = list.slice(0, 1);
+      var tail = shuffle(list.slice(1));
+      list = head.concat(tail);
+
+      grid.classList.add('is-swap');
+      setTimeout(function () {
+        if (!grid.isConnected) return;
+        MP.dom.clear(grid);
+        var fresh = modCards(list, true);
+        while (fresh.firstChild) grid.appendChild(fresh.firstChild);
+        grid.classList.remove('is-swap');
+        grid.classList.add('is-in');
+        setTimeout(function () { grid.classList.remove('is-in'); }, 560);
+      }, 190);
       setActiveTab(host, idx);
     }, 8000);
   }
@@ -452,6 +533,11 @@
         console.warn('[MCMod+] 首页抽取失败', d && d.reason);
         return false;
       }
+
+      // 三组卡片都把「我的世界原版」顶到第一位
+      ['random', 'latest', 'edited'].forEach(function (k) {
+        if (d.cards && d.cards[k]) d.cards[k] = pinMinecraft(d.cards[k]);
+      });
 
       MP.theme.inject('styles/pages/home.css');
       document.body.classList.add('mp-home-mode');
