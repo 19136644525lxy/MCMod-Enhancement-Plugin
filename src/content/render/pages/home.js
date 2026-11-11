@@ -606,6 +606,13 @@
         document.body.insertBefore(host, document.body.firstChild);
       }
 
+      // 揭示动画结束后把 animation 摘掉：
+      // 留着 clip-path: inset(0) 会一直挂着一个裁剪合成层，
+      // 与卡片上的 backdrop-filter 叠加时，滚动容易出现整屏闪烁。
+      host.addEventListener('animationend', function () {
+        host.style.animation = 'none';
+      }, { once: true });
+
       startRotation(d, host);
 
       // 足迹卡异步填充（只发一次请求，6 小时本地缓存）
