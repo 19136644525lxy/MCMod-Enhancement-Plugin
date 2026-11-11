@@ -60,6 +60,11 @@ ok('贡献榜有数据', d.stars.length > 0, 'got ' + d.stars.length);
 ok('评比排行有数据', d.charts.length > 0, 'got ' + d.charts.length);
 ok('分类 9 个', d.categories.length === 9, 'got ' + d.categories.length);
 ok('封面为绝对地址', d.cards.random.every((c) => !c.cover || /^https?:\/\//.test(c.cover)));
+ok('banner 导航 ≥ 8', !!d.banner && d.banner.nav.length >= 8,
+  'got ' + (d.banner ? d.banner.nav.length : 'null'));
+ok('banner 随机链接', !!d.banner && /\/rand\//.test(d.banner.randomHref),
+  d.banner ? d.banner.randomHref : 'null');
+ok('banner 搜索表单', !!d.banner && d.banner.search.name === 'key');
 
 console.log('\n[2] 挂载');
 ok('match() 命中首页', w.MP.pages.home.match() === true);
@@ -105,6 +110,18 @@ ok('头像存在', q('.mp-user-link img').length === 1);
 const mark = w.document.querySelector('.mp-brand-mark');
 ok('品牌图标用扩展内 logo', !!mark && /assets\/logo\.png/.test(mark.getAttribute('style') || ''),
   mark ? mark.getAttribute('style') : 'no mark');
+
+console.log('\n[3e] banner 条');
+ok('banner 条存在', !!w.document.getElementById('mp-bannerbar'));
+ok('banner 导航项 ≥ 8', q('.mp-bb-item').length >= 8, 'got ' + q('.mp-bb-item').length);
+ok('banner 搜索表单', q('.mp-bb-search input[name="key"]').length === 1);
+ok('苦力怕按钮', q('.mp-bb-rand svg').length === 1);
+ok('时钟存在', !!w.document.getElementById('mp-clock'));
+ok('时钟带秒 HH:MM:SS', /^\d{2}:\d{2}:\d{2}$/.test(
+  (w.document.getElementById('mp-clock') || {}).textContent || ''),
+  (w.document.getElementById('mp-clock') || {}).textContent);
+ok('原 m_menu 隐藏', w.document.querySelector('.banner .m_menu').classList.contains('mp-origin-hidden'));
+ok('原 nowTime 隐藏', w.document.querySelector('.banner .nowTime').classList.contains('mp-origin-hidden'));
 
 console.log('\n[3c] 页脚');
 const foot = w.document.querySelector('.mp-footer');

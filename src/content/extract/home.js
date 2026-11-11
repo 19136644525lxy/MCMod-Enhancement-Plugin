@@ -106,6 +106,40 @@ MP.extract.home = (function () {
       };
     });
 
+    out.banner = (function () {
+      var frame = pick(doc, '.banner .frame-in');
+      if (!frame) return null;
+
+      var nav = [];
+      map(all(frame, '.m_center > li'), function (li) {
+        var a = li.querySelector('a');
+        if (!a) return;
+        var raw = attr(a, 'href') || '';
+        if (!raw || raw.indexOf('javascript:') === 0) return;
+        var label = txt(a);
+        if (!label) return;
+        nav.push({
+          label: label,
+          href: abs(raw),
+          sv: /(^|\s)sv(\s|$)/.test(li.className || '')
+        });
+      });
+
+      var form = pick(frame, '.m_center form._search');
+      var input = form ? form.querySelector('input[name="key"]') : null;
+
+      return {
+        nav: nav,
+        randomHref: abs(attr(pick(frame, '.m_center .CreeperRand a'), 'href')) ||
+          'https://www.mcmod.cn/rand/',
+        search: {
+          action: abs(attr(form, 'action')) || 'https://www.mcmod.cn/s',
+          name: input ? input.getAttribute('name') : 'key',
+          placeholder: input ? (input.getAttribute('value') || '搜索MOD/资料/教程') : '搜索MOD/资料/教程'
+        }
+      };
+    })();
+
     out.user = (function () {
       var info = pick(doc, '.top-main .info');
       if (!info) return null;

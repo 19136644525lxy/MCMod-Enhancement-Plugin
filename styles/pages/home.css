@@ -1554,3 +1554,166 @@ html[data-mp-theme="dark"] .mp-friend:hover {
   .mp-fp-body { grid-template-columns: 1fr; }
   .mp-fp-heat { overflow-x: auto; }
 }
+
+/* ---- banner 底部的二级导航条 + 右上角时钟 ------------------------------
+   原站这两块是两条绝对定位的浮层：.m_menu（白色横条）和 .nowTime（14:03）。
+   这里接管成玻璃条 + 秒级时钟，链接和搜索表单都保留原地址。 */
+.mp-bannerbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 11px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  box-shadow: 0 10px 34px rgba(24, 20, 16, 0.18);
+  backdrop-filter: blur(20px) saturate(1.4);
+  z-index: 80;
+}
+
+html[data-mp-theme="dark"] .mp-bannerbar {
+  background: rgba(28, 26, 23, 0.74);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.mp-bb-rand {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: block;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mp-bb-rand:hover {
+  transform: scale(1.08) rotate(-3deg);
+}
+
+.mp-creeper-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mp-bb-nav {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mp-bb-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.mp-bb-item {
+  flex: none;
+  padding: 7px 11px;
+  border-radius: 9px;
+  font-size: 13px;
+  color: #44413c;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.16s, color 0.16s;
+}
+
+.mp-bb-item:hover {
+  background: rgba(47, 111, 79, 0.1);
+  color: var(--accent, #2f6f4f);
+}
+
+.mp-bb-item.is-sv {
+  font-weight: 500;
+}
+
+html[data-mp-theme="dark"] .mp-bb-item {
+  color: #d9d6d0;
+}
+
+.mp-bb-search {
+  flex: none;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  height: 32px;
+  border-radius: 9px;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  background: rgba(255, 255, 255, 0.62);
+  overflow: hidden;
+}
+
+.mp-bb-search input {
+  width: 178px;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  padding: 0 10px;
+  font-size: 12.5px;
+  color: inherit;
+}
+
+.mp-bb-search input::placeholder {
+  color: #9b938a;
+}
+
+.mp-bb-search button {
+  flex: none;
+  width: 30px;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--accent, #2f6f4f);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.mp-bb-search button:hover {
+  background: rgba(47, 111, 79, 0.12);
+}
+
+html[data-mp-theme="dark"] .mp-bb-search {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* 右上角时钟：等宽数字 + tabular-nums，秒数跳动时宽度不抖 */
+.mp-clock {
+  position: absolute;
+  top: -210px;
+  right: 0;
+  z-index: 99;
+  padding: 6px 10px;
+  border-radius: 9px;
+  background: rgba(20, 18, 15, 0.34);
+  backdrop-filter: blur(8px);
+  color: #f4f1ea;
+  font: 500 15px/1 ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 1260px) {
+  .mp-clock {
+    right: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .mp-bb-search input {
+    width: 120px;
+  }
+  .mp-bb-item {
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+}

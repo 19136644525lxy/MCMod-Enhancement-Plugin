@@ -53,6 +53,66 @@
     );
   }
 
+  // ---- banner 底部的导航条 + 时钟（原站是两条绝对定位的浮层）----
+  var clockTimer = null;
+
+  function creeperFace() {
+    return h('svg', { viewBox: '0 0 32 32', class: 'mp-creeper-svg', 'aria-hidden': 'true' },
+      h('rect', { x: 0, y: 0, width: 32, height: 32, rx: 7, fill: '#6aa84f' }),
+      h('rect', { x: 7, y: 8, width: 7, height: 7, fill: '#161616' }),
+      h('rect', { x: 18, y: 8, width: 7, height: 7, fill: '#161616' }),
+      h('rect', { x: 11, y: 17, width: 4, height: 9, fill: '#161616' }),
+      h('rect', { x: 17, y: 17, width: 4, height: 9, fill: '#161616' }),
+      h('rect', { x: 14, y: 21, width: 4, height: 4, fill: '#161616' })
+    );
+  }
+
+  function bannerBar(b) {
+    if (!b) return null;
+    return h('div', { class: 'mp-bannerbar', id: 'mp-bannerbar' },
+      a(b.randomHref, h('span', { class: 'mp-bb-creeper' }, creeperFace()), 'mp-bb-rand', {
+        title: '随机页面（手气不错？）'
+      }),
+      h('nav', { class: 'mp-bb-nav' }, b.nav.map(function (it) {
+        return a(it.href, it.label, 'mp-bb-item' + (it.sv ? ' is-sv' : ''), { target: '_self' });
+      })),
+      h('form', {
+        class: 'mp-bb-search',
+        action: b.search.action,
+        method: 'get',
+        target: '_blank'
+      },
+        h('input', {
+          type: 'search',
+          name: b.search.name,
+          placeholder: b.search.placeholder,
+          autocomplete: 'off'
+        }),
+        h('button', { type: 'submit', 'aria-label': '搜索' }, '⌕')
+      )
+    );
+  }
+
+  function startClock(host) {
+    var el = h('div', { class: 'mp-clock', id: 'mp-clock', title: '当前时间' });
+    host.appendChild(el);
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function tick() {
+      var t = new Date();
+      el.textContent = pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds());
+    }
+    tick();
+    clockTimer = setInterval(tick, 1000);
+    return el;
+  }
+
+  function stopClock() {
+    if (clockTimer) {
+      clearInterval(clockTimer);
+      clockTimer = null;
+    }
+  }
+
   function statPills(stats) {
     return h('div', { class: 'mp-hero-stats' }, stats.map(function (s) {
       return h('span', { class: 'mp-hero-stat' }, s.text);
@@ -622,6 +682,18 @@
       var bar = topbar(d);
       document.body.insertBefore(bar, document.body.firstChild);
 
+      // banner 底部的二级导航 + 右上角时钟接管
+      var frameIn = document.querySelector('.banner .frame-in');
+      var bbar = bannerBar(d.banner);
+      if (frameIn && bbar) {
+        frameIn.appendChild(bbar);
+        startClock(frameIn);
+        ['.banner .m_menu', '.banner .nowTime'].forEach(function (sel) {
+          var el = document.querySelector(sel);
+          if (el) el.classList.add('mp-origin-hidden');
+        });
+      }
+
       var anchor = document.querySelector('.center > .main') || document.querySelector('.main');
       var host = h('div', { id: 'mp-home-host', class: 'mp-home-host' });
       host.appendChild(render(d));
@@ -659,6 +731,15 @@
     },
     unmount: function () {
       stopRotation();
+      stopClock();
+      var bbar = document.getElementById('mp-bannerbar');
+      if (bbar) bbar.remove();
+      var clk = document.getElementById('mp-clock');
+      if (clk) clk.remove();
+      ['.banner .m_menu', '.banner .nowTime'].forEach(function (sel) {
+        var el = document.querySelector(sel);
+        if (el) el.classList.remove('mp-origin-hidden');
+      });
       var bar = document.getElementById('mp-home-topbar');
       if (bar) bar.remove();
       var top = document.querySelector('.top-main');
