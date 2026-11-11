@@ -48,6 +48,23 @@ input[type="checkbox"].mp-toggle:checked::after {
   transform: translateX(28px);
 }
 
+/* 小号：页面内的主题切换 */
+input[type="checkbox"].mp-toggle.mp-toggle-sm {
+  width: 50px;
+  height: 28px;
+}
+
+input[type="checkbox"].mp-toggle.mp-toggle-sm::after {
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+}
+
+input[type="checkbox"].mp-toggle.mp-toggle-sm:checked::after {
+  transform: translateX(22px);
+}
+
 /* 大号：弹窗顶部的总开关 */
 input[type="checkbox"].mp-toggle.mp-toggle-lg {
   width: 78px;

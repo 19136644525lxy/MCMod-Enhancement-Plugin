@@ -260,6 +260,17 @@ html[data-mp-theme="dark"] .mp-search { background: rgba(255, 255, 255, 0.06); }
   flex: none;
 }
 
+/* 顶栏里的深色 / 浅色滑块 */
+.mp-theme-switch {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.mp-theme-switch + .mp-user { margin-left: 0; }
+
 .mp-bell {
   color: var(--tb-ink-2);
   text-decoration: none;
