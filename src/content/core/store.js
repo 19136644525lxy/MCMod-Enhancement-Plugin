@@ -9,6 +9,8 @@ MP.store = (function () {
     theme: 'auto',      // auto | light | dark
     compact: false,
     palette: true,      // Cmd+K 命令面板
+    homeRotate: true,   // 首页「随便看看」自动轮换
+    footprint: true,    // 首页「我的足迹」卡片
     redrawSearch: true, // 搜索页重绘
     redrawPages: false, // 结构重绘（物品/模组/整合包/分类）——实验性，默认关闭
     debug: false

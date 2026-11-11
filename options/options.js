@@ -2,6 +2,8 @@ const DEFAULTS = {
   enabled: true,
   theme: 'auto',
   palette: true,
+  homeRotate: true,
+  footprint: true,
   redrawSearch: true,
   redrawPages: false,
   compact: false,

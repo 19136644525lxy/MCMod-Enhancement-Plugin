@@ -1814,3 +1814,33 @@ html.mp-home-root .mp-float-bar {
   }
 }
 
+
+/* 顶栏最右的插件设置齿轮 */
+.mp-gear-btn {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  margin-left: 6px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--glass-border);
+  border-radius: 9px;
+  background: var(--glass-bg);
+  color: var(--tb-ink-2);
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.mp-gear-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  transform: rotate(30deg);
+}
+
+.mp-gear {
+  width: 15px;
+  height: 15px;
+}

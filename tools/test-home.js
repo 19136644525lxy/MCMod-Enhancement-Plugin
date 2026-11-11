@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 首页重绘 jsdom 冒烟测试：真实快照 + 三个脚本，断言抽取字段与渲染结果。
  * 运行：$env:NODE_PATH="$env:TEMP\mp-test\node_modules"; node tools/test-home.js
  */
@@ -13,6 +13,7 @@ const FILES = [
   'src/content/render/components.js',
   'src/content/extract/home.js',
   'src/content/widgets/footprint.js',
+  'src/content/widgets/settings-panel.js',
   'src/content/render/pages/home.js',
 ];
 
@@ -110,6 +111,8 @@ ok('头像存在', q('.mp-user-link img').length === 1);
 const mark = w.document.querySelector('.mp-brand-mark');
 ok('品牌图标用扩展内 logo', !!mark && /assets\/logo\.png/.test(mark.getAttribute('style') || ''),
   mark ? mark.getAttribute('style') : 'no mark');
+ok('设置齿轮存在', q('.mp-gear-btn').length === 1);
+ok('齿轮是 SVG', q('.mp-gear-btn svg.mp-gear').length === 1);
 
 console.log('\n[3e] banner 条');
 ok('banner 条存在', !!w.document.getElementById('mp-bannerbar'));

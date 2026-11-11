@@ -424,6 +424,21 @@
     });
   }
 
+  function gearIcon() {
+    return h('svg', {
+      viewBox: '0 0 24 24',
+      class: 'mp-gear',
+      'aria-hidden': 'true',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '1.8',
+      'stroke-linecap': 'round'
+    },
+      h('circle', { cx: 12, cy: 12, r: 3.1 }),
+      h('path', { d: 'M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8' })
+    );
+  }
+
   function topbar(d) {
     var navItems = (d.nav || []).map(function (n) {
       return a(n.href, n.label, 'mp-nav-item' + (n.active ? ' is-on' : ''));
@@ -459,7 +474,18 @@
           h('button', { type: 'submit', class: 'mp-search-btn' }, '搜索')
         ),
         themeSwitch(),
-        userBlock
+        userBlock,
+        h('button', {
+          class: 'mp-gear-btn',
+          type: 'button',
+          title: '插件设置',
+          'aria-label': '插件设置',
+          onclick: function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (MP.settingsPanel) MP.settingsPanel.toggle();
+          }
+        }, gearIcon())
       )
     );
   }
@@ -626,6 +652,7 @@
 
   var mounted = false;
   var rotTimer = null;
+  var rotCtx = null;   // { d, host } —— 供设置面板即时开关轮换
   var ROT_KEYS = ['random', 'latest', 'edited'];
 
   function setActiveTab(host, idx) {
@@ -640,6 +667,7 @@
    */
   function startRotation(d, host) {
     stopRotation();
+    rotCtx = { d: d, host: host };
     var idx = 0;
     var paused = false;
 
@@ -681,7 +709,6 @@
       rotTimer = null;
     }
   }
-
   MP.pages.home = {
     match: function () {
       var host = location.hostname;
@@ -750,11 +777,16 @@
         host.style.animation = 'none';
       }, { once: true });
 
-      startRotation(d, host);
+      if (!settings || settings.homeRotate !== false) startRotation(d, host);
 
       // 足迹卡异步填充（只发一次请求，6 小时本地缓存）
       var fpHost = document.getElementById('mp-fp');
-      if (fpHost && MP.footprint) {
+      if (settings && settings.footprint === false) {
+        if (fpHost) {
+          var fpCard = fpHost.closest ? fpHost.closest('.mp-glass') : null;
+          if (fpCard) fpCard.remove();
+        }
+      } else if (fpHost && MP.footprint) {
         try { MP.footprint.load(fpHost, uidOf(d)); } catch (e) { console.warn('[MCMod+] 足迹加载失败', e); }
       }
 
@@ -763,6 +795,7 @@
     },
     unmount: function () {
       stopRotation();
+      rotCtx = null;
       stopClock();
       var bbar = document.getElementById('mp-bannerbar');
       if (bbar) bbar.remove();
@@ -787,6 +820,18 @@
       document.body.classList.remove('mp-home-mode');
       document.documentElement.classList.remove('mp-home-root');
       mounted = false;
+    },
+    // 设置面板里即时开关「随便看看」轮换
+    setRotate: function (on) {
+      try {
+        if (on) {
+          if (rotCtx) startRotation(rotCtx.d, rotCtx.host);
+        } else {
+          stopRotation();
+        }
+      } catch (e) {
+        console.warn('[MCMod+] 轮换开关失败', e);
+      }
     }
   };
 })();
