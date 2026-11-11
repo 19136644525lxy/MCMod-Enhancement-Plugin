@@ -1,0 +1,654 @@
+/* ============================================================
+   结构重绘页面：物品 / 模组 / 整合包 / 分类
+   所有选择器以 mp- 前缀，避免与站点原有样式冲突
+   ============================================================ */
+
+.mp-origin-hidden {
+  display: none !important;
+}
+
+.mp-page-host {
+  width: 100%;
+  clear: both;
+}
+
+.mp-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 72px;
+  font-family: var(--mp-font);
+  color: var(--mp-text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ---------- 头部 ---------- */
+.mp-head {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--mp-border);
+}
+
+.mp-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+.mp-crumb + .mp-crumb::before {
+  content: "›";
+  margin-right: 6px;
+  color: var(--mp-text-3);
+}
+.mp-crumb.is-current {
+  color: var(--mp-text-2);
+}
+
+.mp-head-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.mp-head-icon {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  border-radius: 14px;
+  background: var(--mp-bg-2);
+  border: 1px solid var(--mp-border-2);
+}
+
+.mp-head-text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.mp-head-title {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.3;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+
+.mp-head-sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--mp-text-3);
+  font-family: var(--mp-mono);
+}
+
+.mp-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* ---------- 两栏 ---------- */
+.mp-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 20px;
+  margin-top: 20px;
+  align-items: start;
+}
+
+.mp-main,
+.mp-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.mp-side {
+  position: sticky;
+  top: 16px;
+}
+
+/* ---------- 面板（与搜索页的 .mp-card 区分开） ---------- */
+.mp-panel {
+  background: var(--mp-bg);
+  border: 1px solid var(--mp-border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: var(--mp-shadow);
+}
+
+.mp-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mp-panel-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mp-panel-body {
+  min-width: 0;
+}
+
+/* ---------- 键值 ---------- */
+.mp-kv {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px 18px;
+  margin: 0;
+}
+.mp-kv-row {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  min-width: 0;
+}
+.mp-kv-key {
+  flex: 0 0 auto;
+  color: var(--mp-text-3);
+}
+.mp-kv-val {
+  color: var(--mp-text);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- 物品命令 ---------- */
+.mp-give {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--mp-bg-2);
+  border: 1px solid var(--mp-border-2);
+  border-radius: 10px;
+}
+.mp-give-label {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+.mp-give-code {
+  font-family: var(--mp-mono);
+  font-size: 13px;
+  color: var(--mp-accent);
+  overflow-wrap: anywhere;
+}
+.mp-mini-btn {
+  margin-left: auto;
+  flex: 0 0 auto;
+  border: 1px solid var(--mp-border);
+  background: var(--mp-bg);
+  color: var(--mp-text-2);
+  border-radius: 6px;
+  padding: 3px 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--mp-font);
+}
+.mp-mini-btn:hover {
+  border-color: var(--mp-accent);
+  color: var(--mp-accent);
+}
+
+.mp-note {
+  margin: 0;
+  color: var(--mp-text-2);
+  font-size: 14px;
+}
+
+/* ---------- chips ---------- */
+.mp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- 图标网格 ---------- */
+.mp-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+  gap: 8px;
+}
+.mp-icon-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--mp-text-2);
+  transition: background .15s ease;
+}
+.mp-icon-cell:hover {
+  background: var(--mp-bg-2);
+}
+.mp-icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.mp-icon-grid.is-avatar .mp-icon-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.mp-icon-label {
+  max-width: 100%;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 合成表 ---------- */
+.mp-craft {
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--mp-border);
+}
+.mp-craft:first-child {
+  padding-top: 0;
+}
+.mp-craft:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.mp-craft-source {
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+.mp-craft-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+.mp-craft-side {
+  min-width: 0;
+}
+.mp-craft-label {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+.mp-craft-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mp-craft-arrow {
+  color: var(--mp-text-3);
+  font-size: 18px;
+}
+.mp-craft-remark {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+
+.mp-item-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border: 1px solid var(--mp-border);
+  border-radius: 8px;
+  background: var(--mp-bg-2);
+  color: var(--mp-text);
+  font-size: 13px;
+  text-decoration: none;
+}
+.mp-item-chip:hover {
+  border-color: var(--mp-accent);
+}
+.mp-item-chip.is-out {
+  border-color: var(--mp-accent);
+  background: var(--mp-accent-soft);
+  color: var(--mp-accent);
+}
+.mp-item-count {
+  font-family: var(--mp-mono);
+  font-size: 11px;
+  color: var(--mp-text-3);
+}
+
+/* ---------- 统计 ---------- */
+.mp-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 10px;
+}
+.mp-stat {
+  padding: 10px 6px;
+  text-align: center;
+  background: var(--mp-bg-2);
+  border-radius: 10px;
+}
+.mp-stat-num {
+  font-family: var(--mp-mono);
+  font-size: 20px;
+  font-weight: 600;
+}
+.mp-stat-label {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+
+.mp-plain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--mp-text-2);
+}
+
+/* ---------- 富文本（模组简介，来自站点原内容） ---------- */
+.mp-prose {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--mp-text);
+  overflow-wrap: break-word;
+}
+.mp-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.mp-prose h1,
+.mp-prose h2,
+.mp-prose h3,
+.mp-prose h4 {
+  margin: 18px 0 8px;
+  line-height: 1.4;
+}
+.mp-prose p {
+  margin: 8px 0;
+}
+.mp-prose ul,
+.mp-prose ol {
+  padding-left: 22px;
+  margin: 8px 0;
+}
+.mp-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+.mp-prose th,
+.mp-prose td {
+  padding: 6px 9px;
+  border: 1px solid var(--mp-border);
+}
+.mp-prose pre,
+.mp-prose code {
+  font-family: var(--mp-mono);
+  font-size: 13px;
+}
+.mp-prose pre {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--mp-bg-2);
+  overflow: auto;
+}
+
+/* ---------- 整合包卡片 ---------- */
+.mp-modpack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+.mp-modpack-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--mp-border);
+  border-radius: 12px;
+  background: var(--mp-bg);
+  color: var(--mp-text);
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.mp-modpack-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mp-shadow);
+}
+.mp-modpack-cover {
+  aspect-ratio: 170 / 115;
+  background: var(--mp-bg-3);
+}
+.mp-modpack-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mp-modpack-cover-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+.mp-modpack-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px 12px;
+}
+.mp-modpack-name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.mp-modpack-ename {
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+.mp-modpack-intro {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--mp-text-2);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ---------- 分页 ---------- */
+.mp-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.mp-page-btn {
+  padding: 5px 11px;
+  border: 1px solid var(--mp-border);
+  border-radius: 8px;
+  color: var(--mp-text-2);
+  font-size: 13px;
+  text-decoration: none;
+}
+.mp-page-btn:hover {
+  border-color: var(--mp-accent);
+  color: var(--mp-accent);
+}
+.mp-page-btn.is-active {
+  border-color: var(--mp-accent);
+  background: var(--mp-accent);
+  color: #fff;
+}
+.mp-pager-info {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+
+/* ---------- 分类页模组卡 ---------- */
+.mp-cate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+.mp-cate-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--mp-border);
+  border-radius: 12px;
+  background: var(--mp-bg);
+}
+.mp-cate-cover {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--mp-bg-3);
+}
+.mp-cate-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mp-cate-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.mp-cate-name {
+  color: var(--mp-text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.mp-cate-name:hover {
+  color: var(--mp-accent);
+}
+.mp-cate-stats {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--mp-text-3);
+}
+.mp-cate-stat-label {
+  margin-right: 3px;
+}
+.mp-cate-stat-num {
+  font-family: var(--mp-mono);
+  color: var(--mp-text-2);
+}
+.mp-cate-items {
+  display: flex;
+  gap: 4px;
+}
+.mp-cate-item img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* ---------- 排行榜 ---------- */
+.mp-rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mp-rank-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+}
+.mp-rank-index {
+  width: 18px;
+  flex: 0 0 auto;
+  font-family: var(--mp-mono);
+  color: var(--mp-text-3);
+}
+.mp-rank-index.is-top {
+  color: var(--mp-accent);
+  font-weight: 600;
+}
+.mp-rank-name {
+  overflow: hidden;
+  color: var(--mp-text-2);
+  text-decoration: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 悬浮切换条 ---------- */
+.mp-float-bar {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483000;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--mp-border);
+  border-radius: 999px;
+  background: var(--mp-bg);
+  box-shadow: var(--mp-shadow-lg);
+}
+.mp-float-btn {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mp-text-2);
+  font-family: var(--mp-font);
+  font-size: 12px;
+  cursor: pointer;
+}
+.mp-float-btn:hover {
+  color: var(--mp-text);
+}
+.mp-float-btn.is-active {
+  background: var(--mp-accent);
+  color: #fff;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .mp-body {
+    grid-template-columns: 1fr;
+  }
+  .mp-side {
+    position: static;
+  }
+  .mp-head-title {
+    font-size: 22px;
+  }
+  .mp-craft-flow {
+    grid-template-columns: 1fr;
+  }
+  .mp-craft-arrow {
+    transform: rotate(90deg);
+    text-align: center;
+  }
+}

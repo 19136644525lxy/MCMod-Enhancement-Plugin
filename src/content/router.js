@@ -49,6 +49,28 @@ MP.router = (function () {
     );
   }
 
+  /* ---------------- 结构重绘页面分发 ---------------- */
+
+  const PAGE_MODULES = ['item', 'klass', 'modpack', 'category'];
+
+  function currentPageModule() {
+    for (const key of PAGE_MODULES) {
+      const mod = MP.pages && MP.pages[key];
+      if (mod && typeof mod.match === 'function' && mod.match()) return key;
+    }
+    return null;
+  }
+
+  function tryMountPage() {
+    const key = currentPageModule();
+    if (!key) return false;
+    return MP.pages[key].mount(settings) !== false;
+  }
+
+  function restyleAll() {
+    tryMountPage();
+  }
+
   /* ---------------- 调试面板 ---------------- */
 
   function exportSnapshot() {
@@ -57,8 +79,10 @@ MP.router = (function () {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     const path = location.pathname === '/' ? 'home' : location.pathname.replace(/[\\/]+/g, '_').replace(/^_|_$/g, '');
+    // 路径本身可能已带 .html，避免出现 .html.html
+    const base = path ? path.replace(/\.html?$/i, '') : 'page';
     a.href = url;
-    a.download = `${location.hostname}_${path || 'page'}.html`;
+    a.download = `${location.hostname}_${base}.html`;
     a.style.display = 'none';
     document.documentElement.appendChild(a);
     a.click();
@@ -80,6 +104,7 @@ MP.router = (function () {
       return;
     }
     const data = isSearchHost() ? MP.extract.search(document) : null;
+    const pageKey = currentPageModule();
     const netRow = debugRow('网络请求', '…');
 
     const panel = h('div', { class: 'mp-debug mp-root' },
@@ -90,6 +115,7 @@ MP.router = (function () {
       debugRow('页面', location.href),
       debugRow('设置', JSON.stringify(settings)),
       debugRow('样式', document.querySelectorAll('link[data-mp-style]').length + ' 个'),
+      debugRow('结构重绘', pageKey ? pageKey + ' 页已接管' : '此页未接管'),
       debugRow('首页排版', '已停用（待重新设计）'),
       netRow,
       data ? debugRow('搜索结果', data.ok ? `${data.count} 条` : '抽取失败：' + data.error) : null,
@@ -97,6 +123,8 @@ MP.router = (function () {
         ? h('pre', { class: 'mp-debug-pre' }, JSON.stringify(data.items.slice(0, 3), (k, v) => (k === 'raw' ? undefined : v), 2))
         : null,
       h('div', { class: 'mp-debug-actions' },
+        pageKey ? MP.ui.button('重新重绘', { onclick: () => { MP.shell.restore(); tryMountPage(); } }) : null,
+        pageKey ? MP.ui.button('恢复原始视图', { onclick: () => MP.shell.restore() }) : null,
         isSearchHost() ? MP.ui.button('重新重绘', { onclick: () => MP.pages.search.mount(settings) }) : null,
         isSearchHost() ? MP.ui.button('恢复原始视图', { onclick: () => MP.pages.search.restore(document.querySelector('.search-result-list')) }) : null,
         MP.ui.button('切换主题', { onclick: () => { MP.theme.cycle(); } }),
@@ -124,8 +152,10 @@ MP.router = (function () {
     MP.theme.apply(settings);
     if (!settings.enabled) {
       document.querySelectorAll('link[data-mp-style]').forEach((l) => l.remove());
+      try { if (MP.shell) MP.shell.restore(); } catch (e) { /* ignore */ }
     } else {
       MP.theme.injectCore();
+      try { restyleAll(); } catch (e) { console.warn('[MCMod+] 重绘失败', e); }
     }
   }
 
@@ -139,6 +169,7 @@ MP.router = (function () {
       try { bindKeys(); } catch (e) { console.warn('[MCMod+] 快捷键绑定失败', e); }
       try { if (MP.pages.home) MP.pages.home.mount(s); } catch (e) { console.warn('[MCMod+] 首页模块失败', e); }
       try { tryMountSearch(); } catch (e) { console.warn('[MCMod+] 搜索页模块失败', e); }
+      try { tryMountPage(); } catch (e) { console.warn('[MCMod+] 页面重绘失败', e); }
     });
 
     MP.store.onChange(applySettings);
@@ -146,5 +177,5 @@ MP.router = (function () {
 
   ready(boot);
 
-  return { boot, toggleDebug, tryMountSearch };
+  return { boot, toggleDebug, tryMountSearch, tryMountPage, currentPageModule };
 })();

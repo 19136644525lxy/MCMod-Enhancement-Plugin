@@ -47,6 +47,16 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return;
   }
 
+  if (msg.type === 'mp:openOptions') {
+    try {
+      chrome.runtime.openOptionsPage();
+      sendResponse({ ok: true });
+    } catch (e) {
+      sendResponse({ ok: false });
+    }
+    return;
+  }
+
   if (msg.type !== 'mp:fetchPage') return;
 
   const url = String(msg.url || '');

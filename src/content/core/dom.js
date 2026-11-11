@@ -41,6 +41,7 @@ MP.dom = (function () {
   }
 
   function text(s) {
+    if (s && typeof s === 'object' && typeof s.textContent === 'string') s = s.textContent;
     return String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
   }
 
@@ -87,6 +88,40 @@ MP.dom = (function () {
     return frag;
   }
 
+  /**
+   * 清洗站点富文本：保留结构，去掉可执行内容。
+   * 返回 DocumentFragment，调用方用 append() 挂载，不直接 innerHTML。
+   */
+  function safeHtml(html) {
+    const tpl = document.createElement('template');
+    tpl.innerHTML = String(html == null ? '' : html);
+    const kill = tpl.content.querySelectorAll('script, style, link, iframe, object, embed, form, input, button, textarea, select, meta, base');
+    Array.prototype.forEach.call(kill, (el) => el.remove());
+    Array.prototype.forEach.call(tpl.content.querySelectorAll('*'), (el) => {
+      Array.prototype.slice.call(el.attributes).forEach((attr) => {
+        const name = attr.name.toLowerCase();
+        if (name.indexOf('on') === 0) {
+          el.removeAttribute(attr.name);
+        } else if ((name === 'href' || name === 'src') && /^\s*(javascript|data):/i.test(attr.value)) {
+          el.removeAttribute(attr.name);
+        }
+      });
+      // 站内相对链接补成绝对地址
+      if (el.tagName === 'A' && el.getAttribute('href')) {
+        el.setAttribute('href', absUrl(el.getAttribute('href')));
+        if (!el.getAttribute('target')) {
+          el.setAttribute('target', '_blank');
+          el.setAttribute('rel', 'noopener');
+        }
+      }
+      if (el.tagName === 'IMG' && el.getAttribute('src')) {
+        el.setAttribute('src', absUrl(el.getAttribute('src')));
+        el.setAttribute('loading', 'lazy');
+      }
+    });
+    return tpl.content;
+  }
+
   function debounce(fn, ms) {
     let t = 0;
     return function (...args) {
@@ -124,5 +159,5 @@ MP.dom = (function () {
     return { el: null, selector: null };
   }
 
-  return { h, append, clear, text, stripWiki, absUrl, highlight, debounce, ready, relTime, pick, SVG_NS };
+  return { h, append, clear, text, stripWiki, absUrl, highlight, safeHtml, debounce, ready, relTime, pick, SVG_NS };
 })();
