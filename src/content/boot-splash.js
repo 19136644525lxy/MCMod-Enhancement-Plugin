@@ -25,6 +25,24 @@
   var timer = null;
   var host = null;
 
+  function logoUrl() {
+    try {
+      return (window.chrome && chrome.runtime && chrome.runtime.getURL)
+        ? chrome.runtime.getURL('assets/logo.png')
+        : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  var LOGO = logoUrl();
+  // 原图 800×278，左侧是 278×278 的方块图标；整图缩放到 h*800/278 宽后只露出左半。
+  var ICON = 64;
+  var ICON_BG = LOGO
+    ? 'background-image:url("' + LOGO + '");background-size:' + Math.round((ICON * 800) / 278) + 'px ' + ICON + 'px;' +
+      'background-position:left center;background-repeat:no-repeat;'
+    : 'background:linear-gradient(135deg,#8bc34a 0%,#63b3d8 100%);border-radius:16px;';
+
   var CSS = [
     '#mp-splash{--s-bg:#f3f1ec;--s-ink:#1d1b18;--s-sub:#8b8478;--s-accent:#2f6f4f;--s-bar:rgba(120,110,100,.16);',
     'position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;',
@@ -41,20 +59,15 @@
 
     '.mp-splash-box{position:relative;display:flex;flex-direction:column;align-items:center;gap:20px;z-index:1}',
 
-    // 圆角方块容器（毛玻璃）+ 中央线稿角色，参考 B 站加载页的「TV 小人」
-    '.mp-splash-orb{position:relative;width:132px;height:132px;border-radius:34px;display:grid;place-items:center;',
-    'background:linear-gradient(160deg,rgba(46,44,40,.94),rgba(22,20,17,.97));',
-    'box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.42),0 22px 48px rgba(40,30,20,.30);',
-    'animation:mp-orb-in .82s cubic-bezier(.3,1.5,.5,1) both}',
-    '#mp-splash.mp-splash-dark .mp-splash-orb{background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.05));',
-    'box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(0,0,0,.3),0 22px 48px rgba(0,0,0,.5)}',
-    '.mp-splash-orb::after{content:"";position:absolute;inset:-13px;border-radius:46px;padding:1.5px;',
+    // 原版 logo 图标本体 + 让它「活」起来：呼吸浮动、轻微心跳、光环常转
+    '.mp-splash-logo{display:flex;align-items:center;gap:14px;animation:mp-logo-in .86s cubic-bezier(.3,1.5,.5,1) both}',
+    '.mp-splash-icon{position:relative;width:' + ICON + 'px;height:' + ICON + 'px;flex:0 0 auto;display:grid;place-items:center;',
+    ICON_BG + 'animation:mp-icon-alive 3.8s ease-in-out infinite}',
+    '.mp-splash-icon b{font-size:24px;font-weight:800;color:#fff;letter-spacing:.01em}',
+    '.mp-splash-icon::after{content:"";position:absolute;inset:-10px;border-radius:20px;padding:1.5px;',
     'background:conic-gradient(from 0deg,transparent 0deg,var(--s-accent) 90deg,transparent 200deg,transparent 360deg);',
     '-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);',
     '-webkit-mask-composite:xor;mask-composite:exclude;animation:mp-splash-spin 2.8s linear infinite}',
-
-    '.mp-splash-face{width:78px;height:78px;display:block;animation:mp-splash-bob 3.6s ease-in-out infinite}',
-    '.mp-splash-eye{transform-box:fill-box;transform-origin:center;animation:mp-splash-blink 4.4s infinite}',
 
     '.mp-splash-name{font-size:30px;font-weight:700;letter-spacing:.02em;color:var(--s-ink);line-height:1}',
     '.mp-splash-name i{display:inline-block;font-style:normal;animation:mp-splash-char .58s cubic-bezier(.16,1,.3,1) both}',
@@ -65,15 +78,20 @@
     'background:linear-gradient(90deg,transparent,var(--s-accent),transparent);animation:mp-splash-slide 1.35s cubic-bezier(.4,0,.2,1) infinite}',
 
     '@keyframes mp-splash-spin{to{transform:rotate(360deg)}}',
-    '@keyframes mp-splash-rise{from{opacity:0;transform:translateY(10px) scale(.92)}to{opacity:1;transform:none}}',
-    '@keyframes mp-orb-in{0%{opacity:0;transform:scale(.5) rotate(-14deg)}65%{opacity:1;transform:scale(1.06) rotate(3deg)}to{opacity:1;transform:none}}',
-    '@keyframes mp-splash-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}',
-    '@keyframes mp-splash-blink{0%,90%,100%{transform:scaleY(1)}93%,96%{transform:scaleY(.1)}}',
+    '@keyframes mp-logo-in{from{opacity:0;transform:translateY(10px) scale(.72)}to{opacity:1;transform:none}}',
+    // 两次呼吸 + 一段静止：有节奏，不会像机器一样匀速循环
+    '@keyframes mp-icon-alive{',
+    '0%{transform:translateY(0) scale(1)}',
+    '16%{transform:translateY(-5px) scale(1.035)}',
+    '32%{transform:translateY(0) scale(1)}',
+    '46%{transform:translateY(-2px) scale(1.015)}',
+    '58%{transform:translateY(0) scale(1)}',
+    '100%{transform:translateY(0) scale(1)}}',
     '@keyframes mp-splash-char{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}',
     '@keyframes mp-splash-fade{from{opacity:0}to{opacity:1}}',
     '@keyframes mp-splash-slide{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}',
 
-    '@media (prefers-reduced-motion:reduce){#mp-splash,.mp-splash-glow,.mp-splash-orb,.mp-splash-face,.mp-splash-eye,.mp-splash-name i,.mp-splash-tag,.mp-splash-bar,.mp-splash-bar i,.mp-splash-orb::after{animation:none!important;transition:none!important}}'
+    '@media (prefers-reduced-motion:reduce){#mp-splash,.mp-splash-glow,.mp-splash-logo,.mp-splash-icon,.mp-splash-name i,.mp-splash-tag,.mp-splash-bar,.mp-splash-bar i,.mp-splash-icon::after{animation:none!important;transition:none!important}}'
   ].join('');
 
   function dark() {
@@ -93,20 +111,12 @@
     node.id = HOST_ID;
     if (dark()) node.className = 'mp-splash-dark';
 
-    var face =
-      '<svg class="mp-splash-face" viewBox="0 0 100 100" fill="none" aria-hidden="true">' +
-        '<path d="M34 25 C29 15 33 8 42 6" stroke="#7fc46c" stroke-width="5" stroke-linecap="round"/>' +
-        '<path d="M66 25 C71 15 67 8 58 6" stroke="#7fc46c" stroke-width="5" stroke-linecap="round"/>' +
-        '<rect x="16" y="26" width="68" height="52" rx="15" stroke="#fff" stroke-width="6"/>' +
-        '<rect class="mp-splash-eye" x="34" y="42" width="9" height="15" rx="4.5" fill="#fff"/>' +
-        '<rect class="mp-splash-eye" x="57" y="42" width="9" height="15" rx="4.5" fill="#fff"/>' +
-      '</svg>';
+    var icon = LOGO ? '<span class="mp-splash-icon"></span>' : '<span class="mp-splash-icon"><b>MC</b></span>';
 
     node.innerHTML =
       '<div class="mp-splash-glow"></div>' +
       '<div class="mp-splash-box">' +
-        '<div class="mp-splash-orb">' + face + '</div>' +
-        '<div class="mp-splash-name"><i>百</i><i>科</i></div>' +
+        '<div class="mp-splash-logo">' + icon + '<span class="mp-splash-name"><i>百</i><i>科</i></span></div>' +
         '<div class="mp-splash-tag">正在准备增强视图</div>' +
         '<div class="mp-splash-bar"><i></i></div>' +
       '</div>';
