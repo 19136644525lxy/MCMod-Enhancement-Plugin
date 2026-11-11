@@ -411,15 +411,32 @@
         try {
           var next = dark ? 'dark' : 'light';
           var html = document.documentElement;
-          // 切换瞬间先关掉所有毛玻璃：Chrome 切换主题时要重新采样这些卡片的背景，
-          // 19 张卡片同时重算会有肉眼可见的白闪。停 260ms 再恢复。
-          html.classList.add('mp-theme-fade');
-          MP.theme.apply({ theme: next });
-          setTimeout(function () { html.classList.remove('mp-theme-fade'); }, 260);
-          if (MP.store && MP.store.setSync) {
-            var p = MP.store.setSync({ theme: next });
-            if (p && p.catch) p.catch(function () {});
-          }
+
+          // 整页重绘在深→浅这一下最明显（黑底翻白底，一帧滞后就看得见）。
+          // 用一个目标色的全屏遮罩先盖住，等主题换完再揭开，视觉上就是一次平滑过渡，
+          // 底下的重绘瑕疵全被盖住。
+          var old = document.getElementById('mp-theme-veil');
+          if (old && old.parentNode) old.parentNode.removeChild(old);
+
+          var veil = document.createElement('div');
+          veil.id = 'mp-theme-veil';
+          veil.className = 'mp-theme-veil';
+          veil.style.background = dark ? '#14130f' : '#f3f1ec';
+          html.appendChild(veil);
+          void veil.offsetHeight;            // 先落一帧，opacity 过渡才会生效
+          veil.style.opacity = '1';
+
+          setTimeout(function () {
+            MP.theme.apply({ theme: next });
+            if (MP.store && MP.store.setSync) {
+              var p = MP.store.setSync({ theme: next });
+              if (p && p.catch) p.catch(function () {});
+            }
+            veil.style.opacity = '0';
+            setTimeout(function () {
+              if (veil.parentNode) veil.parentNode.removeChild(veil);
+            }, 240);
+          }, 150);
         } catch (err) {
           /* 主题切换失败不影响页面 */
         }

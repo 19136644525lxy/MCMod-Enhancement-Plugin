@@ -1779,3 +1779,14 @@ html.mp-home-root[data-mp-theme="dark"] {
   height: 13px;
 }
 
+
+/* 主题切换遮罩：先盖住整屏再换主题，避免黑底翻白底时的一帧重绘瑕疵 */
+.mp-theme-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  will-change: opacity;
+}
