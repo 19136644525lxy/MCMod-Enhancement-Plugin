@@ -1,181 +1,139 @@
 /* ==========================================================================
    个人中心（center.mcmod.cn/<uid>/）
-   只做视觉层：颜色 / 圆角 / 阴影 / 间距。不动 width、float、position，
-   因为站点用的是 Bootstrap 3 的栅格 + swiper，动布局容易塌。
+
+   两条硬规则，都是从前一版翻车里学来的：
+   1. 不动 body 的背景。站点允许用户自定义整页背景图（body{background:url(...)}），
+      覆盖它等于把用户自己的设置抹掉。
+   2. 不动 .center-header 的布局。它是 220px 高的横幅 + 居中头像 + 白字，
+      改成 flex 横排会立刻散架。
+
+   所以这里只做「装饰」：圆角、阴影、渐变遮罩、半透明卡片。
    ========================================================================== */
 
 body.mp-center-mode {
-  --c-bg: #f5f3ef;
   --c-ink: #26231f;
-  --c-ink-2: #5c574f;
-  --c-ink-3: #8b857a;
-  --c-card: rgba(255, 255, 255, 0.74);
-  --c-card-solid: #fbfaf7;
-  --c-line: rgba(255, 255, 255, 0.82);
-  --c-hair: rgba(38, 35, 31, 0.08);
+  --c-ink-2: #55504a;
+  --c-ink-3: #857f75;
+  --c-card: rgba(255, 255, 255, 0.88);
+  --c-card-soft: rgba(255, 255, 255, 0.66);
+  --c-line: rgba(255, 255, 255, 0.9);
+  --c-hair: rgba(38, 35, 31, 0.09);
   --c-accent: #2f6f4f;
   --c-accent-soft: rgba(47, 111, 79, 0.1);
-  --c-shadow: 0 10px 34px rgba(48, 40, 32, 0.08);
-  --c-radius: 16px;
-
-  background-color: var(--c-bg);
-  background-image:
-    radial-gradient(1100px 620px at 12% -8%, rgba(47, 111, 79, 0.13), transparent 60%),
-    radial-gradient(900px 520px at 88% 0%, rgba(180, 140, 90, 0.13), transparent 62%),
-    radial-gradient(760px 480px at 50% 100%, rgba(120, 150, 200, 0.1), transparent 60%);
-  background-repeat: no-repeat;
-  background-size: 100% 1200px;
-  color: var(--c-ink);
+  --c-shadow: 0 8px 28px rgba(40, 32, 24, 0.1);
+  --c-radius: 18px;
 }
 
-html[data-mp-theme="dark"] body.mp-center-mode,
 html[data-mp-theme="dark"] body.mp-center-mode {
-  --c-bg: #14130f;
   --c-ink: #ece9e3;
-  --c-ink-2: #b8b1a6;
-  --c-ink-3: #8d8679;
-  --c-card: rgba(30, 28, 24, 0.7);
-  --c-card-solid: #1b1a16;
-  --c-line: rgba(255, 255, 255, 0.09);
-  --c-hair: rgba(255, 255, 255, 0.08);
+  --c-ink-2: #c2bbb0;
+  --c-ink-3: #928b7e;
+  --c-card: rgba(26, 25, 22, 0.86);
+  --c-card-soft: rgba(26, 25, 22, 0.6);
+  --c-line: rgba(255, 255, 255, 0.1);
+  --c-hair: rgba(255, 255, 255, 0.09);
   --c-accent: #57b98a;
-  --c-accent-soft: rgba(87, 185, 138, 0.14);
-  --c-shadow: 0 12px 38px rgba(0, 0, 0, 0.46);
-  background-image:
-    radial-gradient(1100px 620px at 12% -8%, rgba(47, 111, 79, 0.26), transparent 60%),
-    radial-gradient(900px 520px at 88% 0%, rgba(150, 100, 60, 0.22), transparent 62%),
-    radial-gradient(760px 480px at 50% 100%, rgba(60, 90, 140, 0.2), transparent 60%);
+  --c-accent-soft: rgba(87, 185, 138, 0.16);
+  --c-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 @media (prefers-color-scheme: dark) {
-  body.mp-center-mode:not([data-mp-theme="light"]) {
-    --c-bg: #14130f;
+  html:not([data-mp-theme="light"]) body.mp-center-mode {
     --c-ink: #ece9e3;
-    --c-ink-2: #b8b1a6;
-    --c-ink-3: #8d8679;
-    --c-card: rgba(30, 28, 24, 0.7);
-    --c-card-solid: #1b1a16;
-    --c-line: rgba(255, 255, 255, 0.09);
-    --c-hair: rgba(255, 255, 255, 0.08);
+    --c-ink-2: #c2bbb0;
+    --c-ink-3: #928b7e;
+    --c-card: rgba(26, 25, 22, 0.86);
+    --c-card-soft: rgba(26, 25, 22, 0.6);
+    --c-line: rgba(255, 255, 255, 0.1);
+    --c-hair: rgba(255, 255, 255, 0.09);
     --c-accent: #57b98a;
-    --c-accent-soft: rgba(87, 185, 138, 0.14);
-    --c-shadow: 0 12px 38px rgba(0, 0, 0, 0.46);
-    background-image:
-      radial-gradient(1100px 620px at 12% -8%, rgba(47, 111, 79, 0.26), transparent 60%),
-      radial-gradient(900px 520px at 88% 0%, rgba(150, 100, 60, 0.22), transparent 62%),
-      radial-gradient(760px 480px at 50% 100%, rgba(60, 90, 140, 0.2), transparent 60%);
+    --c-accent-soft: rgba(87, 185, 138, 0.16);
+    --c-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   }
 }
 
-/* ---------- 外壳 ---------- */
-
-body.mp-center-mode .common-frame {
-  padding-top: 14px;
-  padding-bottom: 10px;
-}
-
-body.mp-center-mode footer {
-  margin-top: 18px;
-}
-
-/* ---------- 用户头卡 ---------- */
+/* ---------- 横幅 ---------- */
 
 body.mp-center-mode .mp-center-header {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 20px 24px;
-  margin-bottom: 12px;
-  background: var(--c-card);
-  border: 1px solid var(--c-line);
+  position: relative;
   border-radius: var(--c-radius);
-  box-shadow: var(--c-shadow);
-}
-
-body.mp-center-mode .mp-center-header .mp-c-avatar {
-  flex: none;
-  width: 84px;
-  height: 84px;
-  border-radius: 20px;
   overflow: hidden;
-  background: var(--c-accent-soft);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--c-shadow);
+  background-size: cover;
+  background-position: center;
 }
 
-body.mp-center-mode .mp-center-header .mp-c-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+/* 底部压一层渐变，保证白色昵称/签名在任何封面上都读得清 */
+body.mp-center-mode .mp-center-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 34%,
+    rgba(0, 0, 0, 0.28) 62%,
+    rgba(0, 0, 0, 0.58) 100%
+  );
 }
 
-body.mp-center-mode .mp-center-header .mp-c-name {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
+body.mp-center-mode .mp-center-header > * {
+  position: relative;
+  z-index: 1;
 }
 
-body.mp-center-mode .mp-center-header .user-un {
-  font-size: 25px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--c-ink);
+body.mp-center-mode .mp-center-header .user-icon img {
+  border: 3px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.32);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+body.mp-center-mode .mp-center-header .user-name {
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+}
+
+body.mp-center-mode .mp-center-header .user-sign {
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
 }
 
 body.mp-center-mode .mp-center-header .user-lv {
-  display: inline-block;
-  padding: 3px 9px;
+  padding: 2px 8px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
   color: #fff;
-  background: linear-gradient(135deg, #2f6f4f, #57b98a);
-  letter-spacing: 0.02em;
-}
-
-body.mp-center-mode .mp-center-header .mp-c-sign {
-  font-size: 14px;
-  color: var(--c-ink-2);
-  line-height: 1.6;
-}
-
-body.mp-center-mode .mp-center-header .mp-c-bbs {
-  margin-left: auto;
-  align-self: flex-start;
+  background: linear-gradient(135deg, rgba(47, 111, 79, 0.95), rgba(87, 185, 138, 0.95));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 body.mp-center-mode .mp-center-header .mp-c-bbs a {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 5px 12px;
   border-radius: 999px;
   font-size: 12px;
-  color: var(--c-ink-2);
-  background: var(--c-accent-soft);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   text-decoration: none;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  transition: background-color 0.18s ease;
 }
 
 body.mp-center-mode .mp-center-header .mp-c-bbs a:hover {
-  color: #fff;
-  background: var(--c-accent);
+  background: rgba(0, 0, 0, 0.55);
   text-decoration: none;
 }
 
 /* ---------- Tab ---------- */
 
-body.mp-center-mode .mp-center-tabs .common-menu-page {
-  margin-bottom: 12px;
-}
-
 body.mp-center-mode .mp-center-tabs .page-ul {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   padding: 5px;
+  margin: 12px 0 14px;
   background: var(--c-card);
-  border: 1px solid var(--c-line);
   border-radius: 999px;
   box-shadow: var(--c-shadow);
+  border: 1px solid var(--c-line);
 }
 
 body.mp-center-mode .mp-center-tabs .mp-tab {
@@ -184,13 +142,20 @@ body.mp-center-mode .mp-center-tabs .mp-tab {
 }
 
 body.mp-center-mode .mp-center-tabs .mp-tab > a {
-  display: block;
-  padding: 7px 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 22px;
   border-radius: 999px;
   font-size: 14px;
   color: var(--c-ink-2);
   text-decoration: none;
   transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+body.mp-center-mode .mp-center-tabs .mp-tab > a i {
+  font-size: 12px;
+  opacity: 0.72;
 }
 
 body.mp-center-mode .mp-center-tabs .mp-tab > a:hover {
@@ -205,17 +170,17 @@ body.mp-center-mode .mp-center-tabs .mp-tab.active > a {
   font-weight: 600;
 }
 
-/* ---------- 统计条 ---------- */
-
-body.mp-center-mode .mp-center-total {
-  margin: 0 0 12px;
+body.mp-center-mode .mp-center-tabs .mp-tab.active > a i {
+  opacity: 1;
 }
+
+/* ---------- 统计条 ---------- */
 
 body.mp-center-mode .mp-center-total > ul {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 10px;
-  margin: 0;
+  margin: 0 0 14px;
   padding: 0;
   list-style: none;
 }
@@ -224,43 +189,44 @@ body.mp-center-mode .mp-center-total > ul > li {
   display: block;
   width: auto;
   margin: 0;
-  padding: 14px 16px;
+  padding: 16px 18px;
   background: var(--c-card);
   border: 1px solid var(--c-line);
-  border-radius: 13px;
+  border-radius: 14px;
   box-shadow: var(--c-shadow);
   text-align: left;
+  line-height: 1.3;
 }
 
-body.mp-center-mode .mp-center-total .title {
+body.mp-center-mode .mp-center-total > ul > li .title {
   display: block;
+  width: auto;
   font-size: 12px;
   color: var(--c-ink-3);
+  margin-bottom: 8px;
   letter-spacing: 0.02em;
-  margin-bottom: 6px;
 }
 
-body.mp-center-mode .mp-center-total .text {
+body.mp-center-mode .mp-center-total > ul > li .text {
   display: block;
-  font-size: 17px;
+  width: auto;
+  font-size: 19px;
   font-weight: 700;
   color: var(--c-ink);
   font-variant-numeric: tabular-nums;
+  line-height: 1.2;
 }
 
-body.mp-center-mode .mp-center-total > hr {
+body.mp-center-mode .mp-center-total > hr,
+body.mp-center-mode .mp-center-main > hr {
   display: none;
 }
 
 /* ---------- 内容块 ---------- */
 
-body.mp-center-mode .mp-center-main > hr {
-  display: none;
-}
-
 body.mp-center-mode .mp-center-block {
   margin-bottom: 14px;
-  padding: 18px 20px;
+  padding: 20px 22px;
   background: var(--c-card);
   border: 1px solid var(--c-line);
   border-radius: var(--c-radius);
@@ -271,34 +237,47 @@ body.mp-center-mode .mp-center-block .mp-cb-head {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   padding: 0;
   border: 0;
 }
 
 body.mp-center-mode .mp-center-block .mp-cb-head .title {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--c-ink);
+  line-height: 1.4;
 }
 
 body.mp-center-mode .mp-center-block .mp-cb-head .more {
   margin-left: auto;
+  position: static;
+  padding: 4px 12px;
+  border: 1px solid var(--c-hair);
+  border-radius: 999px;
   font-size: 12px;
-  color: var(--c-accent);
+  color: var(--c-ink-2);
+  background: transparent;
   text-decoration: none;
+  line-height: 1.6;
 }
 
-/* 模组列表 */
-body.mp-center-mode .mp-admin-list .title {
+body.mp-center-mode .mp-center-block .mp-cb-head .more:hover {
+  color: #fff;
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+/* 模组网格 */
+body.mp-center-mode .mp-admin-list > .title {
   font-size: 13px;
   color: var(--c-ink-3);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 body.mp-center-mode .mp-admin-list ul {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 8px;
   margin: 0;
   padding: 0;
@@ -307,12 +286,12 @@ body.mp-center-mode .mp-admin-list ul {
 
 body.mp-center-mode .mp-admin-list ul > li {
   margin: 0;
-  padding: 9px 12px;
-  background: var(--c-card-solid);
+  padding: 11px 14px;
+  background: var(--c-card-soft);
   border: 1px solid var(--c-hair);
-  border-radius: 10px;
-  font-size: 13px;
-  line-height: 1.5;
+  border-radius: 11px;
+  font-size: 13.5px;
+  line-height: 1.55;
   color: var(--c-ink-2);
   transition: border-color 0.18s ease, transform 0.18s ease;
 }
@@ -334,24 +313,25 @@ body.mp-center-mode .mp-admin-list ul > li a:hover {
 /* 教程卡 */
 body.mp-center-mode .mp-post-list .post-block {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
-  padding: 10px 12px;
-  background: var(--c-card-solid);
+  padding: 12px 14px;
+  background: var(--c-card-soft);
   border: 1px solid var(--c-hair);
-  border-radius: 12px;
+  border-radius: 13px;
 }
 
 body.mp-center-mode .mp-post-list .post-block .cover img {
-  width: 64px;
-  height: 48px;
+  width: 96px;
+  height: 64px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 9px;
+  display: block;
 }
 
 body.mp-center-mode .mp-post-list .post-block .info {
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.65;
   color: var(--c-ink-2);
 }
 
@@ -363,9 +343,9 @@ body.mp-center-mode .mp-edit-list ul {
 }
 
 body.mp-center-mode .mp-edit-list ul > li {
-  padding: 8px 0;
-  font-size: 13px;
-  line-height: 1.6;
+  padding: 9px 0;
+  font-size: 13.5px;
+  line-height: 1.65;
   color: var(--c-ink-2);
   border-bottom: 1px solid var(--c-hair);
 }
@@ -388,15 +368,15 @@ body.mp-center-mode .mp-edit-list .time {
   font-size: 12px;
 }
 
-/* 活跃度图 */
+/* 活跃度 */
 body.mp-center-mode .mp-chart-frame {
-  margin-top: 14px;
-  padding-top: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
   border-top: 1px solid var(--c-hair);
 }
 
 body.mp-center-mode .mp-chart-frame .title-main {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--c-ink);
 }
@@ -404,7 +384,7 @@ body.mp-center-mode .mp-chart-frame .title-main {
 body.mp-center-mode .mp-chart-frame .title-sub {
   font-size: 12px;
   color: var(--c-ink-3);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 /* ---------- 响应式 ---------- */
@@ -416,21 +396,16 @@ body.mp-center-mode .mp-chart-frame .title-sub {
 }
 
 @media (max-width: 720px) {
-  body.mp-center-mode .mp-center-header {
-    flex-wrap: wrap;
-    padding: 16px;
-  }
-
-  body.mp-center-mode .mp-center-header .mp-c-bbs {
-    margin-left: 0;
-    width: 100%;
-  }
-
   body.mp-center-mode .mp-center-total > ul {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   body.mp-center-mode .mp-admin-list ul {
     grid-template-columns: 1fr;
+  }
+
+  body.mp-center-mode .mp-center-tabs .mp-tab > a {
+    padding: 7px 14px;
+    font-size: 13px;
   }
 }

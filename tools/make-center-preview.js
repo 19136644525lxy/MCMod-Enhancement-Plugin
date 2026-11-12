@@ -23,8 +23,9 @@ inlined.forEach(([name, p]) => {
   shell = shell.replace(re, '<style data-site="' + name + '">\n' + css + '\n</style>');
 });
 
-// 2) 剩下的协议相对地址补上 https:
+// 2) 剩下的协议相对地址补上 https:（属性 + 行内 style 里的 url(...)）
 shell = shell.replace(/(href|src)="\/\/([^"]+)"/g, '$1="https://$2"');
+shell = shell.replace(/url\(\/\//g, 'url(https://');
 
 // 3) 把首页 tab 的内容塞进去（模拟 AJAX 返回）
 let frag = read('output/frame-CenterHome.html');
