@@ -16,37 +16,38 @@ body.mp-home-mode .center {
 }
 
 body.mp-home-mode {
-  background-color: #f3f1ec;
+  --mp-bg-base: #f3f1ec;
+  --mp-spot-a: rgba(87, 185, 138, 0.16);
+  --mp-spot-b: rgba(214, 168, 96, 0.14);
+  --mp-spot-c: rgba(120, 140, 200, 0.10);
+
+  background-color: var(--mp-bg-base);
   background-image:
-    radial-gradient(1200px 600px at 15% -10%, rgba(87, 185, 138, 0.16), transparent 60%),
-    radial-gradient(900px 500px at 95% 5%, rgba(214, 168, 96, 0.14), transparent 55%),
-    radial-gradient(700px 600px at 50% 100%, rgba(120, 140, 200, 0.10), transparent 60%);
-  /* 不要用 background-attachment: fixed —— 它和 backdrop-filter 在 Windows Chrome 上
-     会互相抢合成层，滚动时出现整屏闪烁。光斑固定留在文档顶部即可。 */
+    radial-gradient(1200px 600px at 15% -10%, var(--mp-spot-a), transparent 60%),
+    radial-gradient(900px 500px at 95% 5%, var(--mp-spot-b), transparent 55%),
+    radial-gradient(700px 600px at 50% 100%, var(--mp-spot-c), transparent 60%);
   background-size: 100% 1600px;
   background-repeat: no-repeat;
-  transition: background-color 0.3s ease;
+  transition:
+    --mp-bg-base 0.34s ease,
+    --mp-spot-a 0.34s ease,
+    --mp-spot-b 0.34s ease,
+    --mp-spot-c 0.34s ease;
 }
 
 html[data-mp-theme="dark"] body.mp-home-mode {
-  background-color: #14130f;
-  background-image:
-    radial-gradient(1200px 600px at 15% -10%, rgba(87, 185, 138, 0.14), transparent 60%),
-    radial-gradient(900px 500px at 95% 5%, rgba(196, 140, 60, 0.12), transparent 55%),
-    radial-gradient(700px 600px at 50% 100%, rgba(90, 110, 170, 0.14), transparent 60%);
-  background-size: 100% 1600px;
-  background-repeat: no-repeat;
+  --mp-bg-base: #14130f;
+  --mp-spot-a: rgba(87, 185, 138, 0.14);
+  --mp-spot-b: rgba(196, 140, 60, 0.12);
+  --mp-spot-c: rgba(90, 110, 170, 0.14);
 }
 
 @media (prefers-color-scheme: dark) {
   html:not([data-mp-theme="light"]) body.mp-home-mode {
-    background-color: #14130f;
-    background-image:
-      radial-gradient(1200px 600px at 15% -10%, rgba(87, 185, 138, 0.14), transparent 60%),
-      radial-gradient(900px 500px at 95% 5%, rgba(196, 140, 60, 0.12), transparent 55%),
-      radial-gradient(700px 600px at 50% 100%, rgba(90, 110, 170, 0.14), transparent 60%);
-    background-size: 100% 1600px;
-    background-repeat: no-repeat;
+    --mp-bg-base: #14130f;
+    --mp-spot-a: rgba(87, 185, 138, 0.14);
+    --mp-spot-b: rgba(196, 140, 60, 0.12);
+    --mp-spot-c: rgba(90, 110, 170, 0.14);
   }
 }
 

@@ -102,3 +102,27 @@
   --mp-mark: #6b5411;
   --mp-mark-text: #ffe58f;
 }
+
+/* 主题背景的可插值颜色。
+   普通 CSS 变量没法参与 transition；用 @property 把它声明成 <color> 之后，
+   渐变里的颜色才会跟着过渡，而不是「渐变瞬间换、底色慢慢变」的中间态。 */
+@property --mp-bg-base {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f3f1ec;
+}
+@property --mp-spot-a {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: rgba(87, 185, 138, 0.16);
+}
+@property --mp-spot-b {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: rgba(214, 168, 96, 0.14);
+}
+@property --mp-spot-c {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: rgba(120, 140, 200, 0.1);
+}
