@@ -34,9 +34,30 @@ MP.theme = (function () {
   function apply(settings) {
     const mode = (settings && settings.theme) || 'auto';
     const root = document.documentElement;
-    if (mode === 'auto') delete root.dataset.mpTheme;
-    else root.dataset.mpTheme = mode;
-    root.dataset.mpCompact = (settings && settings.compact) ? '1' : '0';
+    const next = mode === 'auto' ? '' : mode;
+    const cur = root.dataset.mpTheme || '';
+    const compact = (settings && settings.compact) ? '1' : '0';
+
+    if (next === cur) {
+      root.dataset.mpCompact = compact;
+      return;
+    }
+
+    // 主题色是「变量 + 渐变 + backdrop-filter」一起变的。
+    // 这些属性里渐变和 blur 不能插值，如果让 background-color 单独过渡 300ms，
+    // 中间那几帧就是「深色渐变 + 浅色底」——也就是用户看到的半暗半白。
+    // 所以切换这两帧里把过渡全停掉，直接换色，换完再恢复。
+    root.classList.add('mp-theme-switching');
+    if (!next) delete root.dataset.mpTheme;
+    else root.dataset.mpTheme = next;
+    root.dataset.mpCompact = compact;
+
+    const raf = window.requestAnimationFrame || function (fn) { return setTimeout(fn, 16); };
+    raf(function () {
+      raf(function () {
+        root.classList.remove('mp-theme-switching');
+      });
+    });
   }
 
   function cycle() {
