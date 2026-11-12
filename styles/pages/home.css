@@ -1768,8 +1768,6 @@ html[data-mp-theme="dark"] .mp-bb-search {
   }
 }
 
-
-
 /* 时间组件左边的像素小钟：原站的 16×16 素材，放大时保持硬边 */
 .mp-clock {
   display: flex;
@@ -1816,11 +1814,6 @@ html.mp-home-root[data-mp-theme="dark"] {
   height: 13px;
 }
 
-
-
-
-
-
 /* 编辑动态卡内部有无限滚动动画，卡片本身不再做毛玻璃，
    否则每一帧都要重新采样背景。用更高的不透明度换稳定。 */
 .mp-home .mp-glass:has(.mp-feed-scroll) {
@@ -1861,7 +1854,6 @@ html.mp-home-root .mp-float-bar {
   }
 }
 
-
 /* 顶栏最右的插件设置齿轮 */
 .mp-gear-btn {
   flex: none;
@@ -1898,93 +1890,11 @@ html.mp-home-root .mp-float-bar {
   height: 16px;
 }
 
-/* 右下角悬浮条：增强 / 原始 / 设置
-   它要能在「原始视图」下继续存在，所以颜色用固定值，不依赖 body.mp-home-mode */
-.mp-fab-bar {
-  position: fixed;
-  right: 0;
-  bottom: 344px;
-  z-index: 2147483100;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 5px 4px 5px 5px;
-  border-radius: 14px 0 0 14px;
-  opacity: .72;
-  transition: opacity .18s ease, transform .18s ease;
-  background: #fbfaf7;
-  border: 1px solid rgba(24, 22, 20, 0.1);
-  box-shadow: 0 10px 34px rgba(24, 22, 20, 0.16), 0 2px 6px rgba(24, 22, 20, 0.06);
-}
-
-html[data-mp-theme="dark"] .mp-fab-bar {
-  background: #1c1a17;
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
-}
+@media (prefers-color-scheme: dark) {
+  }
 
 @media (prefers-color-scheme: dark) {
-  html:not([data-mp-theme="light"]) .mp-fab-bar {
-    background: #1c1a17;
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
   }
-}
-
-.mp-fab {
-  padding: 6px 12px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: #6f6a62;
-  font: 12px/1.4 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-  cursor: pointer;
-  transition: background-color 0.16s ease, color 0.16s ease;
-}
-
-html[data-mp-theme="dark"] .mp-fab {
-  color: #9b958c;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not([data-mp-theme="light"]) .mp-fab {
-    color: #9b958c;
-  }
-}
-
-.mp-fab:hover {
-  background: rgba(24, 22, 20, 0.07);
-  color: #26231f;
-}
-
-html[data-mp-theme="dark"] .mp-fab:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ece9e3;
-}
-
-.mp-fab.is-on {
-  background: #2f6f4f;
-  color: #fff;
-}
-
-.mp-fab.is-on:hover {
-  background: #2f6f4f;
-  color: #fff;
-}
-
-.mp-fab-icon {
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mp-fab-icon .mp-gear {
-  width: 15px;
-  height: 15px;
-}
 
 /* ---------------- 公告：hero 卡片中间的一竖条 ---------------- */
 
@@ -2115,119 +2025,6 @@ body.mp-home-mode .banner {
   background: transparent;
 }
 
-
-/* 吸附在右侧边缘：静止时半透明，鼠标移上去整条亮起来并微微向左探出 */
-.mp-fab-bar:hover {
-  opacity: 1;
-  transform: translateX(-2px);
-}
-
-.mp-fab {
-  width: 40px;
-  padding: 7px 0;
-  font-size: 11.5px;
-  letter-spacing: .5px;
-}
-
-.mp-fab-icon {
-  width: 40px;
-  height: 34px;
-}
-
-/* ---------- 抽屉式切换：右边缘只露一个箭头把手，点开弹出三个按钮 ---------- */
-.mp-fab-bar {
-  position: fixed;
-  right: 0;
-  bottom: 344px;
-  z-index: 2147483100;
-  display: flex;
-  align-items: center;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  border-radius: 0;
-  opacity: 1;
-  transform: none;
-}
-
-.mp-fab-bar:hover {
-  opacity: 1;
-  transform: none;
-}
-
-.mp-fab-handle {
-  width: 26px;
-  height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 1px solid rgba(24, 22, 20, 0.12);
-  border-right: 0;
-  border-radius: 13px 0 0 13px;
-  background: #fbfaf7;
-  color: #55504a;
-  font-size: 15px;
-  cursor: pointer;
-  box-shadow: -4px 0 14px rgba(24, 22, 20, 0.1);
-  transition: color 0.18s ease, background-color 0.18s ease;
-}
-
-.mp-fab-handle:hover {
-  color: #2f6f4f;
-}
-
-.mp-fab-handle-icon {
-  display: block;
-  line-height: 1;
-  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.mp-fab-bar.is-open .mp-fab-handle-icon {
-  transform: rotate(180deg);
-}
-
-.mp-fab-sheet {
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 5px;
-  border-radius: 14px;
-  background: #fbfaf7;
-  border: 1px solid rgba(24, 22, 20, 0.1);
-  box-shadow: 0 12px 34px rgba(24, 22, 20, 0.18);
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(calc(100% + 10px), -50%) scale(0.86);
-  transform-origin: right center;
-  transition: transform 0.44s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
-}
-
-.mp-fab-bar.is-open .mp-fab-sheet {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translate(0, -50%) scale(1);
-}
-
-html[data-mp-theme="dark"] .mp-fab-handle,
-html[data-mp-theme="dark"] .mp-fab-sheet {
-  background: #1c1a17;
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
-}
-
-html[data-mp-theme="dark"] .mp-fab-handle {
-  color: #ece9e3;
-}
-
-html[data-mp-theme="dark"] .mp-fab-handle:hover {
-  color: #57b98a;
-}
-
 @media (prefers-color-scheme: dark) {
   html:not([data-mp-theme="light"]) .mp-fab-handle,
   html:not([data-mp-theme="light"]) .mp-fab-sheet {
@@ -2243,88 +2040,11 @@ html[data-mp-theme="dark"] .mp-fab-handle:hover {
   }
 }
 
-/* 把手改成半圆胶囊，弹出的面板改成横条 */
-.mp-fab-handle {
-  width: 30px;
-  height: 46px;
-  border-radius: 23px 0 0 23px;
-  font-size: 14px;
-}
-
-.mp-fab-sheet {
-  flex-direction: row;
-  align-items: center;
-  padding: 4px;
-  border-radius: 999px;
-}
-
-.mp-fab-sheet .mp-fab {
-  width: auto;
-  min-width: 50px;
-  padding: 8px 12px;
-  border-radius: 999px;
-}
-
-.mp-fab-sheet .mp-fab-icon {
-  width: 34px;
-  height: 34px;
-  min-width: 0;
-  padding: 0;
-}
-
-/* 把手：真正做成半圆胶囊 + SVG 箭头 */
-.mp-fab-handle {
-  width: 36px;
-  height: 58px;
-  padding-left: 4px;
-  border-radius: 29px 0 0 29px;
-  border-color: rgba(24, 22, 20, 0.14);
-  box-shadow: -6px 0 18px rgba(24, 22, 20, 0.14);
-}
-
-.mp-fab-handle-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding-right: 6px;
-}
-
-html[data-mp-theme="dark"] .mp-fab-handle {
-  background: #26241f;
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
 @media (prefers-color-scheme: dark) {
   html:not([data-mp-theme="light"]) .mp-fab-handle {
     background: #26241f;
     border-color: rgba(255, 255, 255, 0.12);
   }
-}
-
-/* 把手描边收敛：浅色下用极淡的暖灰线 + 内高光，不再是一道黑边 */
-.mp-fab-handle {
-  border: 1px solid rgba(24, 22, 20, 0.07);
-  box-shadow: -4px 0 14px rgba(24, 22, 20, 0.07),
-              inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  color: #6b655c;
-}
-
-.mp-fab-handle:hover {
-  color: #2f6f4f;
-  border-color: rgba(47, 111, 79, 0.28);
-}
-
-html[data-mp-theme="dark"] .mp-fab-handle {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: -4px 0 14px rgba(0, 0, 0, 0.38);
-  color: #b9b3a8;
-}
-
-html[data-mp-theme="dark"] .mp-fab-handle:hover {
-  color: #57b98a;
-  border-color: rgba(87, 185, 138, 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -2340,11 +2060,10 @@ html[data-mp-theme="dark"] .mp-fab-handle:hover {
 }
 
 /* ============================================================
-   右侧抽屉（最终版，覆盖前面所有迭代）
-   把手 = 28×56 的左半圆，颜色在明暗两套主题里都单独给足对比
+   右侧抽屉（唯一一份，前面的历史版本已全部删除）
    ============================================================ */
 .mp-fab-bar {
-  position: fixed !important;
+  position: fixed;
   right: 0;
   bottom: 344px;
   z-index: 2147483100;
@@ -2355,35 +2074,35 @@ html[data-mp-theme="dark"] .mp-fab-handle:hover {
   border: 0;
   background: none;
   box-shadow: none;
-  border-radius: 0;
   opacity: 1;
   transform: none;
 }
 
+/* 50% / 50% 的椭圆半径 = 左边缘永远是标准半圆，不受宽高影响 */
 .mp-fab-handle {
-  width: 28px;
-  height: 56px;
+  width: 30px;
+  height: 60px;
   padding: 0;
   margin: 0;
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(24, 22, 20, 0.09);
+  border: 1px solid rgba(24, 22, 20, 0.1);
   border-right: 0;
-  border-radius: 28px 0 0 28px;
+  border-radius: 50% 0 0 50% / 50% 0 0 50%;
   background: #ffffff;
   color: #4a453d;
   font-size: 0;
-  box-shadow: -2px 0 12px rgba(30, 24, 18, 0.1);
+  box-shadow: -3px 0 14px rgba(30, 24, 18, 0.1);
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .mp-fab-handle:hover {
   background: #2f6f4f;
   border-color: #2f6f4f;
   color: #ffffff;
-  box-shadow: -2px 0 16px rgba(47, 111, 79, 0.3);
 }
 
 .mp-fab-handle-icon {
@@ -2431,11 +2150,13 @@ html[data-mp-theme="dark"] .mp-fab-handle:hover {
   min-width: 52px;
   height: 32px;
   padding: 0 12px;
+  border: 0;
   border-radius: 999px;
   background: transparent;
   color: #4a453d;
   font-size: 12px;
   letter-spacing: 0.4px;
+  cursor: pointer;
 }
 
 .mp-fab-sheet .mp-fab:hover {
@@ -2455,12 +2176,11 @@ html[data-mp-theme="dark"] .mp-fab-handle:hover {
   padding: 0;
 }
 
-/* 深色 */
 html[data-mp-theme="dark"] .mp-fab-handle {
   background: #2b2924;
-  border-color: rgba(255, 255, 255, 0.13);
-  color: #d8d3c8;
-  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #ded8cc;
+  box-shadow: -3px 0 14px rgba(0, 0, 0, 0.5);
 }
 
 html[data-mp-theme="dark"] .mp-fab-handle:hover {
@@ -2476,7 +2196,7 @@ html[data-mp-theme="dark"] .mp-fab-sheet {
 }
 
 html[data-mp-theme="dark"] .mp-fab-sheet .mp-fab {
-  color: #d8d3c8;
+  color: #ded8cc;
 }
 
 html[data-mp-theme="dark"] .mp-fab-sheet .mp-fab:hover {
@@ -2492,9 +2212,9 @@ html[data-mp-theme="dark"] .mp-fab-sheet .mp-fab.is-on {
 @media (prefers-color-scheme: dark) {
   html:not([data-mp-theme="light"]) .mp-fab-handle {
     background: #2b2924;
-    border-color: rgba(255, 255, 255, 0.13);
-    color: #d8d3c8;
-    box-shadow: -2px 0 12px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #ded8cc;
+    box-shadow: -3px 0 14px rgba(0, 0, 0, 0.5);
   }
   html:not([data-mp-theme="light"]) .mp-fab-handle:hover {
     background: #57b98a;
@@ -2507,7 +2227,11 @@ html[data-mp-theme="dark"] .mp-fab-sheet .mp-fab.is-on {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
   }
   html:not([data-mp-theme="light"]) .mp-fab-sheet .mp-fab {
-    color: #d8d3c8;
+    color: #ded8cc;
+  }
+  html:not([data-mp-theme="light"]) .mp-fab-sheet .mp-fab:hover {
+    background: rgba(87, 185, 138, 0.16);
+    color: #57b98a;
   }
   html:not([data-mp-theme="light"]) .mp-fab-sheet .mp-fab.is-on {
     background: #57b98a;
