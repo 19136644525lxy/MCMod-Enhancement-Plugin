@@ -39,6 +39,8 @@ MP.pages.center = (function () {
   ];
 
   function match() {
+    // 离线预览页是 file:// 协议，content script 本来也跑不到那里，放行不影响线上
+    if (location.protocol === 'file:') return true;
     if (location.hostname !== 'center.mcmod.cn') return false;
     // 只接管 /<uid>/ 这一种个人主页，其它路径（设置、消息等）不碰
     return /^\/\d+\/?$/.test(location.pathname);
