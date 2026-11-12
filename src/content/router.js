@@ -177,7 +177,30 @@ MP.router = (function () {
     }
   }
 
+  // 跨页/跨标签页同步：主题、紧凑、背景这些设置在 chrome.storage.sync 里，
+  // 任一页面改动后，其它已打开的页面要立刻跟着变，而不是等下次刷新。
+  function subscribeSettings() {
+    try {
+      MP.store.onChange(function (changes) {
+        var keys = ['theme', 'compact', 'bgPreset', 'bgIntensity'];
+        var hit = keys.some(function (k) { return Object.prototype.hasOwnProperty.call(changes, k); });
+        if (!hit) return;
+        MP.store.getSync().then(function (next) {
+          settings = next;
+          try { MP.theme.apply(next); } catch (e) { /* ignore */ }
+          if (MP.background && (changes.bgPreset || changes.bgIntensity)) {
+            try {
+              if (next.bgIntensity != null) MP.background.setIntensity(next.bgIntensity);
+              MP.background.apply(next.bgPreset || 'mist');
+            } catch (e) { /* ignore */ }
+          }
+        }).catch(function () { /* ignore */ });
+      });
+    } catch (e) { /* ignore */ }
+  }
+
   function boot() {
+    subscribeSettings();
     MP.store.getSync().then((s) => {
       settings = s;
       if (!s.enabled) {
