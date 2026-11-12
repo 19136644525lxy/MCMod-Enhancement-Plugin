@@ -19,13 +19,16 @@
   var current = 'mist';
   var canvas = null;
   var ctx = null;
+  var customImg = null;   // 用户上传的图片（Image 对象）
+  var intensity = 45;     // 自定义背景的遮罩强度 0-100
 
   var PRESETS = {
     mist: { label: '晨雾' },
     aurora: { label: '极光' },
     pixel: { label: '像素夜空' },
     grass: { label: '草方块' },
-    stars: { label: '星空' }
+    stars: { label: '星空' },
+    custom: { label: '自定义' }
   };
 
   function isDark() {
@@ -258,6 +261,92 @@
     }
   }
 
+  /* ---------------- 自定义图片 ---------------- */
+
+  // 图片本身放 IndexedDB：dataURL 动辄 1MB 以上，chrome.storage 的同步配额放不下，
+  // 而且同步区每次写入都会广播给所有标签页，没必要。
+  function db() {
+    return new Promise(function (resolve, reject) {
+      var req = indexedDB.open('mp-bg', 1);
+      req.onupgradeneeded = function () {
+        var d = req.result;
+        if (!d.objectStoreNames.contains('images')) d.createObjectStore('images');
+      };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () { reject(req.error); };
+    });
+  }
+
+  function idbGet(key) {
+    return db().then(function (d) {
+      return new Promise(function (res, rej) {
+        var r = d.transaction('images', 'readonly').objectStore('images').get(key);
+        r.onsuccess = function () { res(r.result || null); };
+        r.onerror = function () { rej(r.error); };
+      });
+    });
+  }
+
+  function idbPut(key, val) {
+    return db().then(function (d) {
+      return new Promise(function (res, rej) {
+        var tx = d.transaction('images', 'readwrite');
+        tx.objectStore('images').put(val, key);
+        tx.oncomplete = function () { res(true); };
+        tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+
+  function idbDel(key) {
+    return db().then(function (d) {
+      return new Promise(function (res, rej) {
+        var tx = d.transaction('images', 'readwrite');
+        tx.objectStore('images').delete(key);
+        tx.oncomplete = function () { res(true); };
+        tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+
+  function loadImage(src) {
+    return new Promise(function (res, rej) {
+      var img = new Image();
+      img.onload = function () { res(img); };
+      img.onerror = function () { rej(new Error('image decode failed')); };
+      img.src = src;
+    });
+  }
+
+  function paintCustom() {
+    if (!ctx || !customImg) return;
+    var dim = sizeCanvas();
+    if (!dim) return;
+    var w = dim.w;
+    var h = dim.h;
+    var dark = isDark();
+
+    var iw = customImg.naturalWidth || customImg.width || 1;
+    var ih = customImg.naturalHeight || customImg.height || 1;
+    var scale = Math.max(w / iw, h / ih);
+    var dw = iw * scale;
+    var dh = ih * scale;
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(customImg, (w - dw) / 2, (h - dh) / 2, dw, dh);
+
+    // 遮罩：不压的话花哨图片会把毛玻璃卡片的对比度吃掉
+    var a = Math.max(0, Math.min(0.85, (Number(intensity) || 0) / 100));
+    ctx.fillStyle = dark ? 'rgba(9,10,14,' + a + ')' : 'rgba(248,246,241,' + a + ')';
+    ctx.fillRect(0, 0, w, h);
+
+    var g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(1, dark ? 'rgba(9,10,14,' + (a * 0.55) + ')' : 'rgba(248,246,241,' + (a * 0.55) + ')');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+  }
+
   /* ---------------- 调度 ---------------- */
 
   function stopLoop() {
@@ -280,6 +369,8 @@
       paintGrass();
     } else if (current === 'stars') {
       paintStars();
+    } else if (current === 'custom') {
+      paintCustom();
     }
   }
 
@@ -326,12 +417,34 @@
       layer.style.opacity = '1';
     }
 
+    function run() {
+      if (mode !== 'custom') {
+        commit();
+        return;
+      }
+      // 自定义图要先从 IndexedDB 取出来才能画
+      idbGet('custom').then(function (src) {
+        if (!src) {
+          mode = 'mist';
+          commit();
+          return;
+        }
+        return loadImage(src).then(function (img) {
+          customImg = img;
+          commit();
+        });
+      }).catch(function () {
+        mode = 'mist';
+        commit();
+      });
+    }
+
     // 切换时先把旧底图淡出，画好新底图再淡入，避免硬切
     if (changed) {
       layer.style.opacity = '0';
-      setTimeout(commit, 160);
+      setTimeout(run, 160);
     } else {
-      commit();
+      run();
     }
   }
 
@@ -360,6 +473,77 @@
     apply: apply,
     refresh: refresh,
     destroy: destroy,
-    current: function () { return current; }
+    current: function () { return current; },
+
+    // 强度：0 完全不压暗，100 几乎盖住（上限仍留 15% 让图隐约可见）
+    setIntensity: function (v) {
+      intensity = Math.max(0, Math.min(100, Number(v) || 0));
+      if (current === 'custom') paintStatic();
+    },
+    getIntensity: function () { return intensity; },
+
+    // 保存用户选的原图：先用 canvas 压到 1920 宽、JPEG 0.82，再进 IndexedDB
+    saveImage: function (fileOrDataUrl) {
+      return Promise.resolve().then(function () {
+        if (typeof fileOrDataUrl === 'string') return compress(fileOrDataUrl);
+        return readFile(fileOrDataUrl).then(compress);
+      }).then(function (dataUrl) {
+        return idbPut('custom', dataUrl).then(function () {
+          return loadImage(dataUrl).then(function (img) {
+            customImg = img;
+            if (current === 'custom') paintStatic();
+            return dataUrl;
+          });
+        });
+      });
+    },
+
+    removeImage: function () {
+      return idbDel('custom').then(function () {
+        customImg = null;
+        if (current === 'custom') apply('mist');
+        return true;
+      });
+    },
+
+    hasImage: function () {
+      return idbGet('custom').then(function (v) { return !!v; });
+    },
+
+    preview: function () {
+      return idbGet('custom');
+    }
   };
+
+  function readFile(file) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () { resolve(String(fr.result || '')); };
+      fr.onerror = function () { reject(fr.error); };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  function compress(src) {
+    return loadImage(src).then(function (img) {
+      var maxW = 1920;
+      var w = img.naturalWidth || img.width;
+      var h = img.naturalHeight || img.height;
+      if (w > maxW) {
+        h = Math.round(h * maxW / w);
+        w = maxW;
+      }
+      var c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      var cx = c.getContext('2d');
+      if (!cx) return src;
+      cx.drawImage(img, 0, 0, w, h);
+      try {
+        return c.toDataURL('image/jpeg', 0.82);
+      } catch (e) {
+        return src;
+      }
+    });
+  }
 })();

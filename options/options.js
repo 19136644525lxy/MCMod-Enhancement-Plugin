@@ -1,4 +1,4 @@
-const DEFAULTS = {
+﻿const DEFAULTS = {
   enabled: true,
   theme: 'auto',
   palette: true,
@@ -7,6 +7,7 @@ const DEFAULTS = {
   redrawSearch: true,
   redrawPages: false,
   bgPreset: 'mist',
+  bgIntensity: 45,
   compact: false,
   debug: false
 };

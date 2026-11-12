@@ -896,7 +896,12 @@
 
       // 背景预设（mist 为纯 CSS，其余画在 canvas 上）
       try {
-        if (MP.background) MP.background.apply((settings && settings.bgPreset) || 'mist');
+        if (MP.background) {
+          MP.background.setIntensity(
+            settings && settings.bgIntensity != null ? settings.bgIntensity : 45
+          );
+          MP.background.apply((settings && settings.bgPreset) || 'mist');
+        }
       } catch (e) {
         console.warn('[MCMod+] 背景预设失败', e);
       }

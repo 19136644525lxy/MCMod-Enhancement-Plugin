@@ -62,7 +62,8 @@ setTimeout(() => {
   ok('有 7 个设置行', d.querySelectorAll('.mp-sp-row').length === 7, 'got ' + d.querySelectorAll('.mp-sp-row').length);
   ok('日夜开关不在面板里', d.querySelectorAll('.mp-sp-night').length === 0);
   ok('开关 6 个', d.querySelectorAll('.mp-sp .mp-toggle').length === 6, 'got ' + d.querySelectorAll('.mp-sp .mp-toggle').length);
-  ok('背景预设 5 个', d.querySelectorAll('.mp-sp-chips .mp-sp-chip').length === 5, 'got ' + d.querySelectorAll('.mp-sp-chips .mp-sp-chip').length);
+  ok('背景预设 6 个', d.querySelectorAll('.mp-sp-chips .mp-sp-chip').length === 6, 'got ' + d.querySelectorAll('.mp-sp-chips .mp-sp-chip').length);
+  ok('自定义背景面板默认收起', !!d.querySelector('.mp-sp-bg-extra.is-hide'));
   ok('背景默认选中晨雾', (() => {
     const on = d.querySelector('.mp-sp-chip.is-on');
     return !!on && on.getAttribute('data-key') === 'mist';
