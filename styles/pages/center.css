@@ -440,3 +440,100 @@ body.mp-center-mode .mp-chart-frame .title-sub {
   }
 }
 
+
+/* ---------- 悬浮条（与首页同一套视觉） ---------- */
+
+.mp-fab-bar {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483100;
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #fbfaf7;
+  border: 1px solid rgba(24, 22, 20, 0.1);
+  box-shadow: 0 10px 34px rgba(24, 22, 20, 0.16), 0 2px 6px rgba(24, 22, 20, 0.06);
+}
+
+html[data-mp-theme="dark"] .mp-fab-bar {
+  background: #1c1a17;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) .mp-fab-bar {
+    background: #1c1a17;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.mp-fab {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #6f6a62;
+  font: 12px/1.4 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+html[data-mp-theme="dark"] .mp-fab { color: #9b958c; }
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) .mp-fab { color: #9b958c; }
+}
+
+.mp-fab:hover { background: rgba(24, 22, 20, 0.07); color: #26231f; }
+
+html[data-mp-theme="dark"] .mp-fab:hover { background: rgba(255, 255, 255, 0.1); color: #ece9e3; }
+
+.mp-fab.is-on { background: #2f6f4f; color: #fff; }
+.mp-fab.is-on:hover { background: #2f6f4f; color: #fff; }
+
+.mp-fab-icon {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mp-fab-gear { width: 15px; height: 15px; }
+
+/* ---------- 入场 ---------- */
+
+@keyframes mp-c-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+body.mp-center-mode .mp-center-header {
+  animation: mp-c-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+body.mp-center-mode .mp-center-tabs {
+  animation: mp-c-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+}
+
+body.mp-center-mode .mp-center-total {
+  animation: mp-c-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+body.mp-center-mode .mp-center-block {
+  animation: mp-c-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.mp-center-mode .mp-center-header,
+  body.mp-center-mode .mp-center-tabs,
+  body.mp-center-mode .mp-center-total,
+  body.mp-center-mode .mp-center-block {
+    animation: none;
+  }
+}

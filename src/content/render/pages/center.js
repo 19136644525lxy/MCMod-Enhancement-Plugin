@@ -11,12 +11,13 @@ window.MP = window.MP || {};
 MP.pages = MP.pages || {};
 
 MP.pages.center = (function () {
-  const { debounce } = MP.dom;
+  const { debounce, h } = MP.dom;
 
   let mounted = false;
   let observer = null;
   let settingsRef = null;
   let onHash = null;
+  let fabEl = null;
 
   const CLASSES = [
     ['.center-frame > .center-header', 'mp-center-header'],
@@ -41,6 +42,80 @@ MP.pages.center = (function () {
     if (location.hostname !== 'center.mcmod.cn') return false;
     // 只接管 /<uid>/ 这一种个人主页，其它路径（设置、消息等）不碰
     return /^\/\d+\/?$/.test(location.pathname);
+  }
+
+  // 齿轮：Lucide settings 的路径，和首页顶栏那颗保持一致
+  function gearSvg() {
+    return h('svg', {
+      class: 'mp-fab-gear',
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '1.8',
+      'stroke-linejoin': 'round',
+      'aria-hidden': 'true'
+    },
+      h('path', { d: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z' }),
+      h('circle', { cx: '12', cy: '12', r: '3' })
+    );
+  }
+
+  function syncFab() {
+    if (!fabEl) return;
+    const on = document.body.classList.contains('mp-center-mode');
+    const btns = fabEl.querySelectorAll('.mp-fab');
+    if (btns[0]) btns[0].classList.toggle('is-on', on);
+    if (btns[1]) btns[1].classList.toggle('is-on', !on);
+  }
+
+  // 和首页一样：悬浮条不随 unmount 消失，否则点「原始」之后就再也切不回来
+  function ensureFab(settings) {
+    if (fabEl && document.body.contains(fabEl)) {
+      syncFab();
+      return fabEl;
+    }
+    fabEl = h('div', { id: 'mp-center-fab', class: 'mp-fab-bar' },
+      h('button', {
+        class: 'mp-fab',
+        type: 'button',
+        onclick: function () {
+          if (document.body.classList.contains('mp-center-mode')) {
+            syncFab();
+            return;
+          }
+          // 重新读设置，避免用上一次挂载时的旧快照
+          MP.store.getSync().then(function (s) {
+            MP.pages.center.mount(s || settings || {});
+            syncFab();
+          }).catch(function () {
+            MP.pages.center.mount(settings || {});
+            syncFab();
+          });
+        }
+      }, '增强'),
+      h('button', {
+        class: 'mp-fab',
+        type: 'button',
+        onclick: function () {
+          MP.pages.center.unmount();
+          syncFab();
+        }
+      }, '原始'),
+      h('button', {
+        class: 'mp-fab mp-fab-icon',
+        type: 'button',
+        title: '插件设置',
+        'aria-label': '插件设置',
+        onclick: function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (MP.settingsPanel) MP.settingsPanel.toggle();
+        }
+      }, gearSvg())
+    );
+    document.body.appendChild(fabEl);
+    syncFab();
+    return fabEl;
   }
 
   function mark() {
@@ -92,6 +167,8 @@ MP.pages.center = (function () {
     };
     window.addEventListener('hashchange', onHash);
 
+    ensureFab(settingsRef);
+
     return true;
   }
 
@@ -114,8 +191,10 @@ MP.pages.center = (function () {
       const nodes = document.querySelectorAll('.' + pair[1]);
       for (let i = 0; i < nodes.length; i++) nodes[i].classList.remove(pair[1]);
     });
+    syncFab();
     return true;
   }
 
   return { match, mount, unmount, mark, isActive: function () { return mounted; } };
 })();
+
