@@ -91,6 +91,7 @@ MP.pages.center = (function () {
   // 数据与首页「我的足迹」同源，所以两边是一致的。
   var actKey = '';
   var actToken = 0;
+  var actBusy = false;
 
   function activityUrl(uid) {
     return 'https://www.mcmod.cn/history.html?userid=' + uid;
@@ -250,10 +251,15 @@ MP.pages.center = (function () {
       return;
     }
 
+    // mark() 会被 MutationObserver 反复调用，这里必须拦住，
+    // 否则每调一次 actToken 就 +1，上一轮的请求全部作废，界面永远停在「载入中」
+    if (actBusy) return;
+
     var cacheKey = 'mp:act:' + uid;
     var myToken = ++actToken;
 
     function run(force) {
+      actBusy = true;
       actToken++;
       myToken = actToken;
 
@@ -282,11 +288,13 @@ MP.pages.center = (function () {
         backfill(uid, first, function (n, t, acc) {
           if (alive()) paintActivity(host, acc || first, { progress: n + '/' + t });
         }, function (allDays) {
+          actBusy = false;
           if (!alive()) return;
           paintActivity(host, allDays, { note: '全部' });
           writeCache(cacheKey, allDays, false);
         });
       }).catch(function () {
+        actBusy = false;
         if (myToken === actToken) body.textContent = '活跃度载入失败';
       });
     }
