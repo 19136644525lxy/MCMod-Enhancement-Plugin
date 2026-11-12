@@ -643,7 +643,20 @@ MP.pages.center = (function () {
     if (box && box.parentNode) box.parentNode.removeChild(box);
   }
 
+  // 页脚那个会动的 logo 是 GIF（1-bit 透明），深色底上边缘会有一圈白毛边。
+  // 换成处理过的 WebP 动画：同 36 帧、体积更小、边缘干净。
+  function swapFooterLogo() {
+    try {
+      if (!chrome || !chrome.runtime || !chrome.runtime.getURL) return;
+      var logo = document.querySelector('footer img.logo');
+      if (!logo) return;
+      var url = chrome.runtime.getURL('assets/logo_dynamic.webp');
+      if (logo.getAttribute('src') !== url) logo.setAttribute('src', url);
+    } catch (e) {}
+  }
+
   function mark() {
+    swapFooterLogo();
     document.body.classList.add('mp-center-mode');
     CLASSES.forEach(function (pair) {
       const nodes = document.querySelectorAll(pair[0]);
