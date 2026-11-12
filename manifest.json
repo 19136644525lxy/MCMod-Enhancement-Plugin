@@ -33,7 +33,8 @@
         "https://www.mcmod.cn/*",
         "https://search.mcmod.cn/*",
         "https://bbs.mcmod.cn/*",
-        "https://play.mcmod.cn/*"
+        "https://play.mcmod.cn/*",
+        "https://center.mcmod.cn/*"
       ],
       "run_at": "document_end",
       "js": [

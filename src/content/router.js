@@ -29,12 +29,21 @@ MP.router = (function () {
     setTimeout(() => mo.disconnect(), 4000);
   }
 
+  function isHomePage() {
+    if (location.hostname !== 'www.mcmod.cn') return false;
+    const p = location.pathname;
+    return p === '/' || p === '/index.html' || p === '/index.php';
+  }
+
   function bindKeys() {
     document.addEventListener(
       'keydown',
       (e) => {
         const mod = e.ctrlKey || e.metaKey;
         if (mod && !e.altKey && e.key.toLowerCase() === 'k') {
+          // 命令面板只在首页启用：它要拿首页的模组卡和搜索框上下文，
+          // 在物品页/个人中心这类页面上开出来也搜不出有用的东西。
+          if (!isHomePage()) return;
           e.preventDefault();
           e.stopPropagation();
           MP.palette.toggle(settings);
@@ -120,7 +129,7 @@ MP.router = (function () {
       debugRow('页面', location.href),
       debugRow('设置', JSON.stringify(settings)),
       debugRow('样式', document.querySelectorAll('link[data-mp-style]').length + ' 个'),
-      debugRow('结构重绘', pageKey ? pageKey + ' 页已接管' : '此页未接管'),
+      debugRow('页面重绘（四类页）', pageKey ? pageKey + ' 页已接管' : '此页未接管'),
       debugRow('首页排版', homeActive() ? '已重绘（毛玻璃）' : '未接管'),
       netRow,
       data ? debugRow('搜索结果', data.ok ? `${data.count} 条` : '抽取失败：' + data.error) : null,

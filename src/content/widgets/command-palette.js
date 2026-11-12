@@ -29,6 +29,47 @@ MP.palette = (function () {
     return { keyword: q, type: '', prefix: '' };
   }
 
+  function splitWords(raw) {
+    return String(raw || '').trim().split(/\s+/).filter(Boolean);
+  }
+
+  /**
+   * 「猜词」词库：不额外发请求，直接从当前页面已经渲染出来的东西里收集。
+   * 首页有热门标签、模组卡、九大分类，够用了。
+   */
+  let lexicon = null;
+  function buildLexicon() {
+    const words = new Set();
+    const push = (sel, attr) => {
+      document.querySelectorAll(sel).forEach((el) => {
+        const t = (el.textContent || '').trim();
+        if (t && t.length <= 24) words.add(t);
+      });
+    };
+    push('.mp-tag-name');
+    push('.mp-mod-name');
+    push('.mp-cat-name');
+    push('.mp-version-chip');
+    return Array.from(words);
+  }
+
+  function suggestWords(prefix) {
+    const p = String(prefix || '').trim().toLowerCase();
+    if (p.length < 1) return [];
+    if (!lexicon || !lexicon.length) lexicon = buildLexicon();
+    if (!lexicon.length) return [];
+    const starts = [];
+    const contains = [];
+    lexicon.forEach((w) => {
+      const lw = w.toLowerCase();
+      if (lw === p) return;
+      if (lw.indexOf(p) === 0) starts.push(w);
+      else if (lw.indexOf(p) > 0) contains.push(w);
+    });
+    return starts.concat(contains).slice(0, 6);
+  }
+
+
   function build() {
     input = h('input', {
       class: 'mp-palette-input',
@@ -101,31 +142,31 @@ MP.palette = (function () {
   async function onInput() {
     const raw = input.value;
     const parsed = parseQuery(raw);
-    state.query = parsed.keyword;
+    const words = splitWords(parsed.keyword);
+    const keyword = words.join(' ');
+    state.query = keyword;
     state.selected = 0;
 
-    if (!parsed.keyword) {
+    if (!keyword) {
       renderHint();
       return;
     }
 
-    // 单字搜索既没有意义，又会放大请求量，直接拦在本地
-    if (parsed.keyword.length < 2) {
-      clear(resultsEl);
-      resultsEl.appendChild(
-        MP.ui.empty('再多输入一个字', '单字搜索范围太大，且会产生多余请求')
-      );
-      return;
-    }
+    const guesses = suggestWords(words[words.length - 1] || keyword);
 
     const seq = ++state.seq;
     clear(resultsEl);
     resultsEl.appendChild(MP.ui.skeleton(3));
 
-    const [searchRes, listRes] = await Promise.all([
-      MP.page.fetchDoc(MP.page.searchUrl(parsed.keyword)),
-      MP.page.fetchDoc(MP.page.listUrl(parsed.keyword))
-    ]);
+    // 单字只查全文搜索（结果面已经够宽），多字再补一次结构化检索。
+    // 前缀限定了类型时也不需要结构化那一路。
+    const tasks = [MP.page.fetchDoc(MP.page.searchUrl(keyword))];
+    if (keyword.length >= 2 && !parsed.type) {
+      tasks.push(MP.page.fetchDoc(MP.page.listUrl(keyword)));
+    }
+    const res = await Promise.all(tasks);
+    const searchRes = res[0];
+    const listRes = res[1];
 
     if (seq !== state.seq) return; // 竞态：丢弃过期结果
 
@@ -136,11 +177,21 @@ MP.palette = (function () {
       const data = MP.extract.search(searchRes.doc);
       let items = data.items;
       if (parsed.type) items = items.filter((it) => it.type === parsed.type);
+      // 多个词时，优先保留「标题/摘要同时包含所有词」的结果；
+      // 一条都没有就退化成按整串搜索，不倒空。
+      if (words.length > 1 && items.length) {
+        const all = words.map((w) => w.toLowerCase());
+        const strict = items.filter((it) => {
+          const hay = (it.title + ' ' + it.snippet + ' ' + (it.ename || '')).toLowerCase();
+          return all.every((w) => hay.indexOf(w) >= 0);
+        });
+        if (strict.length) items = strict;
+      }
       if (items.length) groups.push({ label: '站内搜索', items: items.slice(0, 12) });
       items.forEach((it) => seen.add(it.href));
     }
 
-    if (listRes.ok) {
+    if (listRes && listRes.ok) {
       const data = MP.extract.modlist(listRes.doc, '模组');
       let items = data.items;
       if (parsed.type && parsed.type !== '模组') items = [];
@@ -148,12 +199,33 @@ MP.palette = (function () {
       if (items.length) groups.push({ label: '结构化检索 · 模组', items });
     }
 
-    renderGroups(groups, parsed);
+    renderGroups(groups, parsed, guesses);
   }
 
-  function renderGroups(groups, parsed) {
+  function renderGuesses(guesses) {
+    if (!guesses || !guesses.length) return null;
+    const row = h('div', { class: 'mp-palette-suggest' },
+      h('span', { class: 'mp-palette-suggest-label' }, '猜你想搜'),
+      ...guesses.map((w) => {
+        const chip = h('button', { class: 'mp-palette-suggest-chip', type: 'button' }, w);
+        chip.addEventListener('click', () => {
+          input.value = w;
+          onInput();
+          input.focus();
+        });
+        return chip;
+      })
+    );
+    return row;
+  }
+
+
+  function renderGroups(groups, parsed, guesses) {
     clear(resultsEl);
     state.items = [];
+
+    const guessRow = renderGuesses(guesses);
+    if (guessRow) resultsEl.appendChild(guessRow);
 
     if (!groups.length) {
       resultsEl.appendChild(
