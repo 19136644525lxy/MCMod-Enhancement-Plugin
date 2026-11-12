@@ -2302,3 +2302,39 @@ html[data-mp-theme="dark"] .mp-fab-handle {
     border-color: rgba(255, 255, 255, 0.12);
   }
 }
+
+/* 把手描边收敛：浅色下用极淡的暖灰线 + 内高光，不再是一道黑边 */
+.mp-fab-handle {
+  border: 1px solid rgba(24, 22, 20, 0.07);
+  box-shadow: -4px 0 14px rgba(24, 22, 20, 0.07),
+              inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  color: #6b655c;
+}
+
+.mp-fab-handle:hover {
+  color: #2f6f4f;
+  border-color: rgba(47, 111, 79, 0.28);
+}
+
+html[data-mp-theme="dark"] .mp-fab-handle {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: -4px 0 14px rgba(0, 0, 0, 0.38);
+  color: #b9b3a8;
+}
+
+html[data-mp-theme="dark"] .mp-fab-handle:hover {
+  color: #57b98a;
+  border-color: rgba(87, 185, 138, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) .mp-fab-handle {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: -4px 0 14px rgba(0, 0, 0, 0.38);
+    color: #b9b3a8;
+  }
+  html:not([data-mp-theme="light"]) .mp-fab-handle:hover {
+    color: #57b98a;
+    border-color: rgba(87, 185, 138, 0.4);
+  }
+}
