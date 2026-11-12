@@ -86,6 +86,26 @@ MP.pages.center = (function () {
   }
 
   // 齿轮：Lucide settings 的路径，和首页顶栏那颗保持一致
+  function ensureGear() {
+    var right = document.querySelector('.header-right');
+    if (!right) return;
+    var btn = document.getElementById('mp-center-gear');
+    if (btn && right.contains(btn)) return;
+    btn = h('button', {
+      id: 'mp-center-gear',
+      class: 'mp-gear-btn',
+      type: 'button',
+      title: '插件设置',
+      'aria-label': '插件设置',
+      onclick: function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (MP.settingsPanel) MP.settingsPanel.toggle();
+      }
+    }, gearSvg());
+    right.appendChild(btn);
+  }
+
   function gearSvg() {
     return h('svg', {
       class: 'mp-fab-gear',
@@ -364,6 +384,7 @@ MP.pages.center = (function () {
         if (!nodes[i].classList.contains(pair[1])) nodes[i].classList.add(pair[1]);
       }
     });
+    ensureGear();
     ensureDayNight();
   }
 

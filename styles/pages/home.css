@@ -2238,3 +2238,18 @@ html[data-mp-theme="dark"] .mp-fab-sheet .mp-fab.is-on {
     color: #14130f;
   }
 }
+
+
+/* 把手焦点：点完不再弹默认描边 */
+.mp-fab-handle:focus {
+  outline: none;
+}
+
+.mp-fab-handle:focus-visible {
+  outline: 2px solid #2f6f4f;
+  outline-offset: 2px;
+}
+
+html[data-mp-theme="dark"] .mp-fab-handle:focus-visible {
+  outline-color: #57b98a;
+}

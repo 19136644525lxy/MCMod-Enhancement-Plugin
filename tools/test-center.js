@@ -51,6 +51,8 @@ ok('统计卡文案', statItems.length && statItems[0].querySelector('.title').t
 ok('内容块', w.document.querySelectorAll('.mp-center-block').length >= 3,
   'got ' + w.document.querySelectorAll('.mp-center-block').length);
 ok('编辑动态列表', !!w.document.querySelector('.mp-edit-list'));
+ok('顶栏设置齿轮', !!w.document.querySelector('.header-right #mp-center-gear'));
+ok('顶栏齿轮用 mp-gear-btn 样式', !!w.document.querySelector('.header-right .mp-gear-btn'));
 
 console.log('\n[3] 卸载');
 w.MP.pages.center.unmount();
