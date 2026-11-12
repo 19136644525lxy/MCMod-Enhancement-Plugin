@@ -562,7 +562,8 @@
     );
   }
 
-  // 公告条：原站是 banner 左侧的 .door，鼠标悬停逐张切换；这里改成一行卡片 + 圆点
+  // 公告：原站是 banner 左侧的 .door，鼠标悬停逐张切换；
+  // 这里做成 hero 卡片中间的一竖条，图在上、标题在下，底部圆点翻页。
   function noticeCard(d) {
     var list = d.notices || [];
     if (!list.length) return null;
@@ -598,8 +599,8 @@
       dots.appendChild(b);
     });
 
-    return h('section', { class: 'mp-glass mp-notice' },
-      h('div', { class: 'mp-notice-side' },
+    return h('aside', { class: 'mp-notice' },
+      h('div', { class: 'mp-notice-head' },
         h('span', { class: 'mp-notice-label' }, '公告'),
         h('span', { class: 'mp-notice-count' }, list.length + ' 条')
       ),
@@ -622,6 +623,7 @@
         h('p', { class: 'mp-hero-sub' }, '模组、整合包、教程与资料，一处检索。'),
         statPills(d.stats)
       ),
+      noticeCard(d),
       quickGrid(d.quick)
     );
 
@@ -681,7 +683,6 @@
 
     return h('div', { id: 'mp-home', class: 'mp-home' },
       hero,
-      noticeCard(d),
       fp,
       h('div', { class: 'mp-cols mp-cols-2-1' }, mods, feed),
       h('div', { class: 'mp-cols mp-cols-1-1' }, posts, topics),
