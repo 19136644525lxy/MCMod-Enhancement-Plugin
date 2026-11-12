@@ -71,8 +71,8 @@ body.mp-center-mode .mp-center-header::after {
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0) 34%,
-    rgba(0, 0, 0, 0.28) 62%,
-    rgba(0, 0, 0, 0.58) 100%
+    rgba(0, 0, 0, 0.16) 64%,
+    rgba(0, 0, 0, 0.3) 100%
   );
 }
 
@@ -125,6 +125,8 @@ body.mp-center-mode .mp-center-header .mp-c-bbs a:hover {
 /* ---------- Tab ---------- */
 
 body.mp-center-mode .mp-center-tabs .page-ul {
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   gap: 4px;
   padding: 5px;
@@ -132,7 +134,7 @@ body.mp-center-mode .mp-center-tabs .page-ul {
   background: var(--c-card);
   border-radius: 999px;
   box-shadow: var(--c-shadow);
-  border: 1px solid var(--c-line);
+  border: 0;
 }
 
 body.mp-center-mode .mp-center-tabs .mp-tab {
@@ -190,7 +192,7 @@ body.mp-center-mode .mp-center-total > ul > li {
   margin: 0;
   padding: 16px 18px;
   background: var(--c-card);
-  border: 1px solid var(--c-line);
+  border: 0;
   border-radius: 14px;
   box-shadow: var(--c-shadow);
   text-align: left;
@@ -227,7 +229,7 @@ body.mp-center-mode .mp-center-block {
   margin-bottom: 14px;
   padding: 20px 22px;
   background: var(--c-card);
-  border: 1px solid var(--c-line);
+  border: 0;
   border-radius: var(--c-radius);
   box-shadow: var(--c-shadow);
 }
@@ -680,7 +682,7 @@ body.mp-center-mode .mp-center-header {
   background-size: 100% auto;
   background-position: center top;
   background-repeat: no-repeat;
-  background-color: #14141f;
+  background-color: transparent;
   padding-bottom: 0;
 }
 
