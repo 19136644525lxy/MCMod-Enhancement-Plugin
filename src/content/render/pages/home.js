@@ -821,8 +821,16 @@
       MP.theme.inject('styles/mp-toggle.css');
       MP.theme.inject('styles/day-night.css');
       MP.theme.inject('styles/pages/home.css');
+      MP.theme.inject('styles/background.css');
       document.body.classList.add('mp-home-mode');
       document.documentElement.classList.add('mp-home-root');
+
+      // 背景预设（mist 为纯 CSS，其余画在 canvas 上）
+      try {
+        if (MP.background) MP.background.apply((settings && settings.bgPreset) || 'mist');
+      } catch (e) {
+        console.warn('[MCMod+] 背景预设失败', e);
+      }
 
       // 顶部导航接管
       var top = document.querySelector('.top-main');
@@ -888,6 +896,11 @@
       stopRotation();
       rotCtx = null;
       stopClock();
+      try {
+        if (MP.background) MP.background.destroy();
+      } catch (e) {
+        console.warn('[MCMod+] 背景清理失败', e);
+      }
       var bbar = document.getElementById('mp-bannerbar');
       if (bbar) bbar.remove();
       var clk = document.getElementById('mp-clock');

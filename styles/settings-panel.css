@@ -127,6 +127,48 @@ html[data-mp-theme="dark"] .mp-sp {
   background: var(--sp-hover);
 }
 
+/* 标题在上、控件占满一行的行式布局 */
+.mp-sp-row.is-block {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+}
+
+.mp-sp-row.is-block:hover {
+  background: transparent;
+}
+
+.mp-sp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mp-sp-chip {
+  padding: 5px 11px;
+  border: 1px solid var(--sp-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sp-sub);
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease,
+              transform 0.16s ease;
+}
+
+.mp-sp-chip:hover {
+  color: var(--sp-ink);
+  border-color: var(--sp-link);
+  transform: translateY(-1px);
+}
+
+.mp-sp-chip.is-on {
+  background: var(--sp-link);
+  border-color: var(--sp-link);
+  color: #fff;
+}
+
 .mp-sp-row.is-master {
   margin: 2px 0 4px;
   padding: 11px 10px;

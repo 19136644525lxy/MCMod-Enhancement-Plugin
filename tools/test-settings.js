@@ -16,7 +16,8 @@ const w = dom.window;
 
 const DEFAULTS = {
   enabled: true, theme: 'auto', compact: false, palette: true,
-  homeRotate: true, footprint: true, redrawSearch: true, redrawPages: false, debug: false
+  homeRotate: true, footprint: true, redrawSearch: true, redrawPages: false,
+  bgPreset: 'mist', debug: false
 };
 
 let unmounted = 0;
@@ -58,9 +59,14 @@ setTimeout(() => {
   ok('面板已挂载', !!panel);
   ok('面板在 body 下', !!panel && panel.parentNode === d.body);
   ok('有标题', !!panel && panel.textContent.indexOf('插件设置') >= 0);
-  ok('有 6 个设置行', d.querySelectorAll('.mp-sp-row').length === 6, 'got ' + d.querySelectorAll('.mp-sp-row').length);
+  ok('有 7 个设置行', d.querySelectorAll('.mp-sp-row').length === 7, 'got ' + d.querySelectorAll('.mp-sp-row').length);
   ok('日夜开关不在面板里', d.querySelectorAll('.mp-sp-night').length === 0);
   ok('开关 6 个', d.querySelectorAll('.mp-sp .mp-toggle').length === 6, 'got ' + d.querySelectorAll('.mp-sp .mp-toggle').length);
+  ok('背景预设 5 个', d.querySelectorAll('.mp-sp-chips .mp-sp-chip').length === 5, 'got ' + d.querySelectorAll('.mp-sp-chips .mp-sp-chip').length);
+  ok('背景默认选中晨雾', (() => {
+    const on = d.querySelector('.mp-sp-chip.is-on');
+    return !!on && on.getAttribute('data-key') === 'mist';
+  })());
   ok('分组标题 3 个', d.querySelectorAll('.mp-sp-group-title').length === 3, 'got ' + d.querySelectorAll('.mp-sp-group-title').length);
   ok('轮换开关默认勾选', (() => {
     const rows = Array.from(d.querySelectorAll('.mp-sp-row'));

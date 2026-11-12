@@ -1,0 +1,52 @@
+/* 首页背景层预设（方案 A）
+   mist 走 CSS 渐变；其余四套由 background.js 画在 canvas 上。
+   canvas 固定在内容下方，body 只负责兜底色。 */
+
+.mp-bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mp-bg-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* canvas 模式下 body 不再画渐变，避免和 canvas 叠加 */
+body.mp-home-mode[data-mp-bg="aurora"],
+body.mp-home-mode[data-mp-bg="pixel"],
+body.mp-home-mode[data-mp-bg="grass"],
+body.mp-home-mode[data-mp-bg="stars"] {
+  background-image: none !important;
+}
+
+/* 内容层压在背景之上 */
+body.mp-home-mode #mp-home-host,
+body.mp-home-mode .mp-footer,
+body.mp-home-mode #mp-home-topbar {
+  position: relative;
+  z-index: 1;
+}
+
+body.mp-home-mode #mp-home-topbar {
+  z-index: 40;
+}
+
+/* 星空模式给一层薄雾，避免星点太密影响阅读 */
+body.mp-home-mode[data-mp-bg="stars"]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(243, 241, 236, 0.34);
+}
+
+html[data-mp-theme="dark"] body.mp-home-mode[data-mp-bg="stars"]::after,
+html[data-mp-theme="dark"] body.mp-home-mode[data-mp-bg="pixel"]::after {
+  background: rgba(10, 11, 16, 0.28);
+}

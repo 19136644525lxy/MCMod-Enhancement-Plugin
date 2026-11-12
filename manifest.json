@@ -53,6 +53,7 @@
         "src/content/render/page-shell.js",
         "src/content/render/pages/search.js",
         "src/content/widgets/footprint.js",
+        "src/content/widgets/background.js",
         "src/content/widgets/settings-panel.js",
         "src/content/render/pages/home.js",
         "src/content/render/pages/item.js",

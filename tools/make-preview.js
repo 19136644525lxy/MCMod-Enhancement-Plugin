@@ -27,6 +27,8 @@ const SCRIPTS = [
   'src/content/extract/home.js',
   'src/content/render/page-shell.js',
   'src/content/widgets/footprint.js',
+  'src/content/widgets/background.js',
+  'src/content/widgets/settings-panel.js',
   'src/content/render/pages/item.js',
   'src/content/render/pages/klass.js',
   'src/content/render/pages/modpack.js',

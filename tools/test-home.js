@@ -13,6 +13,7 @@ const FILES = [
   'src/content/render/components.js',
   'src/content/extract/home.js',
   'src/content/widgets/footprint.js',
+  'src/content/widgets/background.js',
   'src/content/widgets/settings-panel.js',
   'src/content/render/pages/home.js',
 ];

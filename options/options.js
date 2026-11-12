@@ -6,6 +6,7 @@ const DEFAULTS = {
   footprint: true,
   redrawSearch: true,
   redrawPages: false,
+  bgPreset: 'mist',
   compact: false,
   debug: false
 };

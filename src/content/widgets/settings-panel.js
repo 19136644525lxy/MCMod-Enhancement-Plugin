@@ -31,6 +31,15 @@ MP.settingsPanel = (function () {
       control);
   }
 
+  // 控件需要在标题下方占满一整行的场景（比如背景预设的胶囊组）
+  function rowBlock(label, desc, control) {
+    return h('div', { class: 'mp-sp-row is-block' },
+      h('div', { class: 'mp-sp-txt' },
+        h('span', { class: 'mp-sp-label' }, label),
+        desc ? h('span', { class: 'mp-sp-desc' }, desc) : null),
+      control);
+  }
+
   function sw(checked, onChange) {
     var input = h('input', { type: 'checkbox', class: 'mp-toggle mp-toggle-sm' });
     input.checked = !!checked;
@@ -42,6 +51,27 @@ MP.settingsPanel = (function () {
     return h('div', { class: 'mp-sp-group' },
       h('div', { class: 'mp-sp-group-title' }, title),
       rows.filter(Boolean));
+  }
+
+  // 单选胶囊：用于背景预设这种「多选一」的项
+  function chips(options, value, onChange) {
+    var wrap = h('div', { class: 'mp-sp-chips' });
+    options.forEach(function (o) {
+      var b = h('button', {
+        type: 'button',
+        class: 'mp-sp-chip' + (o.key === value ? ' is-on' : ''),
+        'data-key': o.key,
+        title: o.label
+      }, o.label);
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var all = wrap.querySelectorAll('.mp-sp-chip');
+        for (var i = 0; i < all.length; i++) all[i].classList.toggle('is-on', all[i] === b);
+        onChange(o.key);
+      });
+      wrap.appendChild(b);
+    });
+    return wrap;
   }
 
   function build(s) {
@@ -68,6 +98,18 @@ MP.settingsPanel = (function () {
       row('紧凑模式', '收紧卡片间距', sw(s.compact, function (v) {
         save({ compact: v });
         try { MP.theme.apply(Object.assign({}, s, { compact: v })); } catch (e) { /* ignore */ }
+      })),
+      rowBlock('背景', '首页底图，全部本地生成', chips([
+        { key: 'mist', label: '晨雾' },
+        { key: 'aurora', label: '极光' },
+        { key: 'pixel', label: '像素夜空' },
+        { key: 'grass', label: '草方块' },
+        { key: 'stars', label: '星空' }
+      ], s.bgPreset || 'mist', function (k) {
+        save({ bgPreset: k });
+        try {
+          if (MP.background) MP.background.apply(k);
+        } catch (e) { /* ignore */ }
       }))
     ]));
 
