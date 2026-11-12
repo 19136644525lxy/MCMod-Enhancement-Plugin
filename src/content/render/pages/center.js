@@ -377,11 +377,6 @@ MP.pages.center = (function () {
     window.addEventListener('hashchange', onHash);
 
     ensureFab(settingsRef);
-
-    // 回到顶部（和浮动条分两层，浮动条 bottom:84px）
-    try {
-      if (MP.ui && MP.ui.toTop) MP.ui.toTop();
-    } catch (e) {}
     bindLightbox();
 
     return true;

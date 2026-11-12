@@ -444,8 +444,8 @@ body.mp-center-mode .mp-chart-frame .title-sub {
 
 .mp-fab-bar {
   position: fixed;
-  right: 20px;
-  bottom: 84px;
+  right: 136px;
+  bottom: 24px;
   z-index: 2147483100;
   display: flex;
   gap: 3px;

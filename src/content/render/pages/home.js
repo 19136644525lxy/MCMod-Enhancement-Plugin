@@ -889,11 +889,6 @@
       if (!this.match()) return false;
       if (mounted) {
         ensureFab(settings);
-
-    // 回到顶部（和浮动条分两层，浮动条 bottom:84px）
-    try {
-      if (MP.ui && MP.ui.toTop) MP.ui.toTop();
-    } catch (e) {}
         return true;
       }
       var d = MP.extract.home(document);
