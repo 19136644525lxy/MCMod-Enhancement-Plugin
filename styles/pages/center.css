@@ -794,3 +794,62 @@ body.mp-center-mode .header-search button {
   background-size: 15px 15px;
   cursor: pointer;
 }
+
+/* 搜索框常驻在顶栏里（原站是点击放大镜才从下方弹出，太难用）。
+   用 !important 压过原站的 display:none，位置从 absolute 拉回文档流。 */
+body.mp-center-mode .header-search form {
+  display: flex !important;
+  position: static;
+  align-items: center;
+  width: 232px;
+  height: 34px;
+  padding: 0 4px 0 0;
+  margin: 0;
+  background: var(--c-card);
+  border: 1px solid var(--c-hair);
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+body.mp-center-mode .header-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--c-ink);
+  -webkit-text-fill-color: var(--c-ink);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+body.mp-center-mode .header-search input::placeholder {
+  color: var(--c-ink-3);
+  -webkit-text-fill-color: var(--c-ink-3);
+}
+
+body.mp-center-mode .header-search button#header-search-submit {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 15px 15px;
+  cursor: pointer;
+}
+
+body.mp-center-mode .header-search button#header-search-submit:hover {
+  background-color: var(--c-accent-soft);
+}
+
+/* 原来的「点我展开」按钮不再需要 */
+body.mp-center-mode #header-search-switch {
+  display: none !important;
+}
