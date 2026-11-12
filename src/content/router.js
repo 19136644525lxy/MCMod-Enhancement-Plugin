@@ -188,6 +188,7 @@ MP.router = (function () {
         MP.store.getSync().then(function (next) {
           settings = next;
           try { MP.theme.apply(next); } catch (e) { /* ignore */ }
+          try { syncThemeSwitches(next); } catch (e) { /* ignore */ }
           if (MP.background && (changes.bgPreset || changes.bgIntensity)) {
             try {
               if (next.bgIntensity != null) MP.background.setIntensity(next.bgIntensity);
@@ -199,8 +200,37 @@ MP.router = (function () {
     } catch (e) { /* ignore */ }
   }
 
+  function prefersDark() {
+    try {
+      return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    } catch (e) { return false; }
+  }
+
+  function syncThemeSwitches(settings) {
+    if (!MP.ui || !MP.ui.paintSwitch) return;
+    var theme = (settings && settings.theme) || 'auto';
+    var dark = theme === 'dark' || (theme === 'auto' && prefersDark());
+    var nodes = document.querySelectorAll('.mp-theme-switch, .mp-topbar-daynight, #mp-daynight');
+    for (var i = 0; i < nodes.length; i++) {
+      try { MP.ui.paintSwitch(nodes[i], dark); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function syncOnFocus() {
+    try {
+      window.addEventListener('focus', function () {
+        MP.store.getSync().then(function (next) {
+          settings = next;
+          try { MP.theme.apply(next); } catch (e) { /* ignore */ }
+          try { syncThemeSwitches(next); } catch (e) { /* ignore */ }
+        }).catch(function () { /* ignore */ });
+      });
+    } catch (e) { /* ignore */ }
+  }
+
   function boot() {
     subscribeSettings();
+    syncOnFocus();
     MP.store.getSync().then((s) => {
       settings = s;
       if (!s.enabled) {

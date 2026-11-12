@@ -21,7 +21,8 @@
     {
       "matches": [
         "https://www.mcmod.cn/*",
-        "https://search.mcmod.cn/*"
+        "https://search.mcmod.cn/*",
+        "https://center.mcmod.cn/*"
       ],
       "run_at": "document_start",
       "js": [
