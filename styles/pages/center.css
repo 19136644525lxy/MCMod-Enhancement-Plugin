@@ -696,3 +696,62 @@ html[data-mp-theme="dark"] body.mp-center-mode .header-search button#header-sear
 body.mp-center-mode .header-search input {
   width: 190px;
 }
+
+/* ---------- 顶栏布局修正：flex 而非 float，避免右侧整块掉到第二行 ---------- */
+
+body.mp-center-mode .mp-topbar-inner {
+  display: flex;
+  align-items: center;
+  height: 56px;
+}
+
+body.mp-center-mode .header-logo {
+  flex: none;
+}
+
+body.mp-center-mode .mp-topbar-menu {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+body.mp-center-mode .mp-topbar .header-right {
+  float: none;
+  flex: none;
+  margin-left: auto;
+  height: 56px;
+}
+
+body.mp-center-mode .header-search input {
+  width: 170px;
+}
+
+body.mp-center-mode .header-search form {
+  height: 34px;
+}
+
+body.mp-center-mode .header-search input,
+body.mp-center-mode .header-search button {
+  height: 32px;
+}
+
+/* ---------- 头卡：图片完整显示（宽度铺满、高度按比例），多余区域用深色兜底 ---------- */
+
+body.mp-center-mode .mp-center-header {
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-color: #14141f;
+  padding-bottom: 0;
+}
+
+/* 右下角两个入口：明确钉在头卡右下，别再往右上角跑 */
+body.mp-center-mode .mp-c-bbs {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
