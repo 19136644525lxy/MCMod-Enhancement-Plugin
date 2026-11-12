@@ -10,7 +10,7 @@
   'use strict';
 
   var MP = (window.MP = window.MP || {});
-  var HOST_OK = /(^|\.)(www|search)\.mcmod\.cn$/i.test(location.hostname);
+  var HOST_OK = /(^|\.)(www|search|center)\.mcmod\.cn$/i.test(location.hostname);
 
   if (!HOST_OK) {
     // 不重绘的子域（bbs / play）不显示过渡层，但保留同名空接口
