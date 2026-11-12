@@ -1190,3 +1190,32 @@ html[data-mp-theme="dark"] .mp-fab-handle:hover {
     color: #57b98a;
   }
 }
+
+/* 把手改成半圆胶囊，弹出的面板改成横条 */
+.mp-fab-handle {
+  width: 30px;
+  height: 46px;
+  border-radius: 23px 0 0 23px;
+  font-size: 14px;
+}
+
+.mp-fab-sheet {
+  flex-direction: row;
+  align-items: center;
+  padding: 4px;
+  border-radius: 999px;
+}
+
+.mp-fab-sheet .mp-fab {
+  width: auto;
+  min-width: 50px;
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+.mp-fab-sheet .mp-fab-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 0;
+  padding: 0;
+}
