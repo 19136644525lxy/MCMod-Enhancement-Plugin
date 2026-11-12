@@ -537,3 +537,53 @@ body.mp-center-mode .mp-center-block {
     animation: none;
   }
 }
+
+/* ---------- 顶栏换皮（不动结构，只改颜色/高度） ---------- */
+
+body.mp-center-mode .mp-topbar {
+  background-color: rgba(250, 249, 246, 0.96) !important;
+  background-image: none !important;
+  box-shadow: 0 1px 0 var(--c-hair), 0 6px 24px rgba(24, 22, 20, 0.06) !important;
+}
+
+html[data-mp-theme="dark"] body.mp-center-mode .mp-topbar {
+  background-color: rgba(24, 23, 20, 0.96) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08), 0 6px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-center-mode .mp-topbar {
+    background-color: rgba(24, 23, 20, 0.96) !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08), 0 6px 24px rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+body.mp-center-mode .mp-topbar-inner { height: 56px; }
+
+body.mp-center-mode .mp-topbar-item {
+  line-height: 56px !important;
+  color: var(--c-ink-2) !important;
+}
+
+body.mp-center-mode .mp-topbar-item:hover {
+  color: var(--c-ink) !important;
+  background: var(--c-accent-soft) !important;
+  box-shadow: none !important;
+}
+
+body.mp-center-mode .header-menu-widget.active .mp-topbar-item {
+  color: var(--c-ink) !important;
+  font-weight: 700 !important;
+  background: transparent !important;
+}
+
+body.mp-center-mode .mp-topbar .header-layer {
+  background: var(--c-card);
+  border-color: var(--c-hair);
+  box-shadow: var(--c-shadow);
+}
+
+body.mp-center-mode .mp-topbar-daynight {
+  margin-left: 14px;
+  vertical-align: middle;
+}

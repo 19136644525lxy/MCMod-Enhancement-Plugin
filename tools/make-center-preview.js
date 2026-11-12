@@ -47,6 +47,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 const extra = `
 <style data-mp="tokens">${read('styles/tokens.css')}</style>
+<style data-mp="daynight">${read('styles/day-night.css')}</style>
 <style data-mp="center">${read('styles/pages/center.css')}</style>
 ${inject}
 `;

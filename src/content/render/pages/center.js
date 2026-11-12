@@ -35,8 +35,45 @@ MP.pages.center = (function () {
     ['.center-content.admin-list', 'mp-admin-list'],
     ['.center-content.post-list', 'mp-post-list'],
     ['.center-content.edit-list', 'mp-edit-list'],
-    ['.edit-chart-frame', 'mp-chart-frame']
+    ['.edit-chart-frame', 'mp-chart-frame'],
+    // 站点顶栏：只加类换皮，不动结构
+    ['.header-container', 'mp-topbar'],
+    ['.header-frame', 'mp-topbar-inner'],
+    ['.header-menu', 'mp-topbar-menu'],
+    ['.header-menu-item', 'mp-topbar-item'],
+    ['.header-right', 'mp-topbar-right']
   ];
+
+  function isDark() {
+    const forced = document.documentElement.dataset.mpTheme;
+    if (forced === 'dark') return true;
+    if (forced === 'light') return false;
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+
+  // 日夜开关：按用户要求，每个页面都要有，所以做成可插拔的
+  function ensureDayNight() {
+    if (document.getElementById('mp-daynight')) return;
+    if (!MP.ui || !MP.ui.dayNight) return;
+    try {
+      MP.theme.inject('styles/day-night.css');
+    } catch (e) {}
+    const sw = MP.ui.dayNight({
+      dark: isDark(),
+      class: 'mp-topbar-daynight',
+      onChange: function (next) {
+        try {
+          MP.theme.apply({ theme: next ? 'dark' : 'light' });
+          MP.store.setSync({ theme: next ? 'dark' : 'light' });
+        } catch (e) {}
+      }
+    });
+    sw.id = 'mp-daynight';
+    const right = document.querySelector('.header-right');
+    const host = document.querySelector('.header-frame');
+    if (right && right.parentNode) right.parentNode.insertBefore(sw, right);
+    else if (host) host.appendChild(sw);
+  }
 
   function match() {
     // 离线预览页是 file:// 协议，content script 本来也跑不到那里，放行不影响线上
@@ -128,6 +165,7 @@ MP.pages.center = (function () {
         if (!nodes[i].classList.contains(pair[1])) nodes[i].classList.add(pair[1]);
       }
     });
+    ensureDayNight();
   }
 
   function mount(settings) {
@@ -193,6 +231,8 @@ MP.pages.center = (function () {
       const nodes = document.querySelectorAll('.' + pair[1]);
       for (let i = 0; i < nodes.length; i++) nodes[i].classList.remove(pair[1]);
     });
+    const sw = document.getElementById('mp-daynight');
+    if (sw && sw.parentNode) sw.parentNode.removeChild(sw);
     syncFab();
     return true;
   }
