@@ -55,6 +55,7 @@
 
   // ---- banner 底部的导航条 + 时钟（原站是两条绝对定位的浮层）----
   var clockTimer = null;
+  var earthSec = 0;   // 「来到地球」的秒数，mount 时从抽取结果初始化，之后随时钟递增
 
   // 苦力怕脸：照官方图标在 16×16 网格上的像素形状画，
   // 眼睛 3×3，嘴是「顶部 4×2 窄条 → 中间 6×2 宽条 → 底部两条 2×2 的腿」。
@@ -129,6 +130,12 @@
     function tick() {
       var t = new Date();
       txt.textContent = pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds());
+      // 顺带把页脚的「来到地球」秒数往上推，同一个 1s 定时器，不额外开表。
+      var earth = document.getElementById('mp-foot-earth');
+      if (earth) {
+        earthSec += 1;
+        earth.textContent = earthLine(earthSec);
+      }
     }
     tick();
     clockTimer = setInterval(tick, 1000);
@@ -641,11 +648,24 @@
       ),
       friends.length ? h('div', { class: 'mp-foot-friends' }, friends) : null,
       h('div', { class: 'mp-foot-meta' },
+        f.earth ? h('p', { class: 'mp-foot-earth', id: 'mp-foot-earth' }, earthLine(f.earth.seconds)) : null,
         f.copyright ? h('p', null, f.copyright) : null,
         f.license ? h('p', { class: 'mp-foot-license' },
-          f.license.href ? a(f.license.href, f.license.text) : f.license.text) : null
+          f.license.href ? a(f.license.href, f.license.text) : f.license.text) : null,
+        (f.timing && (f.timing.server || f.timing.client))
+          ? h('p', { class: 'mp-foot-timing' }, '[ ' + [f.timing.server, f.timing.client].filter(Boolean).join(' ') + ' ]')
+          : null
       )
     );
+  }
+
+  // 「来到地球」的天/时/分/秒文案，渲染层每秒自己往上数，不再依赖站点 JS。
+  function earthLine(sec) {
+    var s = Math.max(0, sec | 0);
+    var d = Math.floor(s / 86400); s -= d * 86400;
+    var hh = Math.floor(s / 3600); s -= hh * 3600;
+    var mm = Math.floor(s / 60); s -= mm * 60;
+    return '[ MC百科来到地球已经经过了' + d + '天' + hh + '小时' + mm + '分' + s + '秒 ( つ•̀ω•́)つ ]';
   }
 
   MP.pages = MP.pages || {};
@@ -798,6 +818,7 @@
       document.body.insertBefore(bar, document.body.firstChild);
 
       // banner 底部的二级导航 + 右上角时钟接管
+      earthSec = (d.footer && d.footer.earth && d.footer.earth.seconds) || 0;
       var frameIn = document.querySelector('.banner .frame-in');
       var bbar = bannerBar(d.banner);
       if (frameIn && bbar) {

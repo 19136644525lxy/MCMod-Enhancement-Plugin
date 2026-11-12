@@ -90,7 +90,6 @@ MP.extract.home = (function () {
       categories: [],
       crumbs: []
     };
-
     out.quick = map(all(pick(newsRight, '.addArea'), 'a'), function (a) {
       return { href: abs(attr(a, 'href')), label: txt(a), cls: a.className || '' };
     });
@@ -287,9 +286,27 @@ MP.extract.home = (function () {
       };
     });
 
+    if (!out.categories.length) out.categories = FALLBACK_CATEGORIES;
+
     out.footer = parseFooter(doc);
     return out;
   }
+
+  // 「按元素浏览」的九大分类是站点的固定栏目。真实页面上这一块的卡片内容
+  // 是 AJAX 补的，DOM 里只有壳；抽不到时用这份兜底，避免整块消失。
+  var FALLBACK_CATEGORIES = [
+    { id: 1, title: '科技', desc: '设定可在现实中找到相关原始理论，如电力、热力学、工程学、基因、量子。' },
+    { id: 2, title: '魔法', desc: '含有架空的世界观，如魔力、法术、符文、祭坛、结界，或通过魔法仪式改变世界。' },
+    { id: 3, title: '冒险', desc: '增加挑战性与战斗元素，提高生存难度，侧重点为增加新的维度或生物。' },
+    { id: 4, title: '农业', desc: '以农业、林业、畜牧业或增强饮食为主要内容。' },
+    { id: 5, title: '装饰', desc: '只作为建材或装饰，没有互动，或使世界变得更美观。' },
+    { id: 6, title: '实用', desc: '未包含世界观的实用性 Mod，例如漏斗、背包、管道等。' },
+    { id: 7, title: '辅助', desc: '重点在脚本，主要使用 GUI/按钮或指令来实现功能。' },
+    { id: 8, title: '魔改', desc: '供给整合包作者或服主自定义修改玩法。' },
+    { id: 9, title: 'LIB', desc: '单独安装不会增加游戏内容，仅为开发者提供 API。' }
+  ].map(function (c) {
+    return { title: c.title, desc: c.desc, href: 'https://www.mcmod.cn/class/category/' + c.id + '-1.html', ranks: {} };
+  });
 
   // 站内链接有的是 javascript:void(0) + onclick 跳转，这里统一取真实地址。
   function linkHref(a) {
@@ -301,9 +318,29 @@ MP.extract.home = (function () {
   }
 
   function parseFooter(doc) {
-    var out = { cols: [], friends: [], copyright: '', icp: null, police: '', license: null };
+    var out = {
+      cols: [], friends: [], copyright: '', icp: null, police: '', license: null,
+      earth: null, timing: { server: '', client: '' }
+    };
     var under = pick(doc, '.under');
     if (!under) return out;
+
+    // 「MC百科来到地球已经经过了 X天X小时X分X秒」——服务端给出初始值，之后由站点 JS 每秒递增，
+    // 这里把初始值折成秒数，渲染层自己接着往下数。
+    var earth = pick(under, '#showsectime');
+    if (earth) {
+      var et = txt(earth);
+      var em = et.match(/(\d+)天(\d+)小时(\d+)分(\d+)秒/);
+      out.earth = {
+        text: et,
+        seconds: em ? (+em[1]) * 86400 + (+em[2]) * 3600 + (+em[3]) * 60 + (+em[4]) : 0
+      };
+    }
+
+    out.timing = {
+      server: txt(pick(under, '#ServerTime')),
+      client: txt(pick(under, '#ClientTime'))
+    };
 
     out.cols = map(all(under, '.un_info > ul.block > li'), function (li) {
       var strong = pick(li, 'strong');

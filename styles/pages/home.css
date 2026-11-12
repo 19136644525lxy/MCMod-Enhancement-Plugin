@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    首页 · 毛玻璃重绘（mp-home 作用域）
    设计：半透明玻璃卡 + 模糊背景 + 柔和阴影；
    浅色为暖白底，深色为暖黑底，两套都保证卡片可读。
@@ -1206,6 +1206,21 @@ html[data-mp-theme="dark"] .mp-home .mp-glass::before {
 
 .mp-home .mp-foot-meta p {
   margin: 0;
+}
+
+.mp-home .mp-foot-earth {
+  margin-bottom: 4px;
+  color: var(--ink-3);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+}
+
+.mp-home .mp-foot-timing {
+  margin-top: 4px;
+  color: var(--ink-3);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
 }
 
 .mp-home .mp-foot-license a {
