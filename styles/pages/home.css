@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    首页 · 毛玻璃重绘（mp-home 作用域）
    设计：半透明玻璃卡 + 模糊背景 + 柔和阴影；
    浅色为暖白底，深色为暖黑底，两套都保证卡片可读。
@@ -2077,15 +2077,32 @@ html[data-mp-theme="dark"] .mp-fab:hover {
   transform: scale(1.3);
 }
 
-/* ---- banner 底边羽化 ----
-   banner 是 220px 的整幅大图，下面直接接内容区，
-   在深色主题下就是一条硬邦邦的分界线。
-   这里只对图片本身做遮罩，让下沿自然淡出到页面背景；
+/* ---- banner 上下羽化 ----
+   banner 是 220px 的整幅大图，上面顶着顶栏、下面接着内容区，
+   两头都是硬边。这里只对图片本身做遮罩，让上下沿自然淡出到页面背景；
    导航条在 .frame 里，不受影响，仍然清晰。 */
 body.mp-home-mode .banner > ul#bannerMove,
 body.mp-home-mode .banner > ul#advMove {
-  -webkit-mask-image: linear-gradient(to bottom, #000 66%, rgba(0, 0, 0, .62) 87%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 66%, rgba(0, 0, 0, .62) 87%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0,
+    #000 7%,
+    #000 72%,
+    rgba(0, 0, 0, .6) 90%,
+    transparent 100%);
+  mask-image: linear-gradient(to bottom,
+    transparent 0,
+    #000 7%,
+    #000 72%,
+    rgba(0, 0, 0, .6) 90%,
+    transparent 100%);
+}
+
+/* 图片整体上移一点，给顶部留出羽化空间；放大 4.5% 补掉平移后露出的缝 */
+body.mp-home-mode .banner > ul#bannerMove li img,
+body.mp-home-mode .banner > ul#advMove li img {
+  display: block;
+  transform: translateY(-6px) scale(1.045);
+  transform-origin: center center;
 }
 
 /* 羽化之后，banner 底下那层要透出页面背景，不能是纯黑 */
