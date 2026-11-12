@@ -667,3 +667,32 @@ body.mp-center-mode .mp-c-bbs a:hover {
   border-color: var(--c-accent);
   text-decoration: none;
 }
+
+/* 头卡：原站是固定 220px，头像+昵称+签名加起来会顶到边缘，
+   配合 overflow:hidden 看起来就像被裁了一刀。改成自适应高度。 */
+body.mp-center-mode .mp-center-header {
+  height: auto;
+  min-height: 220px;
+  padding-bottom: 36px;
+}
+
+/* 搜索按钮里的 FontAwesome 图标在离线/字体缺失时会变成空白，
+   用内联 SVG 兜底，颜色跟随主题。 */
+body.mp-center-mode .header-search button i {
+  display: none;
+}
+
+body.mp-center-mode .header-search button#header-search-submit {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23857f75' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='4.2'/%3E%3Cpath d='M10.4 10.4 13.6 13.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 15px 15px;
+}
+
+html[data-mp-theme="dark"] body.mp-center-mode .header-search button#header-search-submit {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23928b7e' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='4.2'/%3E%3Cpath d='M10.4 10.4 13.6 13.6'/%3E%3C/svg%3E");
+}
+
+body.mp-center-mode .header-search input {
+  width: 190px;
+}
