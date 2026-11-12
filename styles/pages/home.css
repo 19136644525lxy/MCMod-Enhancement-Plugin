@@ -1902,14 +1902,16 @@ html.mp-home-root .mp-float-bar {
    它要能在「原始视图」下继续存在，所以颜色用固定值，不依赖 body.mp-home-mode */
 .mp-fab-bar {
   position: fixed;
-  right: 136px;
-  bottom: 24px;
+  right: 0;
+  bottom: 344px;
   z-index: 2147483100;
   display: flex;
   flex-direction: column;
   gap: 3px;
-  padding: 4px;
-  border-radius: 999px;
+  padding: 5px 4px 5px 5px;
+  border-radius: 14px 0 0 14px;
+  opacity: .72;
+  transition: opacity .18s ease, transform .18s ease;
   background: #fbfaf7;
   border: 1px solid rgba(24, 22, 20, 0.1);
   box-shadow: 0 10px 34px rgba(24, 22, 20, 0.16), 0 2px 6px rgba(24, 22, 20, 0.06);
@@ -2113,3 +2115,21 @@ body.mp-home-mode .banner {
   background: transparent;
 }
 
+
+/* 吸附在右侧边缘：静止时半透明，鼠标移上去整条亮起来并微微向左探出 */
+.mp-fab-bar:hover {
+  opacity: 1;
+  transform: translateX(-2px);
+}
+
+.mp-fab {
+  width: 40px;
+  padding: 7px 0;
+  font-size: 11.5px;
+  letter-spacing: .5px;
+}
+
+.mp-fab-icon {
+  width: 40px;
+  height: 34px;
+}
