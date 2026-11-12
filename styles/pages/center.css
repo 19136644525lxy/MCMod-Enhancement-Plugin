@@ -671,8 +671,8 @@ body.mp-center-mode .header-search button {
 /* ---------- 头卡：图片完整显示（宽度铺满、高度按比例），多余区域用深色兜底 ---------- */
 
 body.mp-center-mode .mp-center-header {
-  background-size: 100% auto;
-  background-position: center top;
+  background-size: cover;
+  background-position: center center;
   background-repeat: no-repeat;
   background-color: transparent;
   padding-bottom: 0;
