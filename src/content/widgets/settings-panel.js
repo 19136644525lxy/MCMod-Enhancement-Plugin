@@ -14,17 +14,6 @@ MP.settingsPanel = (function () {
   var h = MP.dom.h;
   var panel = null;
 
-  function isDarkNow() {
-    try {
-      var t = document.documentElement.dataset.mpTheme;
-      if (t === 'dark') return true;
-      if (t === 'light') return false;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    } catch (e) {
-      return false;
-    }
-  }
-
   function save(patch) {
     try {
       var p = MP.store.setSync(patch);
@@ -47,18 +36,6 @@ MP.settingsPanel = (function () {
     input.checked = !!checked;
     input.addEventListener('change', function () { onChange(input.checked); });
     return h('label', { class: 'mp-sp-switch' }, input);
-  }
-
-  function themeRow() {
-    return MP.ui.dayNight({
-      dark: isDarkNow(),
-      class: 'mp-sp-night',
-      onChange: function (dark) {
-        var next = dark ? 'dark' : 'light';
-        try { MP.theme.apply({ theme: next }); } catch (e) { /* ignore */ }
-        save({ theme: next });
-      }
-    });
   }
 
   function group(title, rows) {
@@ -87,25 +64,7 @@ MP.settingsPanel = (function () {
 
     var body = h('div', { class: 'mp-sp-body' });
 
-    // 主开关单独一行，视觉上和下面的分组分开
-    var master = row('增强视图', '关掉后回到原站样式', sw(s.enabled, function (v) {
-      save({ enabled: v });
-      try {
-        if (!v) {
-          close();
-          if (MP.pages && MP.pages.home) MP.pages.home.unmount();
-        } else if (MP.pages && MP.pages.home) {
-          MP.pages.home.mount(Object.assign({}, s, { enabled: true }));
-        }
-      } catch (err) {
-        console.warn('[MCMod+] 切换增强视图失败', err);
-      }
-    }));
-    master.classList.add('is-master');
-    body.appendChild(master);
-
     body.appendChild(group('外观', [
-      row('主题', '跟随系统时由这个开关接管', themeRow()),
       row('紧凑模式', '收紧卡片间距', sw(s.compact, function (v) {
         save({ compact: v });
         try { MP.theme.apply(Object.assign({}, s, { compact: v })); } catch (e) { /* ignore */ }

@@ -168,6 +168,18 @@ setTimeout(function () {
   ok('原首页恢复', !main.classList.contains('mp-origin-hidden'));
   ok('body 标记移除', !w.document.body.classList.contains('mp-home-mode'));
 
+  console.log('\n[6] 悬浮条');
+  ok('悬浮条常驻（卸载后还在）', !!w.document.getElementById('mp-home-fab'));
+  const fabs = w.document.querySelectorAll('.mp-fab');
+  ok('增强 / 原始 / 设置 三个按钮', fabs.length === 3, 'got ' + fabs.length);
+  ok('卸载后「原始」高亮', fabs[1].classList.contains('is-on'));
+  ok('卸载后「增强」不高亮', !fabs[0].classList.contains('is-on'));
+
+  // 点「增强」应能重新挂载
+  fabs[0].dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+  ok('点增强后重新挂载', !!w.document.getElementById('mp-home-host'));
+  ok('重新挂载后「增强」高亮', fabs[0].classList.contains('is-on'));
+
   console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
   process.exit(fail ? 1 : 0);
 }, 320);

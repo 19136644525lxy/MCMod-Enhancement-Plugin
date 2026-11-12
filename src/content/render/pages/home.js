@@ -709,6 +709,59 @@
       rotTimer = null;
     }
   }
+  var fabEl = null;
+
+  // 右下角的小悬浮条：增强 / 原始 / 设置。
+  // 它不随 mount/unmount 销毁——切回原始视图后还得留在这儿，用户才能再切回来。
+  function syncFab() {
+    if (!fabEl) return;
+    var enhanced = !!document.getElementById('mp-home-host');
+    var btns = fabEl.querySelectorAll('.mp-fab');
+    if (btns[0]) btns[0].classList.toggle('is-on', enhanced);
+    if (btns[1]) btns[1].classList.toggle('is-on', !enhanced);
+  }
+
+  function ensureFab(settings) {
+    if (fabEl && document.body.contains(fabEl)) {
+      syncFab();
+      return fabEl;
+    }
+    fabEl = h('div', { id: 'mp-home-fab', class: 'mp-fab-bar' },
+      h('button', {
+        class: 'mp-fab',
+        type: 'button',
+        onclick: function () {
+          if (!document.getElementById('mp-home-host')) {
+            MP.pages.home.mount(settings || {});
+          }
+          syncFab();
+        }
+      }, '增强'),
+      h('button', {
+        class: 'mp-fab',
+        type: 'button',
+        onclick: function () {
+          if (document.getElementById('mp-home-host')) MP.pages.home.unmount();
+          syncFab();
+        }
+      }, '原始'),
+      h('button', {
+        class: 'mp-fab mp-fab-icon',
+        type: 'button',
+        title: '插件设置',
+        'aria-label': '插件设置',
+        onclick: function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (MP.settingsPanel) MP.settingsPanel.toggle();
+        }
+      }, gearIcon())
+    );
+    document.body.appendChild(fabEl);
+    syncFab();
+    return fabEl;
+  }
+
   MP.pages.home = {
     match: function () {
       var host = location.hostname;
@@ -717,7 +770,10 @@
     },
     mount: function (settings) {
       if (!this.match()) return false;
-      if (mounted) return true;
+      if (mounted) {
+        ensureFab(settings);
+        return true;
+      }
       var d = MP.extract.home(document);
       if (!d || !d.ok) {
         console.warn('[MCMod+] 首页抽取失败', d && d.reason);
@@ -791,6 +847,7 @@
       }
 
       mounted = true;
+      ensureFab(settings);
       return true;
     },
     unmount: function () {
@@ -820,6 +877,7 @@
       document.body.classList.remove('mp-home-mode');
       document.documentElement.classList.remove('mp-home-root');
       mounted = false;
+      syncFab();
     },
     // 设置面板里即时开关「随便看看」轮换
     setRotate: function (on) {

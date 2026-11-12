@@ -58,9 +58,10 @@ setTimeout(() => {
   ok('面板已挂载', !!panel);
   ok('面板在 body 下', !!panel && panel.parentNode === d.body);
   ok('有标题', !!panel && panel.textContent.indexOf('插件设置') >= 0);
-  ok('有 8 个设置行', d.querySelectorAll('.mp-sp-row').length === 8, 'got ' + d.querySelectorAll('.mp-sp-row').length);
-  ok('日夜开关存在', d.querySelectorAll('.mp-sp-night').length === 1);
-  ok('普通开关 7 个', d.querySelectorAll('.mp-sp .mp-toggle').length === 7, 'got ' + d.querySelectorAll('.mp-sp .mp-toggle').length);
+  ok('有 6 个设置行', d.querySelectorAll('.mp-sp-row').length === 6, 'got ' + d.querySelectorAll('.mp-sp-row').length);
+  ok('日夜开关不在面板里', d.querySelectorAll('.mp-sp-night').length === 0);
+  ok('开关 6 个', d.querySelectorAll('.mp-sp .mp-toggle').length === 6, 'got ' + d.querySelectorAll('.mp-sp .mp-toggle').length);
+  ok('分组标题 3 个', d.querySelectorAll('.mp-sp-group-title').length === 3, 'got ' + d.querySelectorAll('.mp-sp-group-title').length);
   ok('轮换开关默认勾选', (() => {
     const rows = Array.from(d.querySelectorAll('.mp-sp-row'));
     const r = rows.find((x) => x.textContent.indexOf('随便看看轮换') >= 0);
@@ -78,15 +79,14 @@ setTimeout(() => {
   setTimeout(() => {
     ok('可重复打开', !!d.getElementById('mp-settings'));
 
-    // 关掉「增强视图」应调用 home.unmount()
+    // 切换「随便看看轮换」应调用 home.setRotate(false)
     const rows = Array.from(d.querySelectorAll('.mp-sp-row'));
-    const en = rows.find((x) => x.textContent.indexOf('增强视图') >= 0);
-    const input = en.querySelector('input');
+    const rot = rows.find((x) => x.textContent.indexOf('随便看看轮换') >= 0);
+    const input = rot.querySelector('input');
     input.checked = false;
     input.dispatchEvent(new w.Event('change'));
     setTimeout(() => {
-      ok('关增强视图调用 unmount', unmounted === 1, 'unmounted=' + unmounted);
-      ok('关增强视图后自动收起面板', !d.getElementById('mp-settings'));
+      ok('关轮换调用 setRotate(false)', rotated === false, 'rotated=' + rotated);
 
       console.log('\n结果：' + pass + ' 通过 / ' + fail + ' 失败');
       w.close();
