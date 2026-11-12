@@ -1219,3 +1219,34 @@ html[data-mp-theme="dark"] .mp-fab-handle:hover {
   min-width: 0;
   padding: 0;
 }
+
+/* 把手：真正做成半圆胶囊 + SVG 箭头 */
+.mp-fab-handle {
+  width: 36px;
+  height: 58px;
+  padding-left: 4px;
+  border-radius: 29px 0 0 29px;
+  border-color: rgba(24, 22, 20, 0.14);
+  box-shadow: -6px 0 18px rgba(24, 22, 20, 0.14);
+}
+
+.mp-fab-handle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding-right: 6px;
+}
+
+html[data-mp-theme="dark"] .mp-fab-handle {
+  background: #26241f;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) .mp-fab-handle {
+    background: #26241f;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+}

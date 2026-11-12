@@ -126,7 +126,17 @@ MP.pages.center = (function () {
           e.stopPropagation();
           if (fabEl) fabEl.classList.toggle('is-open');
         }
-      }, h('span', { class: 'mp-fab-handle-icon' }, '‹')),
+      }, h('span', { class: 'mp-fab-handle-icon' },
+        h('svg', {
+          viewBox: '0 0 24 24',
+          width: 14,
+          height: 14,
+          fill: 'none',
+          stroke: 'currentColor',
+          'stroke-width': 2.6,
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round'
+        }, h('path', { d: 'M15 5l-7 7 7 7' })))),
       h('div', { class: 'mp-fab-sheet' },
       h('button', {
         class: 'mp-fab',
