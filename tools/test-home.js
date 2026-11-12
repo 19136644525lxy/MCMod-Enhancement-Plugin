@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 首页重绘 jsdom 冒烟测试：真实快照 + 三个脚本，断言抽取字段与渲染结果。
  * 运行：$env:NODE_PATH="$env:TEMP\mp-test\node_modules"; node tools/test-home.js
  */
@@ -10,6 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const SNAPSHOT = path.join(ROOT, 'output', 'www.mcmod.cn_home.html');
 const FILES = [
   'src/content/core/dom.js',
+  'src/content/core/store.js',
   'src/content/render/components.js',
   'src/content/extract/home.js',
   'src/content/widgets/footprint.js',
@@ -178,13 +179,15 @@ setTimeout(function () {
   ok('卸载后「原始」高亮', fabs[1].classList.contains('is-on'));
   ok('卸载后「增强」不高亮', !fabs[0].classList.contains('is-on'));
 
-  // 点「增强」应能重新挂载
+  // 点「增强」应能重新挂载（现在要先从 storage 读一次最新设置，是异步的）
   fabs[0].dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
-  ok('点增强后重新挂载', !!w.document.getElementById('mp-home-host'));
-  ok('重新挂载后「增强」高亮', fabs[0].classList.contains('is-on'));
+  setTimeout(function () {
+    ok('点增强后重新挂载', !!w.document.getElementById('mp-home-host'));
+    ok('重新挂载后「增强」高亮', fabs[0].classList.contains('is-on'));
 
-  console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
-  process.exit(fail ? 1 : 0);
+    console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
+    process.exit(fail ? 1 : 0);
+  }, 120);
 }, 320);
 
 

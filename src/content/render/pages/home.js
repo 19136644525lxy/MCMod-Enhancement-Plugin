@@ -833,10 +833,25 @@
         class: 'mp-fab',
         type: 'button',
         onclick: function () {
-          if (!document.getElementById('mp-home-host')) {
-            MP.pages.home.mount(settings || {});
+          if (document.getElementById('mp-home-host')) {
+            syncFab();
+            return;
           }
-          syncFab();
+          // 关键：这里必须重新读一次设置。
+          // 用户在设置面板里换过背景/主题后，闭包里这份 settings 已经过期了，
+          // 直接拿它 mount 会把刚选的背景图冲掉。
+          var fallback = function () {
+            MP.pages.home.mount(settings || {});
+            syncFab();
+          };
+          try {
+            MP.store.getSync().then(function (s) {
+              MP.pages.home.mount(s || settings || {});
+              syncFab();
+            }).catch(fallback);
+          } catch (e) {
+            fallback();
+          }
         }
       }, '增强'),
       h('button', {
