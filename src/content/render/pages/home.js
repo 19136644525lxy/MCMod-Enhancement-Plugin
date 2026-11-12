@@ -57,6 +57,14 @@
   var clockTimer = null;
   var earthSec = 0;   // 「来到地球」的秒数，mount 时从抽取结果初始化，之后随时钟递增
 
+  // 原站「MC百科来到地球已经经过了…」的起点。从快照的初始值反推出来是
+  // 2014-03-29 08:00 (UTC+8)。自己算而不读 DOM，是因为那个数字由站点 JS 填充，
+  // 页面脚本没跑起来时 DOM 里是空的。
+  var EARTH_START = Date.UTC(2014, 2, 29, 0, 0, 0);
+  function earthNow() {
+    return Math.floor((Date.now() - EARTH_START) / 1000);
+  }
+
   // 苦力怕脸：照官方图标在 16×16 网格上的像素形状画，
   // 眼睛 3×3，嘴是「顶部 4×2 窄条 → 中间 6×2 宽条 → 底部两条 2×2 的腿」。
   function creeperFace() {
@@ -133,7 +141,7 @@
       // 顺带把页脚的「来到地球」秒数往上推，同一个 1s 定时器，不额外开表。
       var earth = document.getElementById('mp-foot-earth');
       if (earth) {
-        earthSec += 1;
+        earthSec = earthNow();
         earth.textContent = earthLine(earthSec);
       }
     }
@@ -648,7 +656,7 @@
       ),
       friends.length ? h('div', { class: 'mp-foot-friends' }, friends) : null,
       h('div', { class: 'mp-foot-meta' },
-        f.earth ? h('p', { class: 'mp-foot-earth', id: 'mp-foot-earth' }, earthLine(f.earth.seconds)) : null,
+        h('p', { class: 'mp-foot-earth', id: 'mp-foot-earth' }, earthLine(earthNow())),
         f.copyright ? h('p', null, f.copyright) : null,
         f.license ? h('p', { class: 'mp-foot-license' },
           f.license.href ? a(f.license.href, f.license.text) : f.license.text) : null,
@@ -818,7 +826,7 @@
       document.body.insertBefore(bar, document.body.firstChild);
 
       // banner 底部的二级导航 + 右上角时钟接管
-      earthSec = (d.footer && d.footer.earth && d.footer.earth.seconds) || 0;
+      earthSec = earthNow();
       var frameIn = document.querySelector('.banner .frame-in');
       var bbar = bannerBar(d.banner);
       if (frameIn && bbar) {
