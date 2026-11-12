@@ -1286,3 +1286,179 @@ html[data-mp-theme="dark"] .mp-fab-handle:hover {
     border-color: rgba(87, 185, 138, 0.4);
   }
 }
+
+/* ============================================================
+   右侧抽屉（最终版，覆盖前面所有迭代）
+   把手 = 28×56 的左半圆，颜色在明暗两套主题里都单独给足对比
+   ============================================================ */
+.mp-fab-bar {
+  position: fixed !important;
+  right: 0;
+  bottom: 344px;
+  z-index: 2147483100;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  opacity: 1;
+  transform: none;
+}
+
+.mp-fab-handle {
+  width: 28px;
+  height: 56px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(24, 22, 20, 0.09);
+  border-right: 0;
+  border-radius: 28px 0 0 28px;
+  background: #ffffff;
+  color: #4a453d;
+  font-size: 0;
+  box-shadow: -2px 0 12px rgba(30, 24, 18, 0.1);
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.mp-fab-handle:hover {
+  background: #2f6f4f;
+  border-color: #2f6f4f;
+  color: #ffffff;
+  box-shadow: -2px 0 16px rgba(47, 111, 79, 0.3);
+}
+
+.mp-fab-handle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mp-fab-bar.is-open .mp-fab-handle-icon {
+  transform: rotate(180deg);
+}
+
+.mp-fab-sheet {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(24, 22, 20, 0.09);
+  box-shadow: 0 10px 30px rgba(30, 24, 18, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(calc(100% + 10px), -50%) scale(0.86);
+  transform-origin: right center;
+  transition: transform 0.44s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+
+.mp-fab-bar.is-open .mp-fab-sheet {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0, -50%) scale(1);
+}
+
+.mp-fab-sheet .mp-fab {
+  width: auto;
+  min-width: 52px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: transparent;
+  color: #4a453d;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+}
+
+.mp-fab-sheet .mp-fab:hover {
+  background: rgba(47, 111, 79, 0.1);
+  color: #2f6f4f;
+}
+
+.mp-fab-sheet .mp-fab.is-on {
+  background: #2f6f4f;
+  color: #ffffff;
+}
+
+.mp-fab-sheet .mp-fab-icon {
+  width: 34px;
+  min-width: 0;
+  height: 32px;
+  padding: 0;
+}
+
+/* 深色 */
+html[data-mp-theme="dark"] .mp-fab-handle {
+  background: #2b2924;
+  border-color: rgba(255, 255, 255, 0.13);
+  color: #d8d3c8;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.5);
+}
+
+html[data-mp-theme="dark"] .mp-fab-handle:hover {
+  background: #57b98a;
+  border-color: #57b98a;
+  color: #14130f;
+}
+
+html[data-mp-theme="dark"] .mp-fab-sheet {
+  background: #232120;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
+
+html[data-mp-theme="dark"] .mp-fab-sheet .mp-fab {
+  color: #d8d3c8;
+}
+
+html[data-mp-theme="dark"] .mp-fab-sheet .mp-fab:hover {
+  background: rgba(87, 185, 138, 0.16);
+  color: #57b98a;
+}
+
+html[data-mp-theme="dark"] .mp-fab-sheet .mp-fab.is-on {
+  background: #57b98a;
+  color: #14130f;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) .mp-fab-handle {
+    background: #2b2924;
+    border-color: rgba(255, 255, 255, 0.13);
+    color: #d8d3c8;
+    box-shadow: -2px 0 12px rgba(0, 0, 0, 0.5);
+  }
+  html:not([data-mp-theme="light"]) .mp-fab-handle:hover {
+    background: #57b98a;
+    border-color: #57b98a;
+    color: #14130f;
+  }
+  html:not([data-mp-theme="light"]) .mp-fab-sheet {
+    background: #232120;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  }
+  html:not([data-mp-theme="light"]) .mp-fab-sheet .mp-fab {
+    color: #d8d3c8;
+  }
+  html:not([data-mp-theme="light"]) .mp-fab-sheet .mp-fab.is-on {
+    background: #57b98a;
+    color: #14130f;
+  }
+}
