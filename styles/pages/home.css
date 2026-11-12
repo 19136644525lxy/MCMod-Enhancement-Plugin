@@ -1906,6 +1906,7 @@ html.mp-home-root .mp-float-bar {
   bottom: 24px;
   z-index: 2147483100;
   display: flex;
+  flex-direction: column;
   gap: 3px;
   padding: 4px;
   border-radius: 999px;
