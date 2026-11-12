@@ -1081,3 +1081,112 @@ html[data-mp-theme="dark"] body.mp-center-mode .common-comment-block input[type=
   width: 40px;
   height: 34px;
 }
+
+/* ---------- 抽屉式切换：右边缘只露一个箭头把手，点开弹出三个按钮 ---------- */
+.mp-fab-bar {
+  position: fixed;
+  right: 0;
+  bottom: 344px;
+  z-index: 2147483100;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  opacity: 1;
+  transform: none;
+}
+
+.mp-fab-bar:hover {
+  opacity: 1;
+  transform: none;
+}
+
+.mp-fab-handle {
+  width: 26px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(24, 22, 20, 0.12);
+  border-right: 0;
+  border-radius: 13px 0 0 13px;
+  background: #fbfaf7;
+  color: #55504a;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: -4px 0 14px rgba(24, 22, 20, 0.1);
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.mp-fab-handle:hover {
+  color: #2f6f4f;
+}
+
+.mp-fab-handle-icon {
+  display: block;
+  line-height: 1;
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mp-fab-bar.is-open .mp-fab-handle-icon {
+  transform: rotate(180deg);
+}
+
+.mp-fab-sheet {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 5px;
+  border-radius: 14px;
+  background: #fbfaf7;
+  border: 1px solid rgba(24, 22, 20, 0.1);
+  box-shadow: 0 12px 34px rgba(24, 22, 20, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(calc(100% + 10px), -50%) scale(0.86);
+  transform-origin: right center;
+  transition: transform 0.44s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+
+.mp-fab-bar.is-open .mp-fab-sheet {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0, -50%) scale(1);
+}
+
+html[data-mp-theme="dark"] .mp-fab-handle,
+html[data-mp-theme="dark"] .mp-fab-sheet {
+  background: #1c1a17;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+}
+
+html[data-mp-theme="dark"] .mp-fab-handle {
+  color: #ece9e3;
+}
+
+html[data-mp-theme="dark"] .mp-fab-handle:hover {
+  color: #57b98a;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) .mp-fab-handle,
+  html:not([data-mp-theme="light"]) .mp-fab-sheet {
+    background: #1c1a17;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+  }
+  html:not([data-mp-theme="light"]) .mp-fab-handle {
+    color: #ece9e3;
+  }
+  html:not([data-mp-theme="light"]) .mp-fab-handle:hover {
+    color: #57b98a;
+  }
+}

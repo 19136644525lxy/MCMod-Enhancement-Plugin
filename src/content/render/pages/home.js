@@ -830,6 +830,18 @@
     }
     fabEl = h('div', { id: 'mp-home-fab', class: 'mp-fab-bar' },
       h('button', {
+        class: 'mp-fab-handle',
+        type: 'button',
+        title: '视图切换',
+        'aria-label': '视图切换',
+        onclick: function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof fabEl !== 'undefined' && fabEl) fabEl.classList.toggle('is-open');
+        }
+      }, h('span', { class: 'mp-fab-handle-icon' }, '‹')),
+      h('div', { class: 'mp-fab-sheet' },
+      h('button', {
         class: 'mp-fab',
         type: 'button',
         onclick: function () {
@@ -873,8 +885,16 @@
           if (MP.settingsPanel) MP.settingsPanel.toggle();
         }
       }, gearIcon())
+      )
     );
     document.body.appendChild(fabEl);
+    // 点抽屉以外的地方收起
+    if (!ensureFab._bound) {
+      ensureFab._bound = true;
+      document.addEventListener('click', function (e) {
+        if (fabEl && !fabEl.contains(e.target)) fabEl.classList.remove('is-open');
+      });
+    }
     syncFab();
     return fabEl;
   }
