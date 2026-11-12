@@ -755,3 +755,42 @@ body.mp-center-mode .mp-c-bbs {
   align-items: flex-end;
   gap: 6px;
 }
+
+/* 搜索框：原站默认 display:none，点放大镜后由站点 JS 设内联 display:block 展开。
+   之前我写的 display:flex 优先级更高，把它变成常驻，还压住了展开动画。
+   这里恢复默认隐藏，只美化展开后的样式。 */
+body.mp-center-mode .header-search form {
+  display: none;
+  width: 240px;
+  padding: 3px 4px 3px 0;
+  background: var(--c-card);
+  border: 1px solid var(--c-hair);
+  border-radius: 999px;
+  box-shadow: var(--c-shadow);
+}
+
+body.mp-center-mode .header-search input {
+  display: inline-block;
+  vertical-align: middle;
+  width: 196px;
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--c-ink);
+  font-size: 13px;
+}
+
+body.mp-center-mode .header-search button {
+  display: inline-block;
+  vertical-align: middle;
+  width: 32px;
+  height: 30px;
+  border: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 15px 15px;
+  cursor: pointer;
+}
