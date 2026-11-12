@@ -2077,32 +2077,34 @@ html[data-mp-theme="dark"] .mp-fab:hover {
   transform: scale(1.3);
 }
 
-/* ---- banner 上下羽化 ----
-   banner 是 220px 的整幅大图，上面顶着顶栏、下面接着内容区，
-   两头都是硬边。这里只对图片本身做遮罩，让上下沿自然淡出到页面背景；
-   导航条在 .frame 里，不受影响，仍然清晰。 */
+/* ---- banner：上沿压住背景 + 下沿羽化 ----
+   banner 是 220px 的整幅大图，上下都是硬边。
+   这里的做法是把图片容器整体上移 18px 并加高到 238px，
+   让图片上沿直接盖住上面的背景区域（不再留一条底色缝），
+   同时只对下沿做羽化；导航条在 .frame 里，不受影响。 */
 body.mp-home-mode .banner > ul#bannerMove,
 body.mp-home-mode .banner > ul#advMove {
+  margin-top: -18px;
+  height: 238px;
   -webkit-mask-image: linear-gradient(to bottom,
-    transparent 0,
-    #000 7%,
-    #000 72%,
+    #000 0,
+    #000 74%,
     rgba(0, 0, 0, .6) 90%,
     transparent 100%);
   mask-image: linear-gradient(to bottom,
-    transparent 0,
-    #000 7%,
-    #000 72%,
+    #000 0,
+    #000 74%,
     rgba(0, 0, 0, .6) 90%,
     transparent 100%);
 }
 
-/* 图片整体上移一点，给顶部留出羽化空间；放大 4.5% 补掉平移后露出的缝 */
 body.mp-home-mode .banner > ul#bannerMove li img,
 body.mp-home-mode .banner > ul#advMove li img {
   display: block;
-  transform: translateY(-6px) scale(1.045);
-  transform-origin: center center;
+  width: 100%;
+  height: 238px;
+  object-fit: cover;
+  object-position: center top;
 }
 
 /* 羽化之后，banner 底下那层要透出页面背景，不能是纯黑 */
