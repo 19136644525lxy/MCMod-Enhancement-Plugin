@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    个人中心（center.mcmod.cn/<uid>/）
 
    两条硬规则，都是从前一版翻车里学来的：
@@ -1283,9 +1283,10 @@ body.mp-center-mode .mp-center-block {
 }
 
 
-/* 底板透明：原站 .common-frame / .center 自己带一层浅色底，
-   把背景图和背景层整块盖住了。这里只清 background-color，
-   不动 background-image（.center-header 的横幅图还得留着）。 */
+/* 底板透明：原站 style.css 里 .common-center 是
+   `background-color:#FFF; border:5px solid #FFF; border-radius:5px`，
+   这一圈白底 + 白边就是那块「白色的底」。只清 background-color 不够，
+   border 也得跟着透明，否则还会剩一圈白框。 */
 body.mp-center-mode .common-frame,
 body.mp-center-mode .common-center,
 body.mp-center-mode .center.center-frame,
@@ -1295,6 +1296,12 @@ body.mp-center-mode #center-page-home,
 body.mp-center-mode .center-main {
   background-color: transparent !important;
   background-image: none !important;
+  border-color: transparent !important;
+}
+
+body.mp-center-mode .common-center {
+  border-width: 0 !important;
+  border-radius: 0 !important;
 }
 
 /* 未重绘的区域（等级 / 收藏 / 短评等）也给一层同款毛玻璃，不然会突然变成白板 */
