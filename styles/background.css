@@ -8,6 +8,8 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.22s ease;
 }
 
 .mp-bg-canvas {

@@ -67,6 +67,8 @@ ok('banner 导航 ≥ 8', !!d.banner && d.banner.nav.length >= 8,
 ok('banner 随机链接', !!d.banner && /\/rand\//.test(d.banner.randomHref),
   d.banner ? d.banner.randomHref : 'null');
 ok('banner 搜索表单', !!d.banner && d.banner.search.name === 'key');
+ok('公告 ≥ 3 条', (d.notices || []).length >= 3, 'got ' + (d.notices || []).length);
+ok('公告字段完整', (d.notices || []).every((n) => n.title && n.href && /^https?:\/\//.test(n.href)));
 
 console.log('\n[2] 挂载');
 ok('match() 命中首页', w.MP.pages.home.match() === true);

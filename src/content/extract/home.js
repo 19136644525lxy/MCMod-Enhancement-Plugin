@@ -105,6 +105,17 @@ MP.extract.home = (function () {
       };
     });
 
+    // banner 左侧公告位（.door）：一叠 250×300 的图，鼠标移上去逐张切换
+    out.notices = map(all(doc, '.door .list ul.list > li'), function (li) {
+      var a = li.querySelector('a');
+      if (!a) return null;
+      var img = li.querySelector('img');
+      var title = (attr(a, 'title') || attr(img, 'alt') || txt(a) || '').trim();
+      var href = abs(attr(a, 'href'));
+      if (!title || !href) return null;
+      return { title: title, href: href, img: imgOf(img) };
+    }).filter(Boolean);
+
     out.banner = (function () {
       var frame = pick(doc, '.banner .frame-in');
       if (!frame) return null;

@@ -459,6 +459,19 @@
     );
   }
 
+  function bellIcon() {
+    return h('svg', { viewBox: '0 0 24 24', class: 'mp-bell-svg', 'aria-hidden': 'true' },
+      h('path', {
+        d: 'M12 3.2a5.8 5.8 0 0 0-5.8 5.8v3.3l-1.3 2.5a1 1 0 0 0 .9 1.5h12.4a1 1 0 0 0 .9-1.5l-1.3-2.5V9A5.8 5.8 0 0 0 12 3.2Z',
+        fill: 'none', stroke: 'currentColor', 'stroke-width': 1.7, 'stroke-linejoin': 'round'
+      }),
+      h('path', {
+        d: 'M9.6 19.2a2.6 2.6 0 0 0 4.8 0',
+        fill: 'none', stroke: 'currentColor', 'stroke-width': 1.7, 'stroke-linecap': 'round'
+      })
+    );
+  }
+
   function topbar(d) {
     var navItems = (d.nav || []).map(function (n) {
       return a(n.href, n.label, 'mp-nav-item' + (n.active ? ' is-on' : ''));
@@ -467,8 +480,16 @@
     var userBlock = d.user
       ? h('div', { class: 'mp-user' },
           d.user.notice
-            ? h('a', { class: 'mp-bell', href: d.user.notice, target: '_blank', rel: 'noopener', title: '提醒' },
-                h('span', { 'aria-hidden': 'true' }, '◔'))
+            ? h('a', {
+                class: 'mp-bell',
+                href: d.user.notice,
+                target: '_blank',
+                rel: 'noopener',
+                title: '短消息（站内提醒）'
+              },
+                bellIcon(),
+                h('span', { class: 'mp-bell-txt' }, '短消息'),
+                h('span', { class: 'mp-bell-badge' }, '0'))
             : null,
           a(d.user.href, [
             d.user.avatar ? h('img', { src: d.user.avatar, alt: '', loading: 'lazy' }) : null,
@@ -538,6 +559,52 @@
         ),
         h('ul', { class: 'mp-fp-recent' })
       )
+    );
+  }
+
+  // 公告条：原站是 banner 左侧的 .door，鼠标悬停逐张切换；这里改成一行卡片 + 圆点
+  function noticeCard(d) {
+    var list = d.notices || [];
+    if (!list.length) return null;
+
+    var img = h('img', { class: 'mp-notice-img', src: list[0].img || '', alt: '', loading: 'lazy' });
+    var title = h('span', { class: 'mp-notice-title' }, list[0].title);
+    var link = a(list[0].href, [img, title], 'mp-notice-link');
+    var dots = h('div', { class: 'mp-notice-dots' });
+
+    function show(i) {
+      link.href = list[i].href;
+      link.title = list[i].title;
+      if (list[i].img) img.src = list[i].img;
+      img.alt = list[i].title;
+      title.textContent = list[i].title;
+      Array.prototype.forEach.call(dots.children, function (b, j) {
+        b.classList.toggle('is-on', j === i);
+      });
+    }
+
+    list.forEach(function (n, i) {
+      var b = h('button', {
+        type: 'button',
+        class: 'mp-notice-dot' + (i === 0 ? ' is-on' : ''),
+        'aria-label': n.title,
+        title: n.title
+      });
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        show(i);
+      });
+      dots.appendChild(b);
+    });
+
+    return h('section', { class: 'mp-glass mp-notice' },
+      h('div', { class: 'mp-notice-side' },
+        h('span', { class: 'mp-notice-label' }, '公告'),
+        h('span', { class: 'mp-notice-count' }, list.length + ' 条')
+      ),
+      link,
+      dots
     );
   }
 
@@ -614,6 +681,7 @@
 
     return h('div', { id: 'mp-home', class: 'mp-home' },
       hero,
+      noticeCard(d),
       fp,
       h('div', { class: 'mp-cols mp-cols-2-1' }, mods, feed),
       h('div', { class: 'mp-cols mp-cols-1-1' }, posts, topics),

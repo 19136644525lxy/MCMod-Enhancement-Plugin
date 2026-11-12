@@ -300,25 +300,39 @@
 
   function apply(mode) {
     mode = PRESETS[mode] ? mode : 'mist';
-    current = mode;
     var body = document.body;
     if (!body) return;
-    body.dataset.mpBg = mode;
+
     var layer = ensureLayer();
+    var changed = !!body.dataset.mpBg && body.dataset.mpBg !== mode;
 
-    stopLoop();
+    function commit() {
+      current = mode;
+      body.dataset.mpBg = mode;
+      stopLoop();
 
-    if (mode === 'mist') {
-      // 晨雾是纯 CSS 渐变，不需要 canvas
-      if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
-      canvas = null;
-      ctx = null;
-      return;
+      if (mode === 'mist') {
+        // 晨雾是纯 CSS 渐变，不需要 canvas
+        if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+        canvas = null;
+        ctx = null;
+        layer.style.opacity = '';
+        return;
+      }
+
+      ensureCanvas(layer);
+      paintStatic();
+      startLoop();
+      layer.style.opacity = '1';
     }
 
-    ensureCanvas(layer);
-    paintStatic();
-    startLoop();
+    // 切换时先把旧底图淡出，画好新底图再淡入，避免硬切
+    if (changed) {
+      layer.style.opacity = '0';
+      setTimeout(commit, 160);
+    } else {
+      commit();
+    }
   }
 
   function refresh() {
