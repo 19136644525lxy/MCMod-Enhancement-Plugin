@@ -34,15 +34,18 @@ try {
   if (j && typeof j.html === 'string') frag = j.html;
 } catch (e) {}
 
+// 外部 HTML 片段里一定带 </script>，直接内联会把宿主脚本提前闭合。
+// 统一走 base64，脚本里只出现 ASCII，绝对安全。
+const b64 = (s) => Buffer.from(s, 'utf8').toString('base64');
+const utf8 = 'function (b64) { return decodeURIComponent(escape(atob(b64))); }';
+
 const inject = `
 <script>
-window.addEventListener('DOMContentLoaded', function () {
+(function () {
+  var decode = ${utf8};
   var host = document.getElementById('center-page-home');
-  if (host) host.innerHTML = ${JSON.stringify(frag)};
-  if (window.MP && window.MP.pages && window.MP.pages.center) {
-    window.MP.pages.center.mount({ enabled: true });
-  }
-});
+  if (host && !host.querySelector('.center-total')) host.innerHTML = decode('${b64(frag)}');
+})();
 </script>`;
 
 const extra = `
@@ -58,14 +61,35 @@ shell = shell.replace('</body>', extra + '\n</body>');
 const badge = `<div style="position:fixed;left:12px;bottom:12px;z-index:99999;padding:6px 10px;border-radius:9px;background:rgba(20,18,15,.82);color:#fff;font:12px/1.4 system-ui;pointer-events:none;">离线预览 · 个人中心</div>`;
 shell = shell.replace('</body>', badge + '\n</body>');
 
-// 5) 让增强脚本能跑：把 center.js + dom.js 内联（离线没有扩展环境）
+// 5) 让增强脚本能跑：内联 dom.js + fetch-page.js + center.js，
+//    并把 history.html 的真实记录喂给 fetchDoc，让活跃度热力图在预览里也有数据。
+const historyB64 = b64(read('output/history-829036.html'));
 const boot = `
 <script>
+window.chrome = window.chrome || {};
+window.chrome.runtime = {
+  lastError: null,
+  getURL: function (p) { return '../' + p; },
+  sendMessage: function (msg, cb) {
+    var decode = ${utf8};
+    var text = (msg && msg.url && msg.url.indexOf('history.html') >= 0) ? decode('${historyB64}') : '';
+    setTimeout(function () { if (cb) cb({ ok: !!text, text: text }); }, 0);
+  }
+};
 ${read('src/content/core/dom.js')}
+${read('src/content/core/fetch-page.js')}
 ${read('src/content/render/pages/center.js')}
+window.setTimeout(function () {
+  try { window.MP.pages.center.mount({ enabled: true, bgPreset: 'mist' }); } catch (e) { window.__mpErr = String(e); }
+}, 30);
 </script>`;
-// 注意顺序：上面的 inject 依赖 MP.pages.center，所以脚本要放在 inject 之前
+
 shell = shell.replace('<script>\nwindow.addEventListener(\'DOMContentLoaded\'', boot + '<script>\nwindow.addEventListener(\'DOMContentLoaded\'');
+
+// 兜底：如果上面的锚点没匹配上，直接插到 </body> 前
+if (shell.indexOf('window.MP.pages.center.mount') < 0) {
+  shell = shell.replace('</body>', boot + '\n</body>');
+}
 
 fs.writeFileSync(path.join(ROOT, 'output/preview-center.html'), shell, 'utf8');
 console.log('written', path.join(ROOT, 'output/preview-center.html'), Buffer.byteLength(shell), 'bytes');

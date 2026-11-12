@@ -169,8 +169,9 @@ MP.pages.center = (function () {
       host.querySelector('.mp-act-body').textContent = '增强视图未就绪';
       return;
     }
-    MP.page.fetchDoc(activityUrl(uid)).then(function (doc) {
-      paintActivity(host, collectDays(doc));
+    MP.page.fetchDoc(activityUrl(uid)).then(function (res) {
+      if (!res || !res.ok || !res.doc) throw new Error('FETCH_FAILED');
+      paintActivity(host, collectDays(res.doc));
     }).catch(function () {
       host.querySelector('.mp-act-body').textContent = '活跃度载入失败';
     });
