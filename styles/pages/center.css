@@ -1419,3 +1419,45 @@ body.mp-center-mode .mp-center-total > ul > li,
 body.mp-center-mode .mp-center-block {
   background: var(--c-card);
 }
+
+
+/* 原站 .post-block 是 inline-block + width:12.5%（竖向小卡）。
+   我改成 flex 横排时没盖掉这个宽度，结果封面把 12.5% 撑满，右侧文字被压成 0 宽。
+   这里把宽度、内边距、文字裁切全部复位。 */
+body.mp-center-mode .mp-center-block .post-list .post-block {
+  width: 100% !important;
+  padding-right: 0;
+  box-sizing: border-box;
+}
+
+body.mp-center-mode .mp-center-block .post-list .post-block .info .title,
+body.mp-center-mode .mp-center-block .post-list .post-block .info .other {
+  height: auto;
+  line-height: 1.45;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+body.mp-center-mode .mp-center-block .post-list .post-block .info .other {
+  position: static;
+}
+
+body.mp-center-mode .mp-center-block .post-list .post-block .info .other .time {
+  position: static;
+}
+
+
+/* hr: 全部隐藏 */
+/* 原站每块之间用 <hr/> 分隔，而且是 .center-total 的兄弟节点，
+   之前写 .mp-center-total > hr 选不中，统计条下面那条线一直留着。 */
+body.mp-center-mode .center-total + hr,
+body.mp-center-mode #center-page-home > hr,
+body.mp-center-mode .center-main > hr,
+body.mp-center-mode .center-main hr,
+body.mp-center-mode .center-frame hr {
+  display: none !important;
+  border: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+}
