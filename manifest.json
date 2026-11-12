@@ -57,6 +57,7 @@
         "src/content/widgets/background.js",
         "src/content/widgets/settings-panel.js",
         "src/content/render/pages/home.js",
+        "src/content/render/pages/center.js",
         "src/content/render/pages/item.js",
         "src/content/render/pages/klass.js",
         "src/content/render/pages/modpack.js",

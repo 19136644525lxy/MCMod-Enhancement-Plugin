@@ -191,6 +191,7 @@ MP.router = (function () {
       try { if (MP.pages.home) MP.pages.home.mount(s); } catch (e) { console.warn('[MCMod+] 首页模块失败', e); }
       try { tryMountSearch(); } catch (e) { console.warn('[MCMod+] 搜索页模块失败', e); }
       try { tryMountPage(); } catch (e) { console.warn('[MCMod+] 页面重绘失败', e); }
+      try { if (MP.pages.center && MP.pages.center.mount(s)) { /* 个人中心 */ } } catch (e) { console.warn('[MCMod+] 个人中心模块失败', e); }
       try { MP.splash.done(); } catch (e) { /* ignore */ }
     }).catch((e) => {
       console.warn('[MCMod+] 设置读取失败', e);
