@@ -98,5 +98,46 @@ MP.ui = (function () {
     return btn;
   }
 
-  return { chip, button, skeleton, empty, toolbar, card, dayNight, paintSwitch };
+  /* 回到顶部：固定在右下角，滚过一屏后出现。
+     和「增强/原始」浮动条分两层摆（浮动条 bottom:84px），互不遮挡。 */
+  var topBtn = null;
+  function toTop() {
+    if (topBtn && document.body.contains(topBtn)) return topBtn;
+    topBtn = h('button', {
+      id: 'mp-to-top',
+      class: 'mp-to-top',
+      type: 'button',
+      title: '回到顶部',
+      'aria-label': '回到顶部'
+    }, h('svg', {
+      viewBox: '0 0 24 24',
+      width: 16,
+      height: 16,
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': 2.2,
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round'
+    },
+      h('path', { d: 'M12 19V5' }),
+      h('path', { d: 'M5 12l7-7 7 7' })
+    ));
+    topBtn.addEventListener('click', function () {
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {
+        window.scrollTo(0, 0);
+      }
+    });
+    document.body.appendChild(topBtn);
+    var onScroll = function () {
+      if (window.scrollY > 360) topBtn.classList.add('is-on');
+      else topBtn.classList.remove('is-on');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return topBtn;
+  }
+
+  return { chip, button, skeleton, empty, toolbar, card, dayNight, paintSwitch, toTop };
 })();
