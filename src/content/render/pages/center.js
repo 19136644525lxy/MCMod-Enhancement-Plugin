@@ -684,6 +684,18 @@ MP.pages.center = (function () {
       const nodes = document.querySelectorAll('.' + pair[1]);
       for (let i = 0; i < nodes.length; i++) nodes[i].classList.remove(pair[1]);
     });
+    // 恢复原站活跃度图表：我们把它 display:none 了，切回原始视图必须还原，
+    // 否则站点自己的 ECharts 永远不出现，只剩一片空白。
+    const chartObj = document.getElementById('center-editchart-obj');
+    if (chartObj) chartObj.style.display = '';
+    const actHost = document.getElementById('mp-activity');
+    if (actHost && actHost.parentNode) actHost.parentNode.removeChild(actHost);
+    const chartFrames = document.querySelectorAll('.edit-chart-frame');
+    for (let ci = 0; ci < chartFrames.length; ci++) chartFrames[ci].classList.remove('mp-act-origin-titles');
+    actKey = '';
+    actBusy = false;
+    actToken++;
+
     unbindLightbox();
     const sw = document.getElementById('mp-daynight');
     if (sw && sw.parentNode) sw.parentNode.removeChild(sw);
