@@ -126,7 +126,7 @@ MP.pages.center = (function () {
       var span = end.getTime() - new Date(first + 'T00:00:00+08:00').getTime();
       weeks = Math.ceil(span / (7 * 86400000)) + 1;
     }
-    weeks = Math.max(26, Math.min(140, weeks));
+    weeks = Math.max(26, Math.min(180, weeks));
 
     // 格子尺寸跟着周数和容器宽度走，最小 8px，避免溢出
     var hostW = host.clientWidth || 900;
@@ -153,6 +153,8 @@ MP.pages.center = (function () {
         ? '全部 ' + total + ' 次'
         : total + ' 次';
 
+    ensureTip();
+
     host.querySelector('.mp-act-body').innerHTML =
       '<div class="mp-act-scroll"><div class="mp-act-grid" style="--cell:' + cell + 'px">' + cells.join('') + '</div></div>' +
       '<div class="mp-act-foot">' +
@@ -162,6 +164,23 @@ MP.pages.center = (function () {
           '<span class="mp-act-legend"><i data-lv="0"></i><i data-lv="1"></i><i data-lv="2"></i><i data-lv="3"></i><b>多</b></span>' +
         '</span>' +
       '</div>';
+  }
+
+  // 悬停提示：格子太小时原生 title 要等一秒，这里自己画一个
+  var tipEl = null;
+
+  function ensureTip() {
+    if (tipEl && document.body.contains(tipEl)) return tipEl;
+    tipEl = document.createElement('div');
+    tipEl.className = 'mp-act-tip';
+    document.body.appendChild(tipEl);
+    return tipEl;
+  }
+
+  function moveTip(ev) {
+    if (!tipEl || !tipEl.classList.contains('is-on')) return;
+    tipEl.style.left = (ev.clientX + 12) + 'px';
+    tipEl.style.top = (ev.clientY - 10) + 'px';
   }
 
   function ymd(d) {
@@ -193,7 +212,7 @@ MP.pages.center = (function () {
     var all = firstDays.slice();
     var guard = 0;
     var misses = 0;
-    var total = 12;
+    var total = 16;
 
     function step() {
       guard++;
@@ -251,6 +270,23 @@ MP.pages.center = (function () {
       host.innerHTML = '<div class="mp-act-body">载入中…</div>';
       frame.appendChild(host);
 
+      host.addEventListener('mouseover', function (ev) {
+        var cell = ev.target && ev.target.closest && ev.target.closest('.mp-act-cell');
+        if (!cell) return;
+        var tip = ensureTip();
+        var bits = (cell.getAttribute('title') || '').split(' · ');
+        tip.textContent = bits[0] + (bits[1] ? ' · ' + bits[1] : '');
+        tip.classList.add('is-on');
+      });
+
+      host.addEventListener('mouseout', function (ev) {
+        var cell = ev.target && ev.target.closest && ev.target.closest('.mp-act-cell');
+        if (!cell || !tipEl) return;
+        tipEl.classList.remove('is-on');
+      });
+
+      host.addEventListener('mousemove', moveTip);
+
       host.addEventListener('click', function (ev) {
         var btn = ev.target && ev.target.closest && ev.target.closest('.mp-act-refresh');
         if (!btn) return;
@@ -293,7 +329,7 @@ MP.pages.center = (function () {
           if (!res || !res.ok || !res.doc) throw new Error('FETCH_FAILED');
           var days = collectDays(res.doc);
           if (!alive()) return null;
-          paintActivity(host, days, { progress: '0/12' });
+          paintActivity(host, days, { progress: '0/16' });
           return days;
         });
       }).then(function (first) {
@@ -690,6 +726,9 @@ MP.pages.center = (function () {
     if (chartObj) chartObj.style.display = '';
     const actHost = document.getElementById('mp-activity');
     if (actHost && actHost.parentNode) actHost.parentNode.removeChild(actHost);
+    const actTip = document.querySelector('.mp-act-tip');
+    if (actTip && actTip.parentNode) actTip.parentNode.removeChild(actTip);
+    tipEl = null;
     const chartFrames = document.querySelectorAll('.edit-chart-frame');
     for (let ci = 0; ci < chartFrames.length; ci++) chartFrames[ci].classList.remove('mp-act-origin-titles');
     actKey = '';
