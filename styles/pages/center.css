@@ -14,7 +14,7 @@ body.mp-center-mode {
   --c-ink: #26231f;
   --c-ink-2: #55504a;
   --c-ink-3: #857f75;
-  --c-card: rgba(255, 255, 255, 0.55);
+  --c-card: rgba(255, 255, 255, 0.62);
   --c-card-soft: rgba(255, 255, 255, 0.4);
   --c-line: rgba(255, 255, 255, 0.5);
   --c-hair: rgba(38, 35, 31, 0.09);
@@ -28,7 +28,7 @@ html[data-mp-theme="dark"] body.mp-center-mode {
   --c-ink: #ece9e3;
   --c-ink-2: #c2bbb0;
   --c-ink-3: #928b7e;
-  --c-card: rgba(26, 25, 22, 0.52);
+  --c-card: rgba(26, 25, 22, 0.62);
   --c-card-soft: rgba(26, 25, 22, 0.38);
   --c-line: rgba(255, 255, 255, 0.1);
   --c-hair: rgba(255, 255, 255, 0.09);
@@ -42,7 +42,7 @@ html[data-mp-theme="dark"] body.mp-center-mode {
     --c-ink: #ece9e3;
     --c-ink-2: #c2bbb0;
     --c-ink-3: #928b7e;
-    --c-card: rgba(26, 25, 22, 0.52);
+    --c-card: rgba(26, 25, 22, 0.62);
     --c-card-soft: rgba(26, 25, 22, 0.38);
     --c-line: rgba(255, 255, 255, 0.1);
     --c-hair: rgba(255, 255, 255, 0.09);
@@ -63,17 +63,9 @@ body.mp-center-mode .mp-center-header {
 }
 
 /* 底部压一层渐变，保证白色昵称/签名在任何封面上都读得清 */
+/* 头卡不再压渐变条：图片自己结束，直接过渡到页面背景。文字靠 text-shadow 保证可读。 */
 body.mp-center-mode .mp-center-header::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0) 34%,
-    rgba(0, 0, 0, 0.16) 64%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
+  content: none;
 }
 
 body.mp-center-mode .mp-center-header > * {
