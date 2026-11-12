@@ -853,3 +853,29 @@ body.mp-center-mode .header-search button#header-search-submit:hover {
 body.mp-center-mode #header-search-switch {
   display: none !important;
 }
+
+/* 顶栏在窄屏（<1400px）时左右 padding 固定 200px 太占地方，
+   加上 232px 搜索框后菜单被挤到搜索框底下。这里让 padding 跟着视口走，
+   同时收窄菜单项与搜索框的宽度。 */
+body.mp-center-mode .header-container {
+  padding: 0 max(24px, calc((100% - 1200px) / 2));
+}
+
+body.mp-center-mode .mp-topbar-menu {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+body.mp-center-mode .mp-topbar-menu .header-menu-item {
+  padding: 0 16px;
+}
+
+body.mp-center-mode .header-search form {
+  width: 180px;
+}
+
+body.mp-center-mode .header-search input {
+  width: auto;
+  padding: 0 10px;
+}
