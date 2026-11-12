@@ -81,10 +81,14 @@ MP.ui = (function () {
       + '<span class="mp-ts-spot"></span><span class="mp-ts-spot"></span><span class="mp-ts-spot"></span>'
       + '</span></span></span></span>';
     paintSwitch(btn, !!o.dark);
-    // 首次挂载不播放过渡，避免从 light 闪到 dark
+    // 首次挂载不播放过渡，避免从 light 闪到 dark。
+    // requestAnimationFrame 在 jsdom / 老环境可能不存在，退化成 setTimeout。
+    var raf = window.requestAnimationFrame
+      ? function (fn) { window.requestAnimationFrame(fn); }
+      : function (fn) { setTimeout(fn, 16); };
     btn.classList.add('mp-ts-still');
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { btn.classList.remove('mp-ts-still'); });
+    raf(function () {
+      raf(function () { btn.classList.remove('mp-ts-still'); });
     });
     btn.addEventListener('click', function () {
       var next = btn.dataset.state !== 'dark';

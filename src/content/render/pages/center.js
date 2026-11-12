@@ -71,8 +71,10 @@ MP.pages.center = (function () {
     sw.id = 'mp-daynight';
     const right = document.querySelector('.header-right');
     const host = document.querySelector('.header-frame');
-    if (right && right.parentNode) right.parentNode.insertBefore(sw, right);
+    // 追加到 .header-right 末尾：它在顶栏最右，紧挨着头像
+    if (right) right.appendChild(sw);
     else if (host) host.appendChild(sw);
+    else return;
   }
 
   function match() {

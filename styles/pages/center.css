@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    个人中心（center.mcmod.cn/<uid>/）
 
    两条硬规则，都是从前一版翻车里学来的：
@@ -59,7 +59,6 @@ body.mp-center-mode .mp-center-header {
   border-radius: var(--c-radius);
   overflow: hidden;
   box-shadow: var(--c-shadow);
-  background-size: cover;
   background-position: center;
 }
 
@@ -586,4 +585,85 @@ body.mp-center-mode .mp-topbar .header-layer {
 body.mp-center-mode .mp-topbar-daynight {
   margin-left: 14px;
   vertical-align: middle;
+}
+
+
+/* ---------- 顶栏右侧：搜索框 / 用户区 / 日夜开关 ---------- */
+
+body.mp-center-mode .mp-topbar .header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+}
+
+body.mp-center-mode .mp-topbar-daynight {
+  margin: 0;
+  flex: none;
+}
+
+body.mp-center-mode .header-search form {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--c-card);
+  border: 1px solid var(--c-hair);
+}
+
+body.mp-center-mode .header-search input {
+  width: 168px;
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--c-ink);
+  font-size: 13px;
+}
+
+body.mp-center-mode .header-search input::placeholder {
+  color: var(--c-ink-3);
+}
+
+body.mp-center-mode .header-search button {
+  width: 34px;
+  height: 30px;
+  border: 0;
+  background: transparent;
+  color: var(--c-ink-2);
+  cursor: pointer;
+}
+
+body.mp-center-mode .header-search button:hover {
+  color: var(--c-accent);
+}
+
+/* 头像旁的「前往论坛沙盒 / 前往社群个人中心」 */
+
+body.mp-center-mode .mp-c-bbs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+body.mp-center-mode .mp-c-bbs a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+body.mp-center-mode .mp-c-bbs a:hover {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  text-decoration: none;
 }
