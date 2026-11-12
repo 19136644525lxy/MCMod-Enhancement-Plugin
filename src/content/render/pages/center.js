@@ -16,6 +16,7 @@ MP.pages.center = (function () {
   let mounted = false;
   let observer = null;
   let settingsRef = null;
+  let onHash = null;
 
   const CLASSES = [
     ['.center-frame > .center-header', 'mp-center-header'],
@@ -65,6 +66,17 @@ MP.pages.center = (function () {
       MP.theme.inject('styles/pages/center.css');
     } catch (e) {}
 
+    // 背景：和首页共用同一套（styles/background.css 的选择器同时认
+    // body.mp-home-mode 与 body.mp-center-mode）。站点自带的 body 背景图
+    // 只在用户没选预设时才会露出来，所以这里不做「有没有背景图」的判断。
+    try {
+      MP.theme.inject('styles/background.css');
+      if (MP.background) {
+        if (settingsRef.bgIntensity != null) MP.background.setIntensity(settingsRef.bgIntensity);
+        MP.background.apply(settingsRef.bgPreset || 'mist');
+      }
+    } catch (e) {}
+
     mark();
 
     const body = document.querySelector('.tab-content') || document.body;
@@ -73,10 +85,12 @@ MP.pages.center = (function () {
     observer.observe(body, { childList: true, subtree: true });
 
     // SPA 切换 hash 后内容会整块换掉，再补一次
-    window.addEventListener('hashchange', function () {
+    if (onHash) window.removeEventListener('hashchange', onHash);
+    onHash = function () {
       setTimeout(mark, 60);
       setTimeout(mark, 400);
-    });
+    };
+    window.addEventListener('hashchange', onHash);
 
     return true;
   }
@@ -88,6 +102,13 @@ MP.pages.center = (function () {
       observer.disconnect();
       observer = null;
     }
+    if (onHash) {
+      window.removeEventListener('hashchange', onHash);
+      onHash = null;
+    }
+    try {
+      if (MP.background) MP.background.destroy();
+    } catch (e) {}
     document.body.classList.remove('mp-center-mode');
     CLASSES.forEach(function (pair) {
       const nodes = document.querySelectorAll('.' + pair[1]);

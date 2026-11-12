@@ -16,7 +16,7 @@ body.mp-center-mode {
   --c-ink-3: #857f75;
   --c-card: rgba(255, 255, 255, 0.88);
   --c-card-soft: rgba(255, 255, 255, 0.66);
-  --c-line: rgba(255, 255, 255, 0.9);
+  --c-line: rgba(38, 35, 31, 0.07);
   --c-hair: rgba(38, 35, 31, 0.09);
   --c-accent: #2f6f4f;
   --c-accent-soft: rgba(47, 111, 79, 0.1);
@@ -30,7 +30,7 @@ html[data-mp-theme="dark"] body.mp-center-mode {
   --c-ink-3: #928b7e;
   --c-card: rgba(26, 25, 22, 0.86);
   --c-card-soft: rgba(26, 25, 22, 0.6);
-  --c-line: rgba(255, 255, 255, 0.1);
+  --c-line: rgba(255, 255, 255, 0.09);
   --c-hair: rgba(255, 255, 255, 0.09);
   --c-accent: #57b98a;
   --c-accent-soft: rgba(87, 185, 138, 0.16);
@@ -44,7 +44,7 @@ html[data-mp-theme="dark"] body.mp-center-mode {
     --c-ink-3: #928b7e;
     --c-card: rgba(26, 25, 22, 0.86);
     --c-card-soft: rgba(26, 25, 22, 0.6);
-    --c-line: rgba(255, 255, 255, 0.1);
+    --c-line: rgba(255, 255, 255, 0.09);
     --c-hair: rgba(255, 255, 255, 0.09);
     --c-accent: #57b98a;
     --c-accent-soft: rgba(87, 185, 138, 0.16);
@@ -277,7 +277,7 @@ body.mp-center-mode .mp-admin-list > .title {
 
 body.mp-center-mode .mp-admin-list ul {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 8px;
   margin: 0;
   padding: 0;
@@ -285,15 +285,45 @@ body.mp-center-mode .mp-admin-list ul {
 }
 
 body.mp-center-mode .mp-admin-list ul > li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 0;
-  padding: 11px 14px;
+  padding: 12px 16px;
   background: var(--c-card-soft);
   border: 1px solid var(--c-hair);
-  border-radius: 11px;
-  font-size: 13.5px;
-  line-height: 1.55;
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
   color: var(--c-ink-2);
-  transition: border-color 0.18s ease, transform 0.18s ease;
+  white-space: nowrap;
+  transition: border-color 0.18s ease, transform 0.18s ease, background-color 0.18s ease;
+}
+
+/* 第一个链接是模组名：占满剩余宽度，过长就省略，别把「编辑」挤出去 */
+body.mp-center-mode .mp-admin-list ul > li > a:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+}
+
+/* 「编辑」这类尾随小按钮 */
+body.mp-center-mode .mp-admin-list ul > li > a:not(:first-child) {
+  flex: none;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  color: var(--c-ink-3);
+  background: var(--c-accent-soft);
+  text-decoration: none;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+body.mp-center-mode .mp-admin-list ul > li > a:not(:first-child):hover {
+  color: #fff;
+  background: var(--c-accent);
 }
 
 body.mp-center-mode .mp-admin-list ul > li:hover {
@@ -409,3 +439,4 @@ body.mp-center-mode .mp-chart-frame .title-sub {
     font-size: 13px;
   }
 }
+
