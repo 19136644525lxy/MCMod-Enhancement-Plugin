@@ -1488,18 +1488,25 @@ body.mp-center-mode .mp-activity .mp-act-head span {
   color: var(--c-ink-3);
 }
 
+body.mp-center-mode .mp-activity .mp-act-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 2px;
+}
+
 body.mp-center-mode .mp-activity .mp-act-grid {
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(7, 13px);
-  grid-auto-columns: 13px;
+  grid-template-rows: repeat(7, var(--cell, 13px));
+  grid-auto-columns: var(--cell, 13px);
   gap: 3px;
   justify-content: start;
+  width: max-content;
 }
 
 body.mp-center-mode .mp-activity .mp-act-cell {
-  width: 13px;
-  height: 13px;
+  width: var(--cell, 13px);
+  height: var(--cell, 13px);
   border-radius: 3px;
   background: rgba(128, 122, 112, 0.16);
 }
