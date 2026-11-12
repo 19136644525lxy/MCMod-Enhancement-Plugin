@@ -607,7 +607,7 @@ body.mp-center-mode .mp-c-bbs a:hover {
 body.mp-center-mode .mp-center-header {
   height: auto;
   min-height: 220px;
-  padding-bottom: 36px;
+  padding-bottom: 0;
 }
 
 /* 搜索按钮里的 FontAwesome 图标在离线/字体缺失时会变成空白，
