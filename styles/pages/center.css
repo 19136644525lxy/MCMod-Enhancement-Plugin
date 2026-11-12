@@ -879,3 +879,60 @@ body.mp-center-mode .header-search input {
   width: auto;
   padding: 0 10px;
 }
+
+/* ---------- 留言板：暗色下的文字与输入框 ---------- */
+html[data-mp-theme="dark"] body.mp-center-mode .common-comment-block :not(img):not(svg):not(path) {
+  color: #e6e1d8 !important;
+}
+
+html[data-mp-theme="dark"] body.mp-center-mode .common-comment-block a {
+  color: #7ed0a5 !important;
+}
+
+html[data-mp-theme="dark"] body.mp-center-mode .common-comment-block textarea,
+html[data-mp-theme="dark"] body.mp-center-mode .common-comment-block input[type="text"],
+html[data-mp-theme="dark"] body.mp-center-mode .common-comment-block input[type="password"] {
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(255,255,255,.14) !important;
+  color: #e6e1d8 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-center-mode .common-comment-block :not(img):not(svg):not(path) {
+    color: #e6e1d8 !important;
+  }
+  html:not([data-mp-theme="light"]) body.mp-center-mode .common-comment-block a {
+    color: #7ed0a5 !important;
+  }
+  html:not([data-mp-theme="light"]) body.mp-center-mode .common-comment-block textarea,
+  html:not([data-mp-theme="light"]) body.mp-center-mode .common-comment-block input[type="text"] {
+    background: rgba(255,255,255,.06) !important;
+    border-color: rgba(255,255,255,.14) !important;
+    color: #e6e1d8 !important;
+  }
+}
+
+/* ---------- 全屏图片预览 ---------- */
+.mp-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483600;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.88);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  cursor: zoom-out;
+}
+
+.mp-lightbox.is-open {
+  display: flex;
+}
+
+.mp-lightbox-img {
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}

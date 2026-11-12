@@ -159,6 +159,69 @@ MP.pages.center = (function () {
     return fabEl;
   }
 
+  /* ---------- 留言板图片全屏预览 ----------
+     站点自己的预览是「在卡片内部撑开」，图一大就看不全。
+     这里在捕获阶段拦掉，换成铺满视口的灯箱。 */
+  let onDocClick = null;
+  let onEsc = null;
+
+  function ensureLightbox() {
+    let box = document.getElementById('mp-lightbox');
+    if (box) return box;
+    box = h('div', { id: 'mp-lightbox', class: 'mp-lightbox' },
+      h('img', { class: 'mp-lightbox-img', alt: '' })
+    );
+    box.addEventListener('click', closeLightbox);
+    document.body.appendChild(box);
+    return box;
+  }
+
+  function openLightbox(src) {
+    const box = ensureLightbox();
+    const img = box.querySelector('.mp-lightbox-img');
+    if (img) img.setAttribute('src', src);
+    box.classList.add('is-open');
+  }
+
+  function closeLightbox() {
+    const box = document.getElementById('mp-lightbox');
+    if (box) box.classList.remove('is-open');
+  }
+
+  function bindLightbox() {
+    if (onDocClick) document.removeEventListener('click', onDocClick, true);
+    onDocClick = function (e) {
+      const t = e.target;
+      if (!t || t.tagName !== 'IMG') return;
+      if (!t.closest || !t.closest('.common-comment-block')) return;
+      const src = t.getAttribute('data-original') || t.getAttribute('src');
+      if (!src) return;
+      e.preventDefault();
+      e.stopPropagation();
+      openLightbox(src);
+    };
+    document.addEventListener('click', onDocClick, true);
+
+    if (onEsc) document.removeEventListener('keydown', onEsc);
+    onEsc = function (e) {
+      if (e.key === 'Escape' || e.keyCode === 27) closeLightbox();
+    };
+    document.addEventListener('keydown', onEsc);
+  }
+
+  function unbindLightbox() {
+    if (onDocClick) {
+      document.removeEventListener('click', onDocClick, true);
+      onDocClick = null;
+    }
+    if (onEsc) {
+      document.removeEventListener('keydown', onEsc);
+      onEsc = null;
+    }
+    const box = document.getElementById('mp-lightbox');
+    if (box && box.parentNode) box.parentNode.removeChild(box);
+  }
+
   function mark() {
     document.body.classList.add('mp-center-mode');
     CLASSES.forEach(function (pair) {
@@ -210,6 +273,7 @@ MP.pages.center = (function () {
     window.addEventListener('hashchange', onHash);
 
     ensureFab(settingsRef);
+    bindLightbox();
 
     return true;
   }
@@ -233,6 +297,7 @@ MP.pages.center = (function () {
       const nodes = document.querySelectorAll('.' + pair[1]);
       for (let i = 0; i < nodes.length; i++) nodes[i].classList.remove(pair[1]);
     });
+    unbindLightbox();
     const sw = document.getElementById('mp-daynight');
     if (sw && sw.parentNode) sw.parentNode.removeChild(sw);
     syncFab();
