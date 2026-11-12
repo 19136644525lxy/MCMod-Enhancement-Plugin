@@ -111,7 +111,7 @@ MP.pages.center = (function () {
     return out;
   }
 
-  function paintActivity(host, days) {
+  function paintActivity(host, days, note) {
     var counts = {};
     days.forEach(function (d) { counts[d] = (counts[d] || 0) + 1; });
 
@@ -138,7 +138,7 @@ MP.pages.center = (function () {
     host.querySelector('.mp-act-body').innerHTML =
       '<div class="mp-act-grid">' + cells.join('') + '</div>' +
       '<div class="mp-act-foot">' +
-        '<span>近 26 周 · ' + total + ' 次编辑 · ' + active + ' 天有记录</span>' +
+        '<span>近 26 周 · ' + total + ' 次编辑 · ' + active + ' 天有记录' + (note ? ' · ' + note : '') + '</span>' +
         '<span class="mp-act-legend"><i data-lv="0"></i><i data-lv="1"></i><i data-lv="2"></i><i data-lv="3"></i><b>多</b></span>' +
       '</div>';
   }
@@ -150,6 +150,10 @@ MP.pages.center = (function () {
 
     var uid = (location.pathname.match(/(\d+)/) || [])[1];
     if (!uid) return;
+
+    // 原站自带的标题已经在这块里了，别重复渲染一份
+    frame.classList.add('mp-act-origin-titles');
+
     if (actKey === uid && frame.querySelector('#mp-activity')) return;
     actKey = uid;
 
@@ -161,7 +165,7 @@ MP.pages.center = (function () {
       host = document.createElement('div');
       host.id = 'mp-activity';
       host.className = 'mp-activity';
-      host.innerHTML = '<div class="mp-act-head"><b>活跃度</b><span>历史成功完成改动操作的次数</span></div><div class="mp-act-body">载入中…</div>';
+      host.innerHTML = '<div class="mp-act-body">载入中…</div>';
       frame.appendChild(host);
     }
 
@@ -169,12 +173,98 @@ MP.pages.center = (function () {
       host.querySelector('.mp-act-body').textContent = '增强视图未就绪';
       return;
     }
-    MP.page.fetchDoc(activityUrl(uid)).then(function (res) {
-      if (!res || !res.ok || !res.doc) throw new Error('FETCH_FAILED');
-      paintActivity(host, collectDays(res.doc));
+
+    var body = host.querySelector('.mp-act-body');
+    var cacheKey = 'mp:act:' + uid;
+
+    function paint(days, note) {
+      paintActivity(host, days, note);
+    }
+
+    // 先看图：有缓存直接用，没有再请求
+    readCache(cacheKey).then(function (hit) {
+      if (hit && hit.days && hit.days.length) {
+        paint(hit.days, hit.partial ? '缓存' : '');
+        return null;
+      }
+      return MP.page.fetchDoc(activityUrl(uid)).then(function (res) {
+        if (!res || !res.ok || !res.doc) throw new Error('FETCH_FAILED');
+        var days = collectDays(res.doc);
+        paint(days, '');
+        return days;
+      });
+    }).then(function (first) {
+      if (!first || !first.length) return;
+      // 最近 100 条只覆盖一部分时间，接着按季度往前补
+      return backfill(uid, first, function (allDays) {
+        paint(allDays, '全部');
+        writeCache(cacheKey, allDays, false);
+      });
     }).catch(function () {
-      host.querySelector('.mp-act-body').textContent = '活跃度载入失败';
+      body.textContent = '活跃度载入失败';
     });
+  }
+
+  // ---- 分段回补：history.html 一次只给 100 条，用 starttime/endtime 按季度往前翻 ----
+  function ymd(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function secOf(dateStr) {
+    return Math.floor(new Date(dateStr + 'T00:00:00+08:00').getTime() / 1000);
+  }
+
+  function readCache(key) {
+    return new Promise(function (resolve) {
+      try {
+        chrome.storage.local.get([key], function (o) { resolve(o && o[key]); });
+      } catch (e) { resolve(null); }
+    });
+  }
+
+  function writeCache(key, days, partial) {
+    try {
+      chrome.storage.local.set({ [key]: { days: days, partial: !!partial, at: Date.now() } });
+    } catch (e) {}
+  }
+
+  function backfill(uid, firstDays, done) {
+    // 从已知最早的一天开始，按季度往前推，直到连续两个季度没有记录
+    var earliest = firstDays.slice().sort()[0];
+    var all = firstDays.slice();
+    var guard = 0;
+    var misses = 0;
+
+    function step() {
+      guard++;
+      if (guard > 12 || misses >= 2) {
+        done(all);
+        return;
+      }
+      var end = new Date(earliest + 'T00:00:00+08:00');
+      var start = new Date(end.getTime() - 92 * 86400000);
+      var s = Math.floor(start.getTime() / 1000);
+      var e = Math.floor(end.getTime() / 1000);
+
+      MP.page.fetchDoc('https://www.mcmod.cn/history.html?userid=' + uid + '&starttime=' + s + '&endtime=' + e).then(function (res) {
+        if (!res || !res.ok || !res.doc) throw new Error('FETCH_FAILED');
+        var got = collectDays(res.doc);
+        if (got.length) {
+          misses = 0;
+          got.forEach(function (d) { if (all.indexOf(d) < 0) all.push(d); });
+          var min = got.slice().sort()[0];
+          if (min < earliest) earliest = min;
+        } else {
+          misses++;
+        }
+        setTimeout(step, 700);
+      }).catch(function () {
+        done(all);
+      });
+    }
+
+    setTimeout(step, 700);
+    return null;
   }
 
   function ensureGear() {
