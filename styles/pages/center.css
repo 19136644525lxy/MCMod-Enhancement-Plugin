@@ -16,11 +16,11 @@ body.mp-center-mode {
   --c-ink-3: #857f75;
   --c-card: rgba(255, 255, 255, 0.55);
   --c-card-soft: rgba(255, 255, 255, 0.4);
-  --c-line: rgba(38, 35, 31, 0.07);
+  --c-line: rgba(255, 255, 255, 0.5);
   --c-hair: rgba(38, 35, 31, 0.09);
   --c-accent: #2f6f4f;
   --c-accent-soft: rgba(47, 111, 79, 0.1);
-  --c-shadow: 0 8px 28px rgba(40, 32, 24, 0.1);
+  --c-shadow: 0 10px 34px rgba(40, 32, 24, 0.12);
   --c-radius: 18px;
 }
 
@@ -30,11 +30,11 @@ html[data-mp-theme="dark"] body.mp-center-mode {
   --c-ink-3: #928b7e;
   --c-card: rgba(26, 25, 22, 0.52);
   --c-card-soft: rgba(26, 25, 22, 0.38);
-  --c-line: rgba(255, 255, 255, 0.09);
+  --c-line: rgba(255, 255, 255, 0.1);
   --c-hair: rgba(255, 255, 255, 0.09);
   --c-accent: #57b98a;
   --c-accent-soft: rgba(87, 185, 138, 0.16);
-  --c-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --c-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,11 +44,11 @@ html[data-mp-theme="dark"] body.mp-center-mode {
     --c-ink-3: #928b7e;
     --c-card: rgba(26, 25, 22, 0.52);
     --c-card-soft: rgba(26, 25, 22, 0.38);
-    --c-line: rgba(255, 255, 255, 0.09);
+    --c-line: rgba(255, 255, 255, 0.1);
     --c-hair: rgba(255, 255, 255, 0.09);
     --c-accent: #57b98a;
     --c-accent-soft: rgba(87, 185, 138, 0.16);
-    --c-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    --c-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
   }
 }
 
