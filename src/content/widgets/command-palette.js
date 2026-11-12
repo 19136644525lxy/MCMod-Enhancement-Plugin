@@ -34,13 +34,22 @@ MP.palette = (function () {
   }
 
   /**
-   * 「猜词」词库：不额外发请求，直接从当前页面已经渲染出来的东西里收集。
-   * 首页有热门标签、模组卡、九大分类，够用了。
+   * 「猜词」词库：内置常用词 + 当前页面已经渲染出来的标签/模组名/分类。
+   * 不额外发请求，纯粹复用现成的 DOM。
    */
+  const BUILTIN_WORDS = [
+    '工业', '机械', '科技', '魔法', '冒险', '农业', '装饰', '实用', '辅助', '魔改',
+    '能源', '电力', '存储', '管道', '物流', '自动化', '铁路', '交通', '飞行', '载具',
+    '武器', '防具', '工具', '食物', '农业', '种植', '养殖', '生物', '怪物', '村庄',
+    '下界', '末地', '维度', '世界生成', '矿物', '矿石', '红石', '附魔', '药水', '酿造',
+    '生存', '创造', '整合包', '光影', '材质', '优化', '性能', '地图', '建筑', '家具'
+  ];
+
   let lexicon = null;
+
   function buildLexicon() {
-    const words = new Set();
-    const push = (sel, attr) => {
+    const words = new Set(BUILTIN_WORDS);
+    const push = (sel) => {
       document.querySelectorAll(sel).forEach((el) => {
         const t = (el.textContent || '').trim();
         if (t && t.length <= 24) words.add(t);
@@ -53,20 +62,45 @@ MP.palette = (function () {
     return Array.from(words);
   }
 
+  function addToLexicon(titles) {
+    if (!lexicon) lexicon = buildLexicon();
+    (titles || []).forEach((t) => {
+      const clean = String(t || '').replace(/\[[^\]]*\]/g, '').trim();
+      if (clean && clean.length <= 24 && lexicon.indexOf(clean) < 0) lexicon.push(clean);
+    });
+  }
+
   function suggestWords(prefix) {
     const p = String(prefix || '').trim().toLowerCase();
-    if (p.length < 1) return [];
-    if (!lexicon || !lexicon.length) lexicon = buildLexicon();
-    if (!lexicon.length) return [];
+    if (!p) return [];
+    if (!lexicon) lexicon = buildLexicon();
     const starts = [];
     const contains = [];
     lexicon.forEach((w) => {
-      const lw = w.toLowerCase();
+      const lw = String(w).toLowerCase();
       if (lw === p) return;
       if (lw.indexOf(p) === 0) starts.push(w);
       else if (lw.indexOf(p) > 0) contains.push(w);
     });
     return starts.concat(contains).slice(0, 6);
+  }
+
+  /** 相关度：标题完全相等 > 标题以关键词开头 > 标题包含 > 英文名 > 摘要。 */
+  function scoreItem(it, words) {
+    const title = String(it.title || '').toLowerCase();
+    const en = String(it.ename || '').toLowerCase();
+    const body = String(it.snippet || '').toLowerCase();
+    let s = 0;
+    words.forEach((w) => {
+      const k = String(w || '').toLowerCase();
+      if (!k) return;
+      if (title === k) s += 120;
+      else if (title.indexOf(k) === 0) s += 80;
+      else if (title.indexOf(k) >= 0) s += 50;
+      if (en && en.indexOf(k) >= 0) s += 25;
+      if (body.indexOf(k) >= 0) s += 12;
+    });
+    return s;
   }
 
 
@@ -187,8 +221,16 @@ MP.palette = (function () {
         });
         if (strict.length) items = strict;
       }
+      // 站内结果是按它自己的相关度排的，未必是用户想找的那一条。
+      // 这里再按「标题命中程度」重排一次，同分保持原顺序（Array#sort 稳定）。
+      if (items.length) {
+        const scored = items.map((it) => ({ it, s: scoreItem(it, words) }));
+        scored.sort((a, b) => b.s - a.s);
+        items = scored.map((x) => x.it);
+      }
       if (items.length) groups.push({ label: '站内搜索', items: items.slice(0, 12) });
       items.forEach((it) => seen.add(it.href));
+      addToLexicon(items.slice(0, 8).map((it) => it.title));
     }
 
     if (listRes && listRes.ok) {
