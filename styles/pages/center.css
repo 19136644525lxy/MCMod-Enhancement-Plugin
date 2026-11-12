@@ -20,7 +20,7 @@ body.mp-center-mode {
   --c-hair: rgba(38, 35, 31, 0.09);
   --c-accent: #2f6f4f;
   --c-accent-soft: rgba(47, 111, 79, 0.1);
-  --c-shadow: 0 10px 34px rgba(40, 32, 24, 0.12);
+  --c-shadow: 0 6px 18px -8px rgba(40, 32, 24, 0.3);
   --c-radius: 18px;
 }
 
@@ -34,7 +34,7 @@ html[data-mp-theme="dark"] body.mp-center-mode {
   --c-hair: rgba(255, 255, 255, 0.09);
   --c-accent: #57b98a;
   --c-accent-soft: rgba(87, 185, 138, 0.16);
-  --c-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
+  --c-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.55);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,7 +48,7 @@ html[data-mp-theme="dark"] body.mp-center-mode {
     --c-hair: rgba(255, 255, 255, 0.09);
     --c-accent: #57b98a;
     --c-accent-soft: rgba(87, 185, 138, 0.16);
-    --c-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
+    --c-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.55);
   }
 }
 
