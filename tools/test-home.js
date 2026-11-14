@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 首页重绘 jsdom 冒烟测试：真实快照 + 三个脚本，断言抽取字段与渲染结果。
  * 运行：$env:NODE_PATH="$env:TEMP\mp-test\node_modules"; node tools/test-home.js
  */
@@ -88,9 +88,10 @@ ok('页头标题', w.document.querySelector('.mp-hero-title').textContent.includ
 ok('快捷入口 8', q('.mp-quick-item').length === 8, 'got ' + q('.mp-quick-item').length);
 ok('快捷入口有图标', q('.mp-quick-item svg').length === 8, 'got ' + q('.mp-quick-item svg').length);
 ok('首屏模组卡 10', q('.mp-mod-card').length === 10, 'got ' + q('.mp-mod-card').length);
-ok('编辑动态滚筒容器', q('.mp-feed-scroll').length === 1);
-ok('编辑动态 20+20（复制一份无缝滚动）', q('.mp-feed-item').length === 40, 'got ' + q('.mp-feed-item').length);
-ok('副本对读屏隐藏', q('.mp-feed[aria-hidden="true"]').length === 1);
+ok('编辑动态时间轴容器', q('.mp-feed-scroll').length === 1);
+ok('编辑动态 20 个时间轴节点', q('.mp-tl-item').length === 20, 'got ' + q('.mp-tl-item').length);
+ok('每个节点有圆点', q('.mp-tl-item .mp-tl-dot').length === 20, 'got ' + q('.mp-tl-item .mp-tl-dot').length);
+ok('节点带动作类型', q('.mp-tl-item[data-kind]').length === 20, 'got ' + q('.mp-tl-item[data-kind]').length);
 ok('分类卡 9', q('.mp-cat-card').length === 9, 'got ' + q('.mp-cat-card').length);
 ok('榜单有行', q('.mp-rank-item').length > 0);
 ok('标签有 chip', q('.mp-tag').length > 0);

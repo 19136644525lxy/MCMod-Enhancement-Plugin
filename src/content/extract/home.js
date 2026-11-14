@@ -170,7 +170,21 @@ MP.extract.home = (function () {
     });
 
     out.feed = all(pick(newsRight, '.editor'), 'li').map(function (li) {
-      return li.innerHTML;
+      var timeEl = li.querySelector('.time');
+      var timeText = txt(timeEl);
+      var relMatch = timeText.match(/\(([^)]+)\)\s*$/);
+      var body = txt(li).replace(timeText, '').trim();
+      var kind = /添加了|新建了/.test(body) ? 'add'
+        : /删除了/.test(body) ? 'remove'
+          : /更新了/.test(body) ? 'update'
+            : 'edit';
+      return {
+        html: li.innerHTML,
+        kind: kind,
+        text: body,
+        time: timeText.replace(/\s*\([^)]*\)\s*$/, '').trim(),
+        rel: relMatch ? relMatch[1] : ''
+      };
     });
 
     out.posts = map(all(pick(main, '.post_frame .list'), '> li'), function (li) {

@@ -284,19 +284,23 @@
 
   // 原站编辑动态是「滚筒」：固定高度，条目自下而上循环滚动。
   // 这里用 CSS 动画还原：把列表复制一份首尾相接，滚到 -50% 时正好接上。
+  // 编辑动态：时间轴。每条左侧一个圆点（按动作着色）+ 一条细竖线，
+  // 时间戳压到正文右下角，比原来的滚动列表更容易扫读。
   function feedList(feed) {
-    var items = (feed || []).map(function (html) {
-      var li = h('li', { class: 'mp-feed-item' });
-      li.appendChild(MP.dom.safeHtml(html));
-      return li;
+    var list = (feed || []).filter(function (it) { return it && it.html; });
+    if (!list.length) {
+      return h('div', { class: 'mp-feed-scroll' }, h('p', { class: 'mp-empty' }, '暂无动态'));
+    }
+    var items = list.map(function (it) {
+      var body = h('div', { class: 'mp-tl-body' });
+      body.appendChild(MP.dom.safeHtml(it.html));
+      return h('li', { class: 'mp-tl-item', 'data-kind': it.kind || 'edit' },
+        h('span', { class: 'mp-tl-dot', 'aria-hidden': 'true' }),
+        body
+      );
     });
-    if (!items.length) return h('div', { class: 'mp-feed-scroll' }, h('p', { class: 'mp-empty' }, '暂无动态'));
-
-    var ul = h('ul', { class: 'mp-feed' }, items);
-    var clone = ul.cloneNode(true);
-    clone.setAttribute('aria-hidden', 'true');
     return h('div', { class: 'mp-feed-scroll' },
-      h('div', { class: 'mp-feed-track' }, ul, clone)
+      h('ul', { class: 'mp-tl' }, items)
     );
   }
 
