@@ -1,5 +1,5 @@
 /**
- * 搜索页重绘测试（jsdom + 真实快照）
+ * 搜索页结构重绘测试（jsdom + 真实快照）
  * 用法：$env:NODE_PATH="$env:TEMP\mp-test\node_modules"; node tools/test-search.js
  */
 const fs = require('fs');
@@ -14,7 +14,6 @@ const dom = new JSDOM(html, { url: 'https://search.mcmod.cn/s?key=minihud', runS
 const w = dom.window;
 const d = w.document;
 
-// 最小 chrome 桩
 w.chrome = {
   runtime: { getURL: (p) => 'chrome-extension://test/' + p, sendMessage: () => {} },
   storage: {
@@ -24,7 +23,6 @@ w.chrome = {
   i18n: { getMessage: (k) => k },
 };
 
-// 最小 MP 桩
 w.MP = {
   dom: {
     h(tag, attrs, ...kids) {
@@ -62,27 +60,10 @@ w.MP = {
     pick() { return null; },
     ready(fn) { fn(); },
   },
-  theme: {
-    inject() {},
-    apply() {},
-  },
+  theme: { inject() {}, apply() {} },
   store: { setSync: () => Promise.resolve(true) },
   background: { apply() {}, setIntensity() {} },
   ui: {
-    chip(label, opts) {
-      const a = d.createElement('a');
-      a.className = 'mp-chip' + (opts && opts.active ? ' is-on' : '');
-      a.href = (opts && opts.href) || '#';
-      a.textContent = label;
-      return a;
-    },
-    button(label, opts) {
-      const b = d.createElement('button');
-      b.className = 'mp-btn';
-      b.textContent = label;
-      if (opts && opts.onclick) b.addEventListener('click', opts.onclick);
-      return b;
-    },
     empty(t) {
       const e = d.createElement('div');
       e.className = 'mp-empty';
@@ -92,7 +73,6 @@ w.MP = {
   },
 };
 
-// 加载抽取器 + 页面脚本
 w.eval(read('src/content/core/dom.js'));
 w.eval(read('src/content/extract/search.js'));
 w.eval(read('src/content/render/pages/search.js'));
@@ -109,26 +89,37 @@ const data = w.MP.extract.search(d);
 ok('抽取成功', data.ok === true);
 ok('结果条数 > 0', data.items.length > 0, 'got ' + data.items.length);
 ok('首条有标题', !!(data.items[0] && data.items[0].title), data.items[0] && data.items[0].title);
+ok('关键词解析', data.keyword === 'minihud', data.keyword);
+ok('统计总数解析', data.stats.total > 0, JSON.stringify(data.stats));
+ok('分类页签', data.tabs.length >= 8, 'got ' + data.tabs.length);
+ok('「全部」页签为 active', data.tabs[0].active === true);
+ok('页签带计数', data.tabs[0].count === 8, String(data.tabs[0].count));
+ok('面包屑', data.crumbs.length >= 2, JSON.stringify(data.crumbs.map((c) => c.label)));
+ok('搜索表单', !!data.form && data.form.key === 'minihud', JSON.stringify(data.form));
 
-console.log('\n[2] 挂载与换皮');
+console.log('\n[2] 挂载');
 const mounted = w.MP.pages.search.mount({ enabled: true, redrawSearch: true, bgPreset: 'mist', bgIntensity: 45 });
 ok('mount 返回 true', mounted === true);
 ok('body 有 mp-search-mode', d.body.classList.contains('mp-search-mode'));
-ok('卡片已渲染', d.querySelectorAll('.mp-search-card').length === data.items.length,
-  'got ' + d.querySelectorAll('.mp-search-card').length);
-ok('工具栏存在', !!d.querySelector('.mp-search-toolbar'));
-ok('筛选 chip 8 个', d.querySelectorAll('.mp-search-toolbar .mp-chip').length === 8,
-  'got ' + d.querySelectorAll('.mp-search-toolbar .mp-chip').length);
-ok('当前筛选是「全部」', !!d.querySelector('.mp-search-toolbar .mp-chip.is-on'));
-ok('搜索词高亮', d.querySelectorAll('.mp-search-card mark').length > 0);
-ok('卡片有类型标签', !!d.querySelector('.mp-search-card .mp-card-type'));
+ok('宿主已插入', !!d.getElementById('mp-search-host'));
+ok('原 .center 已隐藏', d.querySelector('.common-frame .center').classList.contains('mp-origin-hidden'));
+ok('卡片数等于结果数', d.querySelectorAll('.mp-r-card').length === data.items.length,
+  'got ' + d.querySelectorAll('.mp-r-card').length);
+ok('分类胶囊', d.querySelectorAll('.mp-seg-item').length >= 8,
+  'got ' + d.querySelectorAll('.mp-seg-item').length);
+ok('搜索框回填关键词', d.querySelector('.mp-search-input').value === 'minihud',
+  d.querySelector('.mp-search-input').value);
+ok('统计文案', !!d.querySelector('.mp-s-stat') && d.querySelector('.mp-s-stat').textContent.length > 4,
+  d.querySelector('.mp-s-stat') && d.querySelector('.mp-s-stat').textContent);
+ok('搜索词高亮', d.querySelectorAll('.mp-r-card mark').length > 0);
+ok('结果卡有类型标签', !!d.querySelector('.mp-r-type'));
 
-console.log('\n[3] 恢复原始视图');
-const btn = Array.from(d.querySelectorAll('.mp-search-toolbar .mp-btn')).find((b) => b.textContent === '原始视图');
+console.log('\n[3] 还原');
+const btn = d.querySelector('.mp-s-original');
 ok('原始视图按钮存在', !!btn);
 if (btn) btn.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
-ok('列表已还原', !d.querySelector('.mp-search-list'));
-ok('工具栏已移除', !d.querySelector('.mp-search-toolbar'));
+ok('宿主已移除', !d.getElementById('mp-search-host'));
+ok('原 .center 恢复', !d.querySelector('.common-frame .center').classList.contains('mp-origin-hidden'));
 
 console.log('\n结果：' + pass + ' 通过 / ' + fail + ' 失败');
 process.exit(fail ? 1 : 0);

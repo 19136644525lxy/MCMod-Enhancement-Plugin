@@ -1,8 +1,12 @@
 /**
- * 搜索页重绘（A 类 + B 类混合）
- * - 只接管 `.search-result-list` 内部的结果区
- * - 分页、页头、筛选表单保持原生
- * - 提供"恢复原始视图"按钮，随时回滚
+ * 搜索页结构重绘
+ *
+ * 接管范围：整块内容区（`.common-frame .center`）。
+ * 保留：顶栏（换皮）、面包屑 `.common-nav`、页脚（换皮）。
+ *
+ * 与首页/个人中心一样走「抽 → 渲 → 挂」三层：
+ *   MP.extract.search(document) 出数据 → 这里拼 DOM → 插到 .center 原来位置，
+ *   原 .center 加 mp-origin-hidden 藏起来；「原始视图」随时换回来。
  */
 window.MP = window.MP || {};
 MP.pages = MP.pages || {};
@@ -10,90 +14,8 @@ MP.pages = MP.pages || {};
 MP.pages.search = (function () {
   const { h, clear, highlight } = MP.dom;
 
-  let backup = null; // {html}
-
-  const FILTERS = [
-    { id: '', label: '全部' },
-    { id: '1', label: '模组' },
-    { id: '2', label: '整合包' },
-    { id: '3', label: '资料' },
-    { id: '4', label: '教程' },
-    { id: '5', label: '作者' },
-    { id: '6', label: '用户' },
-    { id: '7', label: '社群' }
-  ];
-
-  function filterHref(id) {
-    const p = new URLSearchParams(location.search);
-    if (id) p.set('filter', id);
-    else p.delete('filter');
-    p.delete('page');
-    return location.pathname + '?' + p.toString();
-  }
-
-  function currentFilter() {
-    return new URLSearchParams(location.search).get('filter') || '';
-  }
-
-  function keyword() {
-    return new URLSearchParams(location.search).get('key') || '';
-  }
-
-  function renderCard(item, kw) {
-    const title = h('span', { class: 'mp-card-title' });
-    title.appendChild(highlight(item.title, kw));
-
-    const snippet = h('div', { class: 'mp-card-snippet' });
-    snippet.appendChild(highlight(item.snippet, kw));
-
-    const footParts = [];
-    if (item.foot.length) {
-      item.foot.forEach((f) => {
-        if (/快照|时间/.test(f.label)) return;
-        footParts.push(h('span', { class: 'mp-foot-item' }, f.label ? f.label + '：' + f.value : f.value));
-      });
-    }
-    if (item.snapshot) footParts.push(h('span', { class: 'mp-foot-item' }, '快照 ' + item.snapshot));
-
-    return h('a', { class: 'mp-card mp-search-card', href: item.href },
-      h('div', { class: 'mp-card-head' },
-        h('span', { class: 'mp-card-type' }, item.type),
-        title
-      ),
-      snippet,
-      footParts.length ? h('div', { class: 'mp-card-foot' }, footParts) : null
-    );
-  }
-
-  function renderToolbar(data, onRestore) {
-    const chips = FILTERS.map((f) =>
-      MP.ui.chip(f.label, {
-        href: filterHref(f.id),
-        active: currentFilter() === f.id
-      })
-    );
-
-    const summary = h('div', { class: 'mp-search-summary' });
-    summary.appendChild(
-      h('span', null, data.totalText || `找到 ${data.count} 条结果`)
-    );
-
-    return h('div', { class: 'mp-toolbar mp-search-toolbar' },
-      h('div', { class: 'mp-toolbar-left' }, chips),
-      h('div', { class: 'mp-toolbar-right' },
-        summary,
-        MP.ui.button('原始视图', { variant: 'ghost', onclick: onRestore, title: '恢复 MC百科 原生列表' })
-      )
-    );
-  }
-
-  function restore(list) {
-    if (!backup || !list) return;
-    list.innerHTML = backup.html;
-    list.classList.remove('mp-root', 'mp-search-list');
-    delete list.dataset.mpRedrawn;
-    backup = null;
-  }
+  let host = null;
+  let hostAnchor = null; // 被隐藏的 .center
 
   function isDarkNow() {
     const t = document.documentElement.dataset.mpTheme;
@@ -144,6 +66,152 @@ MP.pages.search = (function () {
     }
   }
 
+  // ---------- 渲染 ----------
+
+  function searchForm(data) {
+    const form = data.form || { action: 'https://search.mcmod.cn/s', method: 'get', key: data.keyword, mold: '0' };
+    const input = h('input', {
+      class: 'mp-search-input',
+      type: 'text',
+      name: 'key',
+      value: form.key || data.keyword || '',
+      maxlength: '255',
+      placeholder: '搜模组、资料、教程…',
+      autocomplete: 'off',
+      'aria-label': '搜索关键词'
+    });
+    const mold = h('input', { type: 'hidden', name: 'mold', value: form.mold || '0' });
+    const submit = h('button', { class: 'mp-search-submit', type: 'submit' }, '搜索');
+
+    const simple = h('button', {
+      class: 'mp-mold' + (form.mold !== '1' ? ' is-on' : ''),
+      type: 'button',
+      onclick: function () {
+        mold.value = '0';
+        simple.classList.add('is-on');
+        deep.classList.remove('is-on');
+      }
+    }, '简单搜索');
+    const deep = h('button', {
+      class: 'mp-mold' + (form.mold === '1' ? ' is-on' : ''),
+      type: 'button',
+      onclick: function () {
+        mold.value = '1';
+        deep.classList.add('is-on');
+        simple.classList.remove('is-on');
+      }
+    }, '复杂搜索');
+
+    return h('div', { class: 'mp-searchbar' },
+      h('form', { class: 'mp-search-form', action: form.action, method: form.method, role: 'search' },
+        input, mold, submit
+      ),
+      h('div', { class: 'mp-molds' }, simple, deep)
+    );
+  }
+
+  function tabBar(data) {
+    const tabs = (data.tabs || []).filter((t) => !t.external);
+    if (!tabs.length) return null;
+    return h('nav', { class: 'mp-seg', 'aria-label': '结果分类' },
+      tabs.map(function (t) {
+        return h('a', {
+          class: 'mp-seg-item' + (t.active ? ' is-on' : ''),
+          href: t.href
+        },
+          h('span', { class: 'mp-seg-label' }, t.label),
+          t.count != null ? h('span', { class: 'mp-seg-count' }, String(t.count)) : null
+        );
+      })
+    );
+  }
+
+  function resultCard(item, kw) {
+    const title = h('span', { class: 'mp-r-title' });
+    title.appendChild(highlight(item.title, kw));
+
+    const snippet = h('div', { class: 'mp-r-snippet' });
+    snippet.appendChild(highlight(item.snippet, kw));
+
+    const foot = (item.foot || [])
+      .filter((f) => !/快照|时间/.test(f.label))
+      .map((f) => h('span', { class: 'mp-r-foot-item' }, f.label ? f.label + '：' + f.value : f.value));
+
+    return h('a', { class: 'mp-r-card', href: item.href },
+      h('div', { class: 'mp-r-head' },
+        h('span', { class: 'mp-r-type' + (item.color ? ' ' + item.color : '') }, item.type),
+        title
+      ),
+      snippet,
+      foot.length || item.snapshot
+        ? h('div', { class: 'mp-r-foot' },
+            foot,
+            item.snapshot ? h('span', { class: 'mp-r-foot-item' }, '快照 ' + item.snapshot) : null
+          )
+        : null
+    );
+  }
+
+  function pager(data) {
+    const p = data.pages;
+    if (!p || !p.items.length) return null;
+    return h('nav', { class: 'mp-pager', 'aria-label': '分页' },
+      p.items.map(function (it) {
+        return h('a', {
+          class: 'mp-pager-item' + (it.active ? ' is-on' : ''),
+          href: it.href
+        }, it.label);
+      })
+    );
+  }
+
+  function build(data, onRestore) {
+    const kw = data.keyword || '';
+    const stats = data.stats || {};
+
+    const hero = h('header', { class: 'mp-s-hero mp-glass' },
+      h('span', { class: 'mp-s-eyebrow' }, 'MC百科 · 全站搜索'),
+      h('h1', { class: 'mp-s-title' },
+        kw ? ['「', h('em', null, kw), '」的搜索结果'] : '全站搜索'
+      ),
+      searchForm(data),
+      tabBar(data)
+    );
+
+    const meta = h('div', { class: 'mp-s-meta' },
+      h('span', { class: 'mp-s-stat' },
+        stats.total
+          ? '找到约 ' + stats.total + ' 条结果' + (stats.pages > 1 ? '，共约 ' + stats.pages + ' 页' : '')
+          : (data.totalText || '共 ' + data.count + ' 条结果')
+      ),
+      stats.ms ? h('span', { class: 'mp-s-ms' }, '耗时 ' + stats.ms + ' ms') : null,
+      h('button', { class: 'mp-s-original', type: 'button', onclick: onRestore }, '原始视图')
+    );
+
+    const list = h('div', { class: 'mp-s-list' });
+    if (data.items.length) {
+      data.items.forEach(function (item) { list.appendChild(resultCard(item, kw)); });
+    } else {
+      list.appendChild(MP.ui.empty('没有匹配的结果', '换个关键词，或在命令面板（Ctrl+K）里试试模组检索'));
+    }
+
+    return h('div', { id: 'mp-search-host', class: 'mp-search-page' },
+      hero, meta, list, pager(data) || ''
+    );
+  }
+
+  // ---------- 挂载 / 还原 ----------
+
+  function unmount() {
+    if (host && host.parentNode) host.parentNode.removeChild(host);
+    if (hostAnchor) hostAnchor.classList.remove('mp-origin-hidden');
+    host = null;
+    hostAnchor = null;
+    const old = document.querySelector('.mp-s-list');
+    if (old) old.remove();
+    return true;
+  }
+
   function mount(settings) {
     if (!settings || !settings.enabled) return false;
 
@@ -151,9 +219,10 @@ MP.pages.search = (function () {
 
     if (!settings.redrawSearch) return false;
 
-    const list = document.querySelector('.search-result-list');
-    if (!list) return false;
-    if (list.dataset.mpRedrawn === '1') return true;
+    if (host) return true;
+
+    const anchor = document.querySelector('.common-frame .center');
+    if (!anchor) return false;
 
     const data = MP.extract.search(document);
     if (!data.ok) {
@@ -161,31 +230,12 @@ MP.pages.search = (function () {
       return false;
     }
 
-    backup = { html: list.innerHTML };
-    clear(list);
-    list.dataset.mpRedrawn = '1';
-    list.classList.add('mp-root', 'mp-search-list');
-
-    // 工具栏挂在 .search-result 内、列表之前，避免被 clear 掉
-    const host = list.parentElement || list;
-    const oldBar = host.querySelector('.mp-search-toolbar');
-    if (oldBar) oldBar.remove();
-    const bar = renderToolbar(data, () => {
-      restore(list);
-      const b = host.querySelector('.mp-search-toolbar');
-      if (b) b.remove();
-    });
-    host.insertBefore(bar, list);
-
-    const kw = keyword();
-    data.items.forEach((item) => list.appendChild(renderCard(item, kw)));
-
-    if (!data.items.length) {
-      list.appendChild(MP.ui.empty('没有匹配的结果', '换一个关键词，或在命令面板中试试结构检索'));
-    }
-
+    hostAnchor = anchor;
+    host = build(data, function () { unmount(); });
+    anchor.parentNode.insertBefore(host, anchor);
+    anchor.classList.add('mp-origin-hidden');
     return true;
   }
 
-  return { mount, restore, FILTERS };
+  return { mount, unmount, restore: unmount };
 })();
