@@ -906,3 +906,25 @@ body.mp-search-mode .header-user .header-layer .header-layer-block a,
 body.mp-search-mode .header-user .header-layer .header-layer-block .title {
   white-space: nowrap !important;
 }
+
+/* search-menu-vertical：原站 li 是 inline-block（块内两列横排），头像菜单要的是「一项一行」，
+   不显式改成 block 的话，链接会全部横向铺开、把面板撑爆。 */
+body.mp-search-mode .header-user .header-layer .header-layer-block li {
+  display: block !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+}
+
+body.mp-search-mode .header-user .header-layer .header-layer-block li > a {
+  display: block !important;
+}
+
+body.mp-search-mode .header-user .header-layer .header-layer-block {
+  flex: 0 0 auto !important;
+  min-width: 96px !important;
+}
+
+body.mp-search-mode .header-user .header-layer {
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+}
