@@ -263,8 +263,56 @@
 
   /* ---------------- 自定义图片 ---------------- */
 
-  // 图片本身放 IndexedDB：dataURL 动辄 1MB 以上，chrome.storage 的同步配额放不下，
-  // 而且同步区每次写入都会广播给所有标签页，没必要。
+  // 图片必须存在 chrome.storage.local 里，不能存页面域的 IndexedDB：
+  // IndexedDB 按 origin 隔离，www.mcmod.cn 存的图 search.mcmod.cn 读不到，
+  // 而 chrome.storage 是扩展级的，所有子域共用一份。
+  // 这里保留 idb* 这层名字，内部走 chrome.storage；旧版本存在 IDB 里的图会迁移过来。
+  var IMG_KEY = 'mp:bg:custom';
+
+  function extStore() {
+    try {
+      return (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function idbGet(key) {
+    var store = extStore();
+    if (!store) return Promise.resolve(null);
+    return store.get(IMG_KEY).then(function (res) {
+      var val = res && res[IMG_KEY];
+      if (val) return val;
+      // 迁移：旧版存在页面 IndexedDB 里
+      return idbLegacyGet(key).then(function (old) {
+        if (!old) return null;
+        var patch = {};
+        patch[IMG_KEY] = old;
+        return store.set(patch).then(function () {
+          return idbLegacyDel(key).then(function () { return old; }, function () { return old; });
+        });
+      });
+    });
+  }
+
+  function idbPut(key, val) {
+    var store = extStore();
+    if (!store) return Promise.reject(new Error('no storage'));
+    var patch = {};
+    patch[IMG_KEY] = val;
+    return store.set(patch).then(function () { return true; });
+  }
+
+  function idbDel(key) {
+    var store = extStore();
+    if (!store) return Promise.resolve(true);
+    return store.remove(IMG_KEY).then(function () {
+      return idbLegacyDel(key).then(function () { return true; }, function () { return true; });
+    });
+  }
+
+  /* 旧版 IndexedDB 读写，仅用于把已有图片搬到 chrome.storage */
+
   function db() {
     return new Promise(function (resolve, reject) {
       var req = indexedDB.open('mp-bg', 1);
@@ -277,28 +325,17 @@
     });
   }
 
-  function idbGet(key) {
+  function idbLegacyGet(key) {
     return db().then(function (d) {
       return new Promise(function (res, rej) {
         var r = d.transaction('images', 'readonly').objectStore('images').get(key);
         r.onsuccess = function () { res(r.result || null); };
         r.onerror = function () { rej(r.error); };
       });
-    });
+    }).catch(function () { return null; });
   }
 
-  function idbPut(key, val) {
-    return db().then(function (d) {
-      return new Promise(function (res, rej) {
-        var tx = d.transaction('images', 'readwrite');
-        tx.objectStore('images').put(val, key);
-        tx.oncomplete = function () { res(true); };
-        tx.onerror = function () { rej(tx.error); };
-      });
-    });
-  }
-
-  function idbDel(key) {
+  function idbLegacyDel(key) {
     return db().then(function (d) {
       return new Promise(function (res, rej) {
         var tx = d.transaction('images', 'readwrite');
@@ -306,7 +343,7 @@
         tx.oncomplete = function () { res(true); };
         tx.onerror = function () { rej(tx.error); };
       });
-    });
+    }).catch(function () { return true; });
   }
 
   function loadImage(src) {

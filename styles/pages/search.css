@@ -8,8 +8,8 @@
 
 body.mp-search-mode {
   --s-bg: #f3f1ec;
-  --s-card: rgba(255, 255, 255, .66);
-  --s-card-2: rgba(255, 255, 255, .44);
+  --s-card: rgba(255, 255, 255, .8);
+  --s-card-2: rgba(255, 255, 255, .58);
   --s-ink: #26231f;
   --s-ink-2: #55504a;
   --s-ink-3: #857f75;
@@ -45,8 +45,8 @@ html[data-mp-theme="dark"] body.mp-search-mode {
   --mp-spot-b: rgba(214, 168, 96, .09);
   --mp-spot-c: rgba(120, 140, 200, .08);
   --s-bg: #14130f;
-  --s-card: rgba(32, 30, 26, .66);
-  --s-card-2: rgba(32, 30, 26, .44);
+  --s-card: rgba(30, 28, 24, .78);
+  --s-card-2: rgba(30, 28, 24, .56);
   --s-ink: #ece9e3;
   --s-ink-2: #bdb7ac;
   --s-ink-3: #8d877c;
@@ -65,8 +65,8 @@ html[data-mp-theme="dark"] body.mp-search-mode {
   --mp-spot-b: rgba(214, 168, 96, .09);
   --mp-spot-c: rgba(120, 140, 200, .08);
     --s-bg: #14130f;
-    --s-card: rgba(32, 30, 26, .66);
-    --s-card-2: rgba(32, 30, 26, .44);
+    --s-card: rgba(30, 28, 24, .78);
+    --s-card-2: rgba(30, 28, 24, .56);
     --s-ink: #ece9e3;
     --s-ink-2: #bdb7ac;
     --s-ink-3: #8d877c;
@@ -567,4 +567,33 @@ body.mp-search-mode ::-webkit-scrollbar-thumb {
 
 html[data-mp-theme="dark"] body.mp-search-mode ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, .16);
+}
+
+/* ---------- 顶栏齿轮（和首页 / 个人主页同一个入口） ---------- */
+
+body.mp-search-mode .header-container .header-right .mp-gear-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--s-hair);
+  background: var(--s-card);
+  color: var(--s-ink-2);
+  cursor: pointer;
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, transform .3s cubic-bezier(.3,1.5,.5,1);
+}
+
+body.mp-search-mode .header-container .header-right .mp-gear-btn:hover {
+  color: #fff;
+  background: var(--s-accent);
+  border-color: var(--s-accent);
+  transform: rotate(90deg);
+}
+
+body.mp-search-mode .header-container .header-right .mp-gear-btn .mp-fab-gear {
+  width: 16px;
+  height: 16px;
 }

@@ -24,6 +24,41 @@ MP.pages.search = (function () {
     return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   }
 
+  function gearSvg() {
+    return h('svg', {
+      class: 'mp-fab-gear',
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '1.8',
+      'stroke-linejoin': 'round',
+      'aria-hidden': 'true'
+    },
+      h('path', { d: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z' }),
+      h('circle', { cx: '12', cy: '12', r: '3' })
+    );
+  }
+
+  /** 顶栏的设置齿轮，和首页 / 个人主页保持同一个入口。 */
+  function ensureGear() {
+    const right = document.querySelector('.header-container .header-right') ||
+      document.querySelector('.top-main .info') ||
+      document.querySelector('.header-right');
+    if (!right || document.getElementById('mp-search-gear')) return;
+    const btn = h('button', {
+      class: 'mp-gear-btn',
+      type: 'button',
+      title: '插件设置',
+      'aria-label': '插件设置',
+      onclick: function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (MP.settingsPanel) MP.settingsPanel.toggle();
+      }
+    }, gearSvg());
+    btn.id = 'mp-search-gear';
+    right.appendChild(btn);
+  }
   function ensureDayNight() {
     // 搜索页顶栏和 wiki 页不完全一致：优先右边的工具区，退到 .info 再退到 body
     const right = document.querySelector('.header-container .header-right') ||
@@ -60,6 +95,11 @@ MP.pages.search = (function () {
       MP.background.apply((settings && settings.bgPreset) || 'mist');
     } catch (e) {
       console.warn('[MCMod+] 搜索页背景注入失败', e);
+    }
+    try {
+      ensureGear();
+    } catch (e) {
+      console.warn('[MCMod+] 搜索页设置按钮注入失败', e);
     }
     try {
       ensureDayNight();
