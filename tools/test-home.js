@@ -89,9 +89,10 @@ ok('快捷入口 8', q('.mp-quick-item').length === 8, 'got ' + q('.mp-quick-ite
 ok('快捷入口有图标', q('.mp-quick-item svg').length === 8, 'got ' + q('.mp-quick-item svg').length);
 ok('首屏模组卡 10', q('.mp-mod-card').length === 10, 'got ' + q('.mp-mod-card').length);
 ok('编辑动态时间轴容器', q('.mp-feed-scroll').length === 1);
-ok('编辑动态 20 个时间轴节点', q('.mp-tl-item').length === 20, 'got ' + q('.mp-tl-item').length);
-ok('每个节点有圆点', q('.mp-tl-item .mp-tl-dot').length === 20, 'got ' + q('.mp-tl-item .mp-tl-dot').length);
-ok('节点带动作类型', q('.mp-tl-item[data-kind]').length === 20, 'got ' + q('.mp-tl-item[data-kind]').length);
+ok('编辑动态 20 个时间轴节点', q('.mp-tl:not([aria-hidden]) .mp-tl-item').length === 20, 'got ' + q('.mp-tl:not([aria-hidden]) .mp-tl-item').length);
+ok('滚筒复制一份（共 40）', q('.mp-tl-item').length === 40, 'got ' + q('.mp-tl-item').length);
+ok('每个节点有圆点', q('.mp-tl-item .mp-tl-dot').length === 40, 'got ' + q('.mp-tl-item .mp-tl-dot').length);
+ok('节点带动作类型', q('.mp-tl-item[data-kind]').length === 40, 'got ' + q('.mp-tl-item[data-kind]').length);
 ok('分类卡 9', q('.mp-cat-card').length === 9, 'got ' + q('.mp-cat-card').length);
 ok('榜单有行', q('.mp-rank-item').length > 0);
 ok('标签有 chip', q('.mp-tag').length > 0);

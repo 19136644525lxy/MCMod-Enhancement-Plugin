@@ -300,7 +300,14 @@
       );
     });
     return h('div', { class: 'mp-feed-scroll' },
-      h('ul', { class: 'mp-tl' }, items)
+      h('div', { class: 'mp-tl-track' },
+        h('ul', { class: 'mp-tl' }, items),
+        (function () {
+          var clone = h('ul', { class: 'mp-tl' }, items.map(function (el) { return el.cloneNode(true); }));
+          clone.setAttribute('aria-hidden', 'true');
+          return clone;
+        })()
+      )
     );
   }
 
