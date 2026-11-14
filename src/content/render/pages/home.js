@@ -802,10 +802,12 @@
       if (!grid) return;
       idx = (idx + 1) % ROT_KEYS.length;
       var list = groupCards(d, ROT_KEYS[idx]);
-      // 第一张（我的世界原版）固定，其余打乱，避免它被随机冲掉
-      var head = list.slice(0, 1);
-      var tail = shuffle(list.slice(1));
-      list = head.concat(tail);
+      // 只有「随便看看」是随机口径，打乱其余卡片；「最新收录」「有新动态」
+      // 在站点上是按时间排序的，必须保持原顺序，否则和原站对不上。
+      if (ROT_KEYS[idx] === 'random') {
+        var head = list.slice(0, 1);
+        list = head.concat(shuffle(list.slice(1)));
+      }
 
       grid.classList.add('is-swap');
       setTimeout(function () {
