@@ -2180,6 +2180,8 @@ body.mp-home-mode .banner {
   height: 32px;
   padding: 0 12px;
   border: 0;
+  white-space: nowrap;
+  flex: none;
   border-radius: 999px;
   background: transparent;
   color: #4a453d;
