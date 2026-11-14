@@ -888,13 +888,21 @@ body.mp-search-mode .header-user .header-panel:hover .header-layer {
   }
 }
 
-/* 搜索页的头像菜单：宽度跟内容走，不锁定 220px */
+/* 搜索页的头像菜单：宽度跟内容走，但必须给一个下限 + 禁止断行，
+   否则每个 block 会塌到最窄，文字变成两字一行。 */
 body.mp-search-mode .header-user .header-layer {
   width: auto !important;
+  max-width: min(560px, 92vw);
 }
 body.mp-search-mode .header-user .header-layer .header-layer-block {
   width: auto !important;
+  min-width: 92px;
+  flex: 0 0 auto;
 }
 body.mp-search-mode .header-user .header-layer .header-layer-block li:nth-child(odd) {
   margin-right: 0 !important;
+}
+body.mp-search-mode .header-user .header-layer .header-layer-block a,
+body.mp-search-mode .header-user .header-layer .header-layer-block .title {
+  white-space: nowrap !important;
 }
