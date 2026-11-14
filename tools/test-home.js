@@ -156,10 +156,18 @@ ok('未登录时的快照也能识别 uid', w.MP.footprint && typeof w.MP.footpr
 console.log('\n[4] tab 切换');
 const tabs = q('.mp-tab');
 ok('三个 tab', tabs.length === 3, 'got ' + tabs.length);
+const refreshBtn = q('.mp-tab-refresh');
+ok('「随便看看」下有换一换', refreshBtn.length === 1, 'got ' + refreshBtn.length);
+ok('换一换文案', refreshBtn[0] && refreshBtn[0].textContent === '换一换',
+  refreshBtn[0] ? refreshBtn[0].textContent : 'none');
+ok('换一换初始可见', refreshBtn[0] && refreshBtn[0].style.display !== 'none',
+  refreshBtn[0] ? refreshBtn[0].style.display || '(empty)' : 'none');
 tabs[1].dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 
 // tab 切换有 190ms 淡出延时，等它完成再断言
 setTimeout(function () {
+  ok('切到最新收录后换一换隐藏', refreshBtn[0] && refreshBtn[0].style.display === 'none',
+    refreshBtn[0] ? refreshBtn[0].style.display : 'none');
   ok('切到最新收录仍有 10 张', q('.mp-mod-card').length === 10, 'got ' + q('.mp-mod-card').length);
   // MC 原版只在「随便看看」里被钉在左上角；其他组按站点原顺序，不做任何补位
   ok('最新收录组不凭空塞 MC 原版', !q('.mp-mod-card')[0].textContent.includes('我的世界原版'),

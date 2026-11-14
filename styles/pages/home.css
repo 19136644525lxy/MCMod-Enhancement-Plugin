@@ -574,6 +574,34 @@ html[data-mp-theme="dark"] .mp-home .mp-glass::before {
   color: #fff;
 }
 
+/* 「换一换」：只在「随便看看」下出现，靠右，和 tab 同高但更轻 */
+.mp-home .mp-tab-refresh {
+  margin-left: auto;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-3);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.mp-home .mp-tab-refresh:hover {
+  color: var(--accent);
+  border-color: var(--accent-2);
+  background: var(--accent-soft);
+}
+
+.mp-home .mp-tab-refresh:active { transform: scale(0.96); }
+
+.mp-home .mp-tab-refresh.is-loading {
+  opacity: 0.55;
+  pointer-events: none;
+  color: var(--accent);
+}
+
 .mp-home .mp-mod-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

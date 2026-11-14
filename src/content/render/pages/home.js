@@ -246,10 +246,50 @@
     return list;
   }
 
-  function tabs(items, renderer) {
+  var refreshing = false;
+  // 「换一换」：请求一页 modlist（随机页），解析出模组卡替换「随便看看」。
+  // 原站这个按钮就是刷新随机组，其它两个 tab 不显示。
+  function refreshRandom(d) {
+    var btn = document.querySelector('#mp-home-host .mp-tab-refresh');
+    if (refreshing || !btn) return;
+    refreshing = true;
+    btn.classList.add('is-loading');
+    var page = 1 + Math.floor(Math.random() * 40);
+    MP.page.fetchDoc('https://www.mcmod.cn/modlist.html?sort=createtime&page=' + page)
+      .then(function (doc) {
+        var res = MP.extract.modlist(doc, '模组');
+        if (!res || !res.ok || !res.items.length) throw new Error('EMPTY');
+        var mc = (d.cards.random || []).filter(isMinecraft)[0];
+        var next = res.items.slice(0, mc ? 9 : 10).map(function (c) {
+          return { href: c.href, title: c.title, enname: c.ename, cover: c.cover, mojang: false };
+        });
+        if (mc) next.unshift(mc);
+        d.cards.random = next;
+        var grid = document.querySelector('#mp-home-host .mp-tab-body .mp-mod-grid');
+        if (grid) {
+          MP.dom.clear(grid);
+          var fresh = modCards(next, true);
+          while (fresh.firstChild) grid.appendChild(fresh.firstChild);
+          grid.classList.add('is-in');
+          setTimeout(function () { grid.classList.remove('is-in'); }, 600);
+        }
+      })
+      .catch(function () { /* 失败就保留原卡片，不弹窗打扰 */ })
+      .then(function () {
+        refreshing = false;
+        if (btn) btn.classList.remove('is-loading');
+      });
+  }
+
+  function tabs(items, renderer, onRefresh) {
     var wrap = h('div', { class: 'mp-tabs' });
     var body = h('div', { class: 'mp-tab-body' });
     var seq = 0;
+    var refreshBtn = null;
+
+    function showRefresh(it) {
+      if (refreshBtn) refreshBtn.style.display = it && it.key === 'random' ? '' : 'none';
+    }
 
     function swap(it) {
       var grid = body.querySelector('.mp-mod-grid');
@@ -278,12 +318,25 @@
         onclick: function () {
           wrap.querySelectorAll('.mp-tab').forEach(function (b) { b.classList.remove('is-on'); });
           btn.classList.add('is-on');
+          showRefresh(it);
           swap(it);
         }
       }, it.label);
       wrap.appendChild(btn);
     });
+
+    if (onRefresh) {
+      refreshBtn = h('button', {
+        class: 'mp-tab-refresh',
+        type: 'button',
+        title: '看看别的',
+        onclick: onRefresh
+      }, '换一换');
+      wrap.appendChild(refreshBtn);
+    }
+
     body.appendChild(renderer(items[0]));
+    showRefresh(items[0]);
     return h('div', { class: 'mp-tab-wrap' }, wrap, body);
   }
 
@@ -645,7 +698,7 @@
 
     var mods = glass('mp-mods', [
       sectionHead('模组', '共 ' + (d.stats[0] ? d.stats[0].text.replace(/^共\s*/, '') : '') + ' ', null),
-      tabs(tabItems, function (it) { return modCards(groupCards(d, it.key)); })
+      tabs(tabItems, function (it) { return modCards(groupCards(d, it.key)); }, function () { refreshRandom(d); })
     ]);
 
     var feed = glass('mp-feed-card', [
