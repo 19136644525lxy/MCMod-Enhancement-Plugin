@@ -25,7 +25,10 @@ MP.pages.search = (function () {
   }
 
   function ensureDayNight() {
-    const right = document.querySelector('.header-container .header-right');
+    // 搜索页顶栏和 wiki 页不完全一致：优先右边的工具区，退到 .info 再退到 body
+    const right = document.querySelector('.header-container .header-right') ||
+      document.querySelector('.top-main .info') ||
+      document.querySelector('.header-right');
     if (!right || document.getElementById('mp-daynight')) return;
     if (!MP.ui || !MP.ui.dayNight) return;
     try {
@@ -46,14 +49,13 @@ MP.pages.search = (function () {
 
   /** 换皮：注入样式、挂 body 标记、接上背景与日夜开关。不碰 DOM 结构。 */
   function paintSkin(settings) {
-    try {
-      MP.theme.inject('styles/pages/search.css');
-    } catch (e) {
-      console.warn('[MCMod+] 搜索页样式注入失败', e);
-    }
+    // day-night.css 是滑块本体，缺了它日夜开关会退化成一颗裸 button
+    ['styles/pages/search.css', 'styles/background.css', 'styles/day-night.css', 'styles/mp-toggle.css']
+      .forEach(function (href) {
+        try { MP.theme.inject(href); } catch (e) { console.warn('[MCMod+] 样式注入失败', href, e); }
+      });
     document.body.classList.add('mp-search-mode');
     try {
-      MP.theme.inject('styles/background.css');
       MP.background.setIntensity((settings && settings.bgIntensity) || 45);
       MP.background.apply((settings && settings.bgPreset) || 'mist');
     } catch (e) {

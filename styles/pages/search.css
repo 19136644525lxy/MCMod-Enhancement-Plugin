@@ -23,11 +23,27 @@ body.mp-search-mode {
   --s-dur: .34s;
   --s-ease: cubic-bezier(.16, 1, .3, 1);
 
-  background-color: var(--s-bg) !important;
+  /* 「晨雾」这套底图是纯 CSS，不画 canvas；这里必须自己铺一层，
+     否则选中晨雾时搜索页只剩一个纯色底，看起来像没生效。 */
+  --mp-bg-base: #f3f1ec;
+  --mp-spot-a: rgba(87, 185, 138, .16);
+  --mp-spot-b: rgba(214, 168, 96, .14);
+  --mp-spot-c: rgba(120, 140, 200, .10);
+
+  background-color: var(--mp-bg-base) !important;
+  background-image:
+    radial-gradient(1200px 600px at 15% -10%, var(--mp-spot-a), transparent 60%),
+    radial-gradient(900px 500px at 95% 5%, var(--mp-spot-b), transparent 55%),
+    radial-gradient(700px 600px at 50% 100%, var(--mp-spot-c), transparent 60%);
+  background-repeat: no-repeat;
   color: var(--s-ink);
 }
 
 html[data-mp-theme="dark"] body.mp-search-mode {
+  --mp-bg-base: #14130f;
+  --mp-spot-a: rgba(87, 185, 138, .13);
+  --mp-spot-b: rgba(214, 168, 96, .09);
+  --mp-spot-c: rgba(120, 140, 200, .08);
   --s-bg: #14130f;
   --s-card: rgba(32, 30, 26, .66);
   --s-card-2: rgba(32, 30, 26, .44);
@@ -44,6 +60,10 @@ html[data-mp-theme="dark"] body.mp-search-mode {
 
 @media (prefers-color-scheme: dark) {
   html:not([data-mp-theme="light"]) body.mp-search-mode {
+  --mp-bg-base: #14130f;
+  --mp-spot-a: rgba(87, 185, 138, .13);
+  --mp-spot-b: rgba(214, 168, 96, .09);
+  --mp-spot-c: rgba(120, 140, 200, .08);
     --s-bg: #14130f;
     --s-card: rgba(32, 30, 26, .66);
     --s-card-2: rgba(32, 30, 26, .44);
@@ -463,6 +483,20 @@ body.mp-search-mode .common-nav a { color: var(--s-ink-3) !important; }
 body.mp-search-mode .common-nav a:hover { color: var(--s-accent) !important; }
 
 /* ---------- 页脚 ---------- */
+
+/* 原站 footer 自带 #f4f8fb 浅蓝底 + 70px 上内边距，深色主题下会突兀地亮一块。
+   这里只留 .container 那张玻璃卡，footer 本体透明。 */
+body.mp-search-mode footer {
+  background: transparent !important;
+  margin-top: 0 !important;
+  padding-top: 26px !important;
+}
+
+body.mp-search-mode footer .copyright,
+body.mp-search-mode footer .copyleft {
+  border-top-color: var(--s-hair) !important;
+  color: var(--s-ink-3) !important;
+}
 
 body.mp-search-mode footer .container {
   background: var(--s-card) !important;
