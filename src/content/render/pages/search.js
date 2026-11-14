@@ -95,8 +95,60 @@ MP.pages.search = (function () {
     backup = null;
   }
 
+  function isDarkNow() {
+    const t = document.documentElement.dataset.mpTheme;
+    if (t === 'dark') return true;
+    if (t === 'light') return false;
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+
+  function ensureDayNight() {
+    const right = document.querySelector('.header-container .header-right');
+    if (!right || document.getElementById('mp-daynight')) return;
+    if (!MP.ui || !MP.ui.dayNight) return;
+    try {
+      const el = MP.ui.dayNight({
+        dark: isDarkNow(),
+        class: 'mp-topbar-daynight',
+        onChange: function (next) {
+          MP.theme.apply({ theme: next ? 'dark' : 'light' });
+          MP.store.setSync({ theme: next ? 'dark' : 'light' }).catch(function () {});
+        }
+      });
+      el.id = 'mp-daynight';
+      right.appendChild(el);
+    } catch (e) {
+      console.warn('[MCMod+] 搜索页日夜开关注入失败', e);
+    }
+  }
+
+  /** 换皮：注入样式、挂 body 标记、接上背景与日夜开关。不碰 DOM 结构。 */
+  function paintSkin(settings) {
+    try {
+      MP.theme.inject('styles/pages/search.css');
+    } catch (e) {
+      console.warn('[MCMod+] 搜索页样式注入失败', e);
+    }
+    document.body.classList.add('mp-search-mode');
+    try {
+      MP.theme.inject('styles/background.css');
+      MP.background.setIntensity((settings && settings.bgIntensity) || 45);
+      MP.background.apply((settings && settings.bgPreset) || 'mist');
+    } catch (e) {
+      console.warn('[MCMod+] 搜索页背景注入失败', e);
+    }
+    try {
+      ensureDayNight();
+    } catch (e) {
+      console.warn('[MCMod+] 搜索页日夜开关注入失败', e);
+    }
+  }
+
   function mount(settings) {
     if (!settings || !settings.enabled) return false;
+
+    paintSkin(settings);
+
     if (!settings.redrawSearch) return false;
 
     const list = document.querySelector('.search-result-list');

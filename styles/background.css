@@ -24,9 +24,13 @@ body.mp-home-mode[data-mp-bg="pixel"],
 body.mp-home-mode[data-mp-bg="grass"],
 body.mp-home-mode[data-mp-bg="stars"],
 body.mp-center-mode[data-mp-bg="aurora"],
+body.mp-search-mode[data-mp-bg="aurora"],
 body.mp-center-mode[data-mp-bg="pixel"],
+body.mp-search-mode[data-mp-bg="pixel"],
 body.mp-center-mode[data-mp-bg="grass"],
+body.mp-search-mode[data-mp-bg="grass"],
 body.mp-center-mode[data-mp-bg="stars"] {
+body.mp-search-mode[data-mp-bg="stars"] {
   background-image: none !important;
 }
 
@@ -44,9 +48,11 @@ body.mp-home-mode #mp-home-topbar {
 
 /* 个人中心：站点自己的 header / 主体 / 页脚都得抬到 canvas 上面 */
 body.mp-center-mode .header-container,
+body.mp-search-mode .header-container,
 body.mp-center-mode .common-frame,
 body.mp-center-mode .common-center,
 body.mp-center-mode footer {
+body.mp-search-mode footer {
   position: relative;
   z-index: 1;
 }
@@ -54,6 +60,7 @@ body.mp-center-mode footer {
 /* 星空模式给一层薄雾，避免星点太密影响阅读 */
 body.mp-home-mode[data-mp-bg="stars"]::after,
 body.mp-center-mode[data-mp-bg="stars"]::after {
+body.mp-search-mode[data-mp-bg="stars"]::after {
   content: "";
   position: fixed;
   inset: 0;
