@@ -928,3 +928,42 @@ body.mp-search-mode .header-user .header-layer {
   flex-wrap: nowrap !important;
   align-items: flex-start !important;
 }
+
+/* search-menu-stack：搜索页 hero 里的按钮会盖到下拉菜单上，这里把顶栏整体抬到页面之上 */
+body.mp-search-mode .header-container {
+  z-index: 2147482000 !important;
+}
+
+body.mp-search-mode .header-user {
+  position: relative;
+  z-index: 2;
+}
+
+body.mp-search-mode .header-user .header-panel {
+  position: absolute !important;
+  z-index: 3 !important;
+}
+
+body.mp-search-mode .header-user .header-layer {
+  position: static !important;
+  z-index: auto !important;
+  isolation: isolate;
+  background: #ffffff !important;
+  border: 1px solid var(--s-hair) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 40px rgba(20, 16, 12, .18) !important;
+}
+
+html[data-mp-theme="dark"] body.mp-search-mode .header-user .header-layer {
+  background: #232120 !important;
+  border-color: rgba(255, 255, 255, .12) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .55) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-search-mode .header-user .header-layer {
+    background: #232120 !important;
+    border-color: rgba(255, 255, 255, .12) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .55) !important;
+  }
+}
