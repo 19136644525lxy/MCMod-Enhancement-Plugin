@@ -597,3 +597,17 @@ body.mp-search-mode .header-container .header-right .mp-gear-btn .mp-fab-gear {
   width: 16px;
   height: 16px;
 }
+
+/* ---------- 去掉原站那层白底 ---------- */
+
+/* style.css 里 .common-center 是 background-color:#FFF + 5px 白边，
+   整块白板压在背景层上面，深色下尤其突兀。只清背景，不动布局。 */
+body.mp-search-mode .common-frame,
+body.mp-search-mode .common-center,
+body.mp-search-mode .center,
+body.mp-search-mode .center-frame {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
