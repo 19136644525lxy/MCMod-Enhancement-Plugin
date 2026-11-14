@@ -708,3 +708,91 @@ body.mp-search-mode .center-frame {
 @media (max-width: 720px) {
   #mp-search-fab.mp-fab-bar { bottom: 200px; }
 }
+
+/* search-header-layer-fix：搜索页内容层 z-index:1，顶栏下拉面板要显式抬层，否则被玻璃卡压住 */
+body.mp-search-mode .header-container {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000 !important;
+}
+
+body.mp-search-mode .header-frame,
+body.mp-search-mode .header-menu,
+body.mp-search-mode .header-menu-widget {
+  overflow: visible !important;
+}
+
+body.mp-search-mode .header-panel {
+  z-index: 2001 !important;
+}
+
+body.mp-search-mode .header-layer {
+  position: relative;
+  z-index: 2002 !important;
+  background: #ffffff !important;
+  border: 1px solid var(--s-hair) !important;
+  box-shadow: var(--s-shadow) !important;
+  border-radius: 12px !important;
+}
+
+body.mp-search-mode .header-layer .header-layer-block a {
+  color: var(--s-ink) !important;
+}
+body.mp-search-mode .header-layer .header-layer-block a:hover {
+  color: var(--s-accent) !important;
+}
+body.mp-search-mode .header-layer .header-layer-block .title,
+body.mp-search-mode .header-layer .header-layer-block span,
+body.mp-search-mode .header-layer .header-layer-block .text-muted {
+  color: var(--s-ink-3) !important;
+}
+
+/* 顶栏搜索框：原站是点放大镜才展开的浮层，这里改成常驻可输入 */
+body.mp-search-mode .header-search form {
+  display: flex !important;
+  position: static !important;
+  width: 190px !important;
+  height: 34px;
+  margin: 0;
+  padding: 0 4px 0 10px;
+  align-items: center;
+  background: var(--s-card-2) !important;
+  border: 1px solid var(--s-hair) !important;
+  border-radius: 10px !important;
+}
+
+body.mp-search-mode .header-search form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 30px;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--s-ink) !important;
+  -webkit-text-fill-color: var(--s-ink) !important;
+  font-size: 12.5px;
+  outline: none;
+}
+
+body.mp-search-mode .header-search form button,
+body.mp-search-mode .header-search form .btn {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent !important;
+  color: var(--s-ink-3) !important;
+  cursor: pointer;
+}
+
+body.mp-search-mode .header-search form button:hover {
+  background: var(--s-accent-soft) !important;
+  color: var(--s-accent) !important;
+}
+
+body.mp-search-mode #header-search-switch {
+  display: none !important;
+}
