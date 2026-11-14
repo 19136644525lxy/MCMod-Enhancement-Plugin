@@ -234,11 +234,16 @@
 
   // 某一组里没有「我的世界原版」时，从随机组借一张补到首位，
   // 保证它不论切哪个 tab、轮换几次都固定在左上角。
+  // 只有「随便看看」把 MC 原版钉在左上角；「最新收录」「有新动态」按站点原本的顺序，
+  // 组里没有 MC 原版就不该凭空补一张。
   function groupCards(d, key) {
     var list = (d.cards[key] || []).slice();
-    if (list.some(isMinecraft)) return pinMinecraft(list);
-    var pin = (d.cards.random || []).filter(isMinecraft)[0];
-    return pin ? [pin].concat(list.slice(0, 9)) : list;
+    if (key === 'random') {
+      if (list.some(isMinecraft)) return pinMinecraft(list);
+      var pin = (d.cards.random || []).filter(isMinecraft)[0];
+      return pin ? [pin].concat(list.slice(0, 9)) : list;
+    }
+    return list;
   }
 
   function tabs(items, renderer) {

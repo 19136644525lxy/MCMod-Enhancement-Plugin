@@ -161,7 +161,8 @@ tabs[1].dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 // tab 切换有 190ms 淡出延时，等它完成再断言
 setTimeout(function () {
   ok('切到最新收录仍有 10 张', q('.mp-mod-card').length === 10, 'got ' + q('.mp-mod-card').length);
-  ok('切组后首卡仍是我的世界原版', q('.mp-mod-card')[0].textContent.includes('我的世界原版'),
+  // MC 原版只在「随便看看」里被钉在左上角；其他组按站点原顺序，不做任何补位
+  ok('最新收录组不凭空塞 MC 原版', !q('.mp-mod-card')[0].textContent.includes('我的世界原版'),
     q('.mp-mod-card')[0].textContent.trim().slice(0, 20));
 
   console.log('\n[5] 卸载');
