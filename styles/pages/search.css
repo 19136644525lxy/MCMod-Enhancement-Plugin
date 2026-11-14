@@ -522,6 +522,25 @@ body.mp-search-mode footer {
   z-index: 1;
 }
 
+/* ---------- 顶栏右侧工具区 ---------- */
+
+/* 原站 .header-right 是 float:right 的块级容器，里面的搜索框和用户区各自定位。
+   日夜开关是后插进去的普通 div，不改成 flex 就会被挤到下一行。 */
+body.mp-search-mode .header-container .header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  float: right;
+}
+
+body.mp-search-mode .header-container .header-right > * {
+  flex: none;
+}
+
+body.mp-search-mode .header-container .header-right #mp-daynight {
+  margin-left: 4px;
+}
+
 /* ---------- 响应式 ---------- */
 
 @media (max-width: 900px) {
