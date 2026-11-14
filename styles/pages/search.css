@@ -813,7 +813,110 @@ body.mp-search-mode .header-search form {
   width: 150px !important;
 }
 
-/* search-avatar-menu: copied verbatim from the profile page (center.css) */
+/* ===== 以下整段复制自 center.css 的最终版，保证与个人主页完全一致 ===== */
+/* ===== 下拉菜单：竖排紧凑两栏（对齐原站）===== */
+
+/* 原站登录态菜单是「两栏并排、每栏内部一项一行」：
+   管理菜单 / 文件管理 / 主站功能 / 我的收藏 / 待审列表 / …
+   而 220px 那个宽度是「主站导航」下拉的，不是这个用户菜单的。
+   这里按原站的视觉结果写：每栏宽度由内容决定，项竖排、行高紧。 */
+body.mp-search-mode .header-layer {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 18px !important;
+  padding: 12px 16px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+body.mp-search-mode .header-layer .header-layer-block {
+  width: auto !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+body.mp-search-mode .header-layer .header-layer-block li {
+  display: block !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+  line-height: 1.8 !important;
+  text-align: left !important;
+}
+body.mp-search-mode .header-layer .header-layer-block li:nth-child(odd) {
+  margin-right: 0 !important;
+}
+
+body.mp-search-mode .header-layer .header-layer-block a {
+  display: block !important;
+  width: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.8 !important;
+  text-align: left !important;
+  color: var(--s-ink) !important;
+  background: transparent !important;
+}
+body.mp-search-mode .header-layer .header-layer-block a:hover {
+  background: transparent !important;
+  color: var(--s-accent) !important;
+}
+
+body.mp-search-mode .header-layer .header-layer-block .title {
+  display: block !important;
+  margin: 0 0 4px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--s-ink-3) !important;
+  line-height: 1.8 !important;
+  text-align: left !important;
+}
+
+body.mp-search-mode .header-layer .header-layer-block li span,
+body.mp-search-mode .header-layer .header-layer-block li .text-muted {
+  display: inline !important;
+  margin-left: 5px !important;
+  font-size: 11.5px !important;
+  color: var(--s-ink-3) !important;
+}
+
+/* ===== 顶栏恢复 fixed 定位（原站就是 fixed + z-index:1000）===== */
+
+/* 原站：.header-container{padding:0 200px;position:fixed;top:0;left:0;right:0;z-index:1000}
+   我之前为了「把下拉面板抬到横幅上面」，把顶栏改成了 position:relative + z-index:900，
+   结果顶栏不再吸顶、整条栏跟着页面滚动，视觉上「顶部栏变了」。
+   其实原站 z-index 就是 1000，本来就比横幅高，不需要抬。 */
+body.mp-search-mode .header-container,
+body.mp-search-mode .mp-topbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+}
+
+/* 面板是 .header-panel{position:absolute;left:0;top:40px;padding-top:10px;display:none}，
+   hover 时显示。不要把它或 .header-layer 改成 relative：
+   那样鼠标从头像往下移的过程中会离开 hover 区域，面板立刻收起，看起来就是「点不到」。 */
+body.mp-search-mode .header-panel {
+  position: absolute !important;
+  z-index: auto !important;
+}
+
+body.mp-search-mode .header-layer {
+  position: static !important;
+  z-index: auto !important;
+}
+
+/* ===== 头像下拉菜单：排版微调 + 鼠标互动 ===== */
+
+/* 只作用于「头像」这一块（.header-user），
+   不碰主站导航那几个 .header-menu-widget 的下拉，避免影响别处。 */
+
 body.mp-search-mode .header-user .header-layer {
   padding: 12px 16px 14px !important;
   gap: 22px !important;
@@ -888,82 +991,8 @@ body.mp-search-mode .header-user .header-panel:hover .header-layer {
   }
 }
 
-/* 搜索页的头像菜单：宽度跟内容走，但必须给一个下限 + 禁止断行，
-   否则每个 block 会塌到最窄，文字变成两字一行。 */
-body.mp-search-mode .header-user .header-layer {
-  width: auto !important;
-  max-width: min(560px, 92vw);
-}
-body.mp-search-mode .header-user .header-layer .header-layer-block {
-  width: auto !important;
-  min-width: 92px;
-  flex: 0 0 auto;
-}
-body.mp-search-mode .header-user .header-layer .header-layer-block li:nth-child(odd) {
-  margin-right: 0 !important;
-}
-body.mp-search-mode .header-user .header-layer .header-layer-block a,
-body.mp-search-mode .header-user .header-layer .header-layer-block .title {
-  white-space: nowrap !important;
-}
 
-/* search-menu-vertical：原站 li 是 inline-block（块内两列横排），头像菜单要的是「一项一行」，
-   不显式改成 block 的话，链接会全部横向铺开、把面板撑爆。 */
-body.mp-search-mode .header-user .header-layer .header-layer-block li {
-  display: block !important;
-  margin-right: 0 !important;
-  padding: 0 !important;
-}
-
-body.mp-search-mode .header-user .header-layer .header-layer-block li > a {
-  display: block !important;
-}
-
-body.mp-search-mode .header-user .header-layer .header-layer-block {
-  flex: 0 0 auto !important;
-  min-width: 96px !important;
-}
-
-body.mp-search-mode .header-user .header-layer {
-  flex-wrap: nowrap !important;
-  align-items: flex-start !important;
-}
-
-/* search-menu-stack：搜索页 hero 里的按钮会盖到下拉菜单上，这里把顶栏整体抬到页面之上 */
+/* 搜索页的内容层是 z-index:1，顶栏要更高一点，否则 hero 里的按钮会盖到菜单上 */
 body.mp-search-mode .header-container {
   z-index: 2147482000 !important;
-}
-
-body.mp-search-mode .header-user {
-  position: relative;
-  z-index: 2;
-}
-
-body.mp-search-mode .header-user .header-panel {
-  position: absolute !important;
-  z-index: 3 !important;
-}
-
-body.mp-search-mode .header-user .header-layer {
-  position: static !important;
-  z-index: auto !important;
-  isolation: isolate;
-  background: #ffffff !important;
-  border: 1px solid var(--s-hair) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 12px 40px rgba(20, 16, 12, .18) !important;
-}
-
-html[data-mp-theme="dark"] body.mp-search-mode .header-user .header-layer {
-  background: #232120 !important;
-  border-color: rgba(255, 255, 255, .12) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, .55) !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not([data-mp-theme="light"]) body.mp-search-mode .header-user .header-layer {
-    background: #232120 !important;
-    border-color: rgba(255, 255, 255, .12) !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, .55) !important;
-  }
 }
