@@ -715,7 +715,7 @@ body.mp-search-mode .header-container {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 2000 !important;
+  z-index: 1000 !important;
 }
 
 body.mp-search-mode .header-frame,
@@ -724,13 +724,15 @@ body.mp-search-mode .header-menu-widget {
   overflow: visible !important;
 }
 
+/* 面板保持 absolute、layer 保持 static：改 relative 会让鼠标从头像下移时离开 hover 区，
+   面板立刻收起，看起来就是「点不到」。抬层交给 .header-container 的 z-index。 */
 body.mp-search-mode .header-panel {
-  z-index: 2001 !important;
+  position: absolute !important;
 }
 
 body.mp-search-mode .header-layer {
-  position: relative;
-  z-index: 2002 !important;
+  position: static !important;
+  z-index: auto !important;
   background: #ffffff !important;
   border: 1px solid var(--s-hair) !important;
   box-shadow: var(--s-shadow) !important;
@@ -795,4 +797,82 @@ body.mp-search-mode .header-search form button:hover {
 
 body.mp-search-mode #header-search-switch {
   display: none !important;
+}
+
+/* search-avatar-menu：头像下拉的排版与互动，照搬个人主页那套（只作用 .header-user） */
+body.mp-search-mode .header-user .header-layer {
+  padding: 12px 16px 14px !important;
+  gap: 22px !important;
+}
+
+body.mp-search-mode .header-user .header-layer .header-layer-block .title {
+  margin: 0 0 7px !important;
+  padding-bottom: 6px !important;
+  border-bottom: 1px solid var(--s-hair);
+  letter-spacing: .05em;
+}
+
+body.mp-search-mode .header-user .header-layer .header-layer-block a {
+  display: block !important;
+  width: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.95 !important;
+  text-align: left !important;
+  color: var(--s-ink) !important;
+  background: transparent !important;
+  transition: color .16s ease, transform .2s cubic-bezier(.3, 1.4, .5, 1) !important;
+}
+
+body.mp-search-mode .header-user .header-layer .header-layer-block a:hover {
+  color: var(--s-accent) !important;
+  transform: translateX(2px) !important;
+}
+
+body.mp-search-mode .header-user .header-layer .header-layer-block li {
+  display: block !important;
+  line-height: 1.95 !important;
+}
+
+body.mp-search-mode .header-user .header-layer .header-layer-block {
+  width: auto !important;
+}
+
+body.mp-search-mode .header-user .header-layer {
+  width: auto !important;
+  display: flex !important;
+  flex-wrap: nowrap;
+}
+
+body.mp-search-mode .header-user:hover .header-layer,
+body.mp-search-mode .header-user .header-panel:hover .header-layer {
+  animation: mp-s-menu-in .18s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@keyframes mp-s-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.mp-search-mode .header-user .header-layer,
+  body.mp-search-mode .header-user .header-layer .header-layer-block a {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* search-topbar-fit：窗口窄时给导航让位，别让搜索框把「词典」压掉 */
+body.mp-search-mode .header-container {
+  padding-left: max(16px, calc((100% - 1400px) / 2)) !important;
+  padding-right: max(16px, calc((100% - 1400px) / 2)) !important;
+}
+
+body.mp-search-mode .header-menu-item {
+  padding: 0 14px !important;
+}
+
+body.mp-search-mode .header-search form {
+  width: 150px !important;
 }
