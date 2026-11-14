@@ -611,3 +611,98 @@ body.mp-search-mode .center-frame {
   border-color: transparent !important;
   box-shadow: none !important;
 }
+
+/* ---------- 右侧抽屉（增强 / 原始 / 设置） ---------- */
+
+#mp-search-fab.mp-fab-bar {
+  position: fixed;
+  right: 0;
+  bottom: 344px;
+  z-index: 2147483001;
+  display: flex;
+  align-items: center;
+}
+
+#mp-search-fab .mp-fab-handle {
+  width: 28px;
+  height: 56px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--s-hair);
+  border-right: 0;
+  border-radius: 50% 0 0 50% / 50% 0 0 50%;
+  background: var(--s-card);
+  color: var(--s-ink-2);
+  cursor: pointer;
+  box-shadow: -2px 0 12px rgba(30, 24, 18, .1);
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+#mp-search-fab .mp-fab-handle:hover {
+  background: var(--s-accent);
+  color: #fff;
+  border-color: var(--s-accent);
+}
+
+#mp-search-fab .mp-fab-handle:focus { outline: none; }
+#mp-search-fab .mp-fab-handle:focus-visible { outline: 2px solid var(--s-accent); outline-offset: 2px; }
+
+#mp-search-fab .mp-fab-chevron { width: 15px; height: 15px; }
+
+#mp-search-fab .mp-fab-sheet {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 999px;
+  background: var(--s-card);
+  border: 1px solid var(--s-hair);
+  box-shadow: var(--s-shadow);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(14px, -50%) scale(.86);
+  transform-origin: right center;
+  transition: transform .44s cubic-bezier(.34, 1.56, .64, 1), opacity .2s ease;
+}
+
+#mp-search-fab.is-open .mp-fab-sheet {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0, -50%) scale(1);
+}
+
+#mp-search-fab .mp-fab {
+  min-width: 52px;
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--s-ink-2);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+#mp-search-fab .mp-fab:hover { background: var(--s-accent-soft); color: var(--s-accent); }
+#mp-search-fab .mp-fab.is-on { background: var(--s-accent); color: #fff; }
+
+#mp-search-fab .mp-fab-icon {
+  min-width: 32px;
+  width: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#mp-search-fab .mp-fab-icon svg { width: 16px; height: 16px; }
+
+@media (max-width: 720px) {
+  #mp-search-fab.mp-fab-bar { bottom: 200px; }
+}

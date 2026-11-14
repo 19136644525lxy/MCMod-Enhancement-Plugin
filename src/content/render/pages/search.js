@@ -226,8 +226,7 @@ MP.pages.search = (function () {
           ? '找到约 ' + stats.total + ' 条结果' + (stats.pages > 1 ? '，共约 ' + stats.pages + ' 页' : '')
           : (data.totalText || '共 ' + data.count + ' 条结果')
       ),
-      stats.ms ? h('span', { class: 'mp-s-ms' }, '耗时 ' + stats.ms + ' ms') : null,
-      h('button', { class: 'mp-s-original', type: 'button', onclick: onRestore }, '原始视图')
+      stats.ms ? h('span', { class: 'mp-s-ms' }, '耗时 ' + stats.ms + ' ms') : null
     );
 
     const list = h('div', { class: 'mp-s-list' });
@@ -242,6 +241,86 @@ MP.pages.search = (function () {
     );
   }
 
+  /* ---------------- 右侧抽屉（增强 / 原始 / 设置） ---------------- */
+
+  var fabEl = null;
+
+  function syncFab() {
+    if (!fabEl) return;
+    var on = !!document.getElementById('mp-search-host');
+    Array.prototype.forEach.call(fabEl.querySelectorAll('.mp-fab[data-act]'), function (b) {
+      var isEnhance = b.getAttribute('data-act') === 'enhance';
+      b.classList.toggle('is-on', isEnhance === on);
+    });
+  }
+
+  function chevronSvg() {
+    return h('svg', { class: 'mp-fab-chevron', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' },
+      h('path', { d: 'M15 18l-6-6 6-6' })
+    );
+  }
+
+  function ensureFab(settings) {
+    if (fabEl && document.body.contains(fabEl)) {
+      syncFab();
+      return fabEl;
+    }
+
+    function act(name) {
+      var label = name === 'enhance' ? '增强' : name === 'original' ? '原始' : gearSvg();
+      var cls = 'mp-fab' + (name === 'settings' ? ' mp-fab-icon' : '');
+      return h('button', {
+        class: cls,
+        type: 'button',
+        'data-act': name,
+        title: name === 'settings' ? '插件设置' : label,
+        onclick: function () {
+          if (name === 'original') {
+            MP.pages.search.unmount();
+          } else if (name === 'enhance') {
+            var mountIt = function (st) {
+              MP.pages.search.mount(st || settings || {});
+              syncFab();
+            };
+            if (MP.store && MP.store.getSync) {
+              MP.store.getSync().then(mountIt).catch(function () { mountIt(settings); });
+            } else {
+              mountIt(settings);
+            }
+          } else if (MP.settingsPanel) {
+            MP.settingsPanel.toggle();
+          }
+          syncFab();
+        }
+      }, label);
+    }
+
+    var handle = h('button', {
+      class: 'mp-fab-handle',
+      type: 'button',
+      title: '插件菜单',
+      'aria-label': '插件菜单',
+      onclick: function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fabEl.classList.toggle('is-open');
+      }
+    }, chevronSvg());
+
+    fabEl = h('div', { id: 'mp-search-fab', class: 'mp-fab-bar' }, handle,
+      h('div', { class: 'mp-fab-sheet' }, act('enhance'), act('original'), act('settings'))
+    );
+
+    document.addEventListener('click', function (e) {
+      if (fabEl && fabEl.classList.contains('is-open') && !fabEl.contains(e.target)) {
+        fabEl.classList.remove('is-open');
+      }
+    });
+
+    document.body.appendChild(fabEl);
+    syncFab();
+    return fabEl;
+  }
   // ---------- 挂载 / 还原 ----------
 
   function unmount() {
@@ -251,6 +330,7 @@ MP.pages.search = (function () {
     hostAnchor = null;
     const old = document.querySelector('.mp-s-list');
     if (old) old.remove();
+    try { syncFab(); } catch (e) { /* ignore */ }
     return true;
   }
 
@@ -276,6 +356,7 @@ MP.pages.search = (function () {
     host = build(data, function () { unmount(); });
     anchor.parentNode.insertBefore(host, anchor);
     anchor.classList.add('mp-origin-hidden');
+    try { ensureFab(settings); } catch (e) { console.warn('[MCMod+] 搜索页抽屉注入失败', e); }
     return true;
   }
 

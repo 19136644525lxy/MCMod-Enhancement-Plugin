@@ -115,11 +115,13 @@ ok('搜索词高亮', d.querySelectorAll('.mp-r-card mark').length > 0);
 ok('结果卡有类型标签', !!d.querySelector('.mp-r-type'));
 
 console.log('\n[3] 还原');
-const btn = d.querySelector('.mp-s-original');
-ok('原始视图按钮存在', !!btn);
-if (btn) btn.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+ok('抽屉已注入', !!d.getElementById('mp-search-fab'));
+ok('增强按钮处于选中态',
+  !!d.querySelector('#mp-search-fab .mp-fab[data-act="enhance"].is-on'));
+w.MP.pages.search.unmount();
 ok('宿主已移除', !d.getElementById('mp-search-host'));
 ok('原 .center 恢复', !d.querySelector('.common-frame .center').classList.contains('mp-origin-hidden'));
+ok('还原后抽屉仍在（切回原始用）', !!d.getElementById('mp-search-fab'));
 
 console.log('\n结果：' + pass + ' 通过 / ' + fail + ' 失败');
 process.exit(fail ? 1 : 0);
