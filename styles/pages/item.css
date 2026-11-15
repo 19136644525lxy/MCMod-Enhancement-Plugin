@@ -863,6 +863,13 @@ body.mp-item-mode .common-center > .right {
 }
 
 body.mp-item-mode .common-center > .center > .left {
+  /* 原站 .common-center .left 是 position:absolute + width:240px，
+     靠 .right 的 padding-left:245px 让位。既然改成网格，就得让它回到流里，
+     否则绝对定位元素脱离网格，第一列空置、.right 被挤进 210px 的轨道。 */
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: auto !important;
   float: none !important;
   width: auto !important;
   margin: 0 !important;

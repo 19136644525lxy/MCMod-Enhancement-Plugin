@@ -12,8 +12,20 @@ body.mp-wiki-mode .center {
   align-items: start;
 }
 
+/* 原站是这么排的（output/site-css/style.css）：
+ *   .common-center .left  { width:240px; position:absolute; left:15; top:0; z-index:1 }
+ *   .common-center .right { width:100%; padding-left:245px }
+ * 侧栏是绝对定位浮在左边、主内容靠 padding-left 让位，不是浮动两栏。
+ * 改成网格后必须把 position 一起复位，否则 .left 脱流、第一列空着，
+ * .right 会落进 220px 那一列，整页被压成一条。
+ */
 body.mp-wiki-mode .center > .left,
 body.mp-wiki-mode .center > .right {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  right: auto !important;
+  z-index: auto !important;
   width: auto !important;
   float: none !important;
   padding: 0 !important;
