@@ -1033,3 +1033,87 @@ body.mp-item-mode .center > .left .common-rowlist-block .title {
   justify-content: space-between;
   gap: 8px;
 }
+
+/* 侧栏元信息：再放开一点行距，别挤在一起 */
+body.mp-item-mode .center > .left .common-rowlist-2 > li {
+  padding: 3px 0 !important;
+  line-height: 1.6 !important;
+  font-size: 12px !important;
+}
+
+body.mp-item-mode .center > .left .common-rowlist-2 > li > :last-child {
+  font-size: 12.5px !important;
+  font-variant-numeric: tabular-nums;
+}
+
+body.mp-item-mode .center > .left .common-rowlist-2 {
+  gap: 2px !important;
+}
+
+/* 评论区：原站是白底黑字，跟重绘后的深色页面放一起很割裂 */
+body.mp-item-mode .common-comment-block {
+  background: var(--i-card) !important;
+  border: 1px solid var(--i-hair) !important;
+  border-radius: 16px !important;
+  padding: 16px 18px !important;
+  margin-top: 16px;
+  color: var(--i-ink-2);
+}
+
+body.mp-item-mode .common-comment-block textarea,
+body.mp-item-mode .common-comment-block input[type="text"],
+body.mp-item-mode .common-comment-block input[type="email"] {
+  background: var(--i-card-soft) !important;
+  border: 1px solid var(--i-hair) !important;
+  border-radius: 10px !important;
+  color: var(--i-ink) !important;
+  box-shadow: none !important;
+}
+
+body.mp-item-mode .common-comment-block textarea:focus,
+body.mp-item-mode .common-comment-block input:focus {
+  border-color: var(--i-accent) !important;
+  box-shadow: 0 0 0 3px rgba(47, 111, 79, 0.18) !important;
+  outline: none !important;
+}
+
+body.mp-item-mode .common-comment-block a {
+  color: var(--i-accent) !important;
+}
+
+body.mp-item-mode .common-comment-block .btn,
+body.mp-item-mode .common-comment-block button {
+  border-radius: 999px !important;
+}
+
+html[data-mp-theme="dark"] body.mp-item-mode .common-comment-block,
+html[data-mp-theme="dark"] body.mp-item-mode .common-comment-block :not(img):not(svg):not(path):not(use) {
+  color: #e6e1d8 !important;
+}
+
+html[data-mp-theme="dark"] body.mp-item-mode .common-comment-block a {
+  color: #7ed0a5 !important;
+}
+
+html[data-mp-theme="dark"] body.mp-item-mode .common-comment-block textarea,
+html[data-mp-theme="dark"] body.mp-item-mode .common-comment-block input {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #e6e1d8 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-item-mode .common-comment-block,
+  html:not([data-mp-theme="light"]) body.mp-item-mode .common-comment-block :not(img):not(svg):not(path):not(use) {
+    color: #e6e1d8 !important;
+  }
+  html:not([data-mp-theme="light"]) body.mp-item-mode .common-comment-block a {
+    color: #7ed0a5 !important;
+  }
+  html:not([data-mp-theme="light"]) body.mp-item-mode .common-comment-block textarea,
+  html:not([data-mp-theme="light"]) body.mp-item-mode .common-comment-block input {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #e6e1d8 !important;
+  }
+}

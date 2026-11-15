@@ -755,6 +755,9 @@ MP.pages.center = (function () {
     return true;
   }
 
+  // 灯箱在个人主页写着，物品页也要用，所以挂到 MP 上复用。
+  MP.lightbox = { bind: bindLightbox, unbind: unbindLightbox };
+
   return { match, mount, unmount, mark, isActive: function () { return mounted; } };
 })();
 

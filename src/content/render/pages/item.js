@@ -234,6 +234,8 @@
     var rightBox = anchor.querySelector(':scope > .right') || anchor;
     rightBox.insertBefore(build(d), rightBox.firstChild);
 
+    try { if (MP.lightbox) MP.lightbox.bind(); } catch (e) { /* 灯箱是增强项，失败不影响主体 */ }
+
     fab = MP.pageChrome.fab({
       id: 'mp-item-fab',
       isEnhanced: isEnhanced,
@@ -260,6 +262,8 @@
     hidden = [];
 
     if (chrome) { chrome.restore(); chrome = null; }
+
+    try { if (MP.lightbox) MP.lightbox.unbind(); } catch (e) { /* 同上 */ }
 
     try { MP.background.destroy(); } catch (e) { /* 背景可能本来就没起 */ }
 
