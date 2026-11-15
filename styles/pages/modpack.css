@@ -1,0 +1,147 @@
+/* 整合包检索页（/modpack.html）专属版式。
+ * 通用件在 wiki.css；这里只管卡片网格和筛选条换肤。
+ */
+
+/* 整页宽度由原站 .modlist-frame 的容器决定，这里不要再套一层 max-width，
+   否则 hero / 卡片网格会和上面的筛选条左右错开。 */
+.mp-modpack-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mp-modpack-page .mp-hero { padding: 18px 22px; }
+
+/* ---------------- 筛选条 ---------------- */
+
+body.mp-wiki-mode .modlist-filter-frame {
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--w-hair);
+  border-radius: var(--w-radius);
+  background: var(--w-card);
+  box-shadow: var(--w-shadow);
+  -webkit-backdrop-filter: blur(20px) saturate(1.45);
+  backdrop-filter: blur(20px) saturate(1.45);
+}
+
+body.mp-wiki-mode .modlist-filter-block { margin-bottom: 10px; }
+body.mp-wiki-mode .modlist-filter-block:last-child { margin-bottom: 0; }
+
+body.mp-wiki-mode .modlist-filter-block .title {
+  color: var(--w-ink-3);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+body.mp-wiki-mode .modlist-filter-block ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body.mp-wiki-mode .modlist-filter-block li.main {
+  margin: 0 !important;
+  padding: 4px 12px;
+  border: 1px solid var(--w-hair);
+  border-radius: 999px;
+  background: var(--w-card-2);
+  color: var(--w-ink-2);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease, border-color .16s ease;
+}
+
+body.mp-wiki-mode .modlist-filter-block li.main:hover {
+  background: var(--w-accent-soft);
+  color: var(--w-accent);
+  border-color: transparent;
+}
+
+body.mp-wiki-mode .modlist-filter-block li.main.active {
+  background: var(--w-accent);
+  border-color: var(--w-accent);
+  color: #fff;
+}
+
+/* ---------------- 卡片网格 ---------------- */
+
+.mp-mp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.mp-mp-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .2s var(--w-ease), box-shadow .2s var(--w-ease);
+}
+
+.mp-mp-card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(40, 32, 24, .16); }
+
+.mp-mp-cover {
+  aspect-ratio: 16 / 9;
+  background: var(--w-card-2);
+  overflow: hidden;
+}
+
+.mp-mp-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.mp-mp-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: var(--w-ink-3);
+}
+
+.mp-mp-body { padding: 12px 14px 14px; min-width: 0; }
+
+.mp-mp-name {
+  font-size: 14.5px;
+  font-weight: 650;
+  color: var(--w-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-mp-card:hover .mp-mp-name { color: var(--w-accent); }
+
+.mp-mp-en {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--w-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-mp-intro {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--w-ink-2);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+
+/* ---------------- 断点 ---------------- */
+
+@media (max-width: 720px) {
+  .mp-mp-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .mp-mp-intro { -webkit-line-clamp: 3; }
+}

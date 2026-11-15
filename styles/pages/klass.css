@@ -1,0 +1,170 @@
+/* 模组页（/class/{id}.html）专属版式。
+ * 通用件（变量 / 面板 / 胶囊 / 顶栏 / 抽屉）在 wiki.css。
+ *
+ * 布局：.center 改成两列网格 —— 左列是原站侧栏（投票、评比、日志、组员），
+ * 右列是「自绘 hero + 面板 + 原站 tab 区（Mod介绍 / Mod下载）」。
+ */
+
+body.mp-wiki-mode .center {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+body.mp-wiki-mode .center > .left,
+body.mp-wiki-mode .center > .right {
+  width: auto !important;
+  float: none !important;
+  padding: 0 !important;
+  min-width: 0;
+}
+
+/* ---------------- 左列：原站侧栏 ---------------- */
+
+body.mp-wiki-mode .center > .left > * {
+  background: var(--w-card);
+  border: 1px solid var(--w-hair);
+  border-radius: 14px;
+  padding: 12px;
+  margin: 0 0 12px;
+  box-shadow: var(--w-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+}
+
+body.mp-wiki-mode .center > .left img { max-width: 100%; height: auto; }
+
+body.mp-wiki-mode .center > .left .title {
+  background: none !important;
+  border-bottom: 1px solid var(--w-hair);
+  padding: 0 0 8px;
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--w-ink);
+}
+
+body.mp-wiki-mode .center > .left .title a,
+body.mp-wiki-mode .center > .left a {
+  color: var(--w-accent);
+  text-decoration: none;
+}
+
+body.mp-wiki-mode .center > .left a:hover { text-decoration: underline; }
+
+/* 侧栏里的纯文本行（「暂无日志」这类）跟着主题走，别留原站的深灰。 */
+body.mp-wiki-mode .center > .left li,
+body.mp-wiki-mode .center > .left p,
+body.mp-wiki-mode .center > .left .text {
+  color: var(--w-ink-2);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+body.mp-wiki-mode .center > .left .common-imglist li { color: var(--w-ink-3); }
+
+/* ---------------- 右列：hero 之后的间距 ---------------- */
+
+.mp-klass-page { padding-top: 0; }
+
+.mp-klass-page .mp-panel:last-of-type { margin-bottom: 0; }
+
+.mp-klass-page .mp-hero-cats { margin-top: 10px; }
+
+/* ---------------- 原站 tab 区（Mod介绍 / Mod下载） ---------------- */
+
+body.mp-wiki-mode .class-menu-page {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 12px;
+  width: fit-content;
+  border: 1px solid var(--w-hair);
+  border-radius: 999px;
+  background: var(--w-card);
+  box-shadow: var(--w-shadow);
+}
+
+body.mp-wiki-mode .class-menu-page .page-li {
+  margin: 0 !important;
+  padding: 7px 18px !important;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--w-ink-2);
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease;
+}
+
+body.mp-wiki-mode .class-menu-page .page-li:hover { background: var(--w-accent-soft); color: var(--w-accent); }
+
+body.mp-wiki-mode .class-menu-page .page-li.on,
+body.mp-wiki-mode .class-menu-page .page-li.active,
+body.mp-wiki-mode .class-menu-page .page-li.curr {
+  background: var(--w-accent);
+  color: #fff;
+}
+
+body.mp-wiki-mode .class-menu-main {
+  padding: 18px 20px;
+  border: 1px solid var(--w-hair);
+  border-radius: var(--w-radius);
+  background: var(--w-card);
+  box-shadow: var(--w-shadow);
+  color: var(--w-ink-2);
+  font-size: 13.5px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  -webkit-backdrop-filter: blur(20px) saturate(1.45);
+  backdrop-filter: blur(20px) saturate(1.45);
+}
+
+body.mp-wiki-mode .class-menu-main img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+body.mp-wiki-mode .class-menu-main a { color: var(--w-accent); }
+
+body.mp-wiki-mode .class-menu-main h1,
+body.mp-wiki-mode .class-menu-main h2,
+body.mp-wiki-mode .class-menu-main h3,
+body.mp-wiki-mode .class-menu-main h4,
+body.mp-wiki-mode .class-menu-main strong {
+  color: var(--w-ink);
+}
+
+body.mp-wiki-mode .class-menu-main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+}
+
+body.mp-wiki-mode .class-menu-main td,
+body.mp-wiki-mode .class-menu-main th {
+  border: 1px solid var(--w-hair);
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+/* 下载 tab 里的资源卡片（原站 .download-* 系列），深色下别留白底 */
+body.mp-wiki-mode .class-menu-main .download-block,
+body.mp-wiki-mode .class-menu-main .download-item,
+body.mp-wiki-mode .class-menu-main .block {
+  background: var(--w-card-2) !important;
+  border: 1px solid var(--w-hair) !important;
+  border-radius: 12px;
+}
+
+/* ---------------- 断点 ---------------- */
+
+@media (max-width: 980px) {
+  body.mp-wiki-mode .center {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* 窄屏把侧栏挪到正文下面，先看介绍再看投票 */
+  body.mp-wiki-mode .center > .left { order: 2; }
+  body.mp-wiki-mode .center > .right { order: 1; }
+}

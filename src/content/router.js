@@ -71,7 +71,23 @@ MP.router = (function () {
   }
 
   // 已定稿的页面不受「结构重绘（实验）」开关限制；其余先留门控。
-  const STABLE_PAGES = ['item'];
+  const STABLE_PAGES = ['item', 'klass', 'modpack', 'category'];
+
+  /** 把当前页恢复成原站视图。各页的 unmount 自己负责撤宿主 / 解除隐藏 / 收外壳。 */
+  function restoreCurrentPage() {
+    const key = currentPageModule();
+    if (!key) return false;
+    const mod = MP.pages && MP.pages[key];
+    try {
+      if (mod && typeof mod.unmount === 'function') {
+        mod.unmount();
+        return true;
+      }
+    } catch (e) {
+      console.warn('[MCMod+] 恢复原始视图失败', key, e);
+    }
+    return false;
+  }
 
   function tryMountPage() {
     const key = currentPageModule();
@@ -141,8 +157,8 @@ MP.router = (function () {
         ? h('pre', { class: 'mp-debug-pre' }, JSON.stringify(data.items.slice(0, 3), (k, v) => (k === 'raw' ? undefined : v), 2))
         : null,
       h('div', { class: 'mp-debug-actions' },
-        pageKey ? MP.ui.button('重新重绘', { onclick: () => { MP.shell.restore(); tryMountPage(); } }) : null,
-        pageKey ? MP.ui.button('恢复原始视图', { onclick: () => MP.shell.restore() }) : null,
+        pageKey ? MP.ui.button('重新重绘', { onclick: () => { restoreCurrentPage(); tryMountPage(); } }) : null,
+        pageKey ? MP.ui.button('恢复原始视图', { onclick: () => restoreCurrentPage() }) : null,
         isSearchHost() ? MP.ui.button('重新重绘', { onclick: () => MP.pages.search.mount(settings) }) : null,
         isSearchHost() ? MP.ui.button('恢复原始视图', { onclick: () => MP.pages.search.restore(document.querySelector('.search-result-list')) }) : null,
         MP.ui.button('切换主题', { onclick: () => { MP.theme.cycle(); } }),
@@ -171,11 +187,12 @@ MP.router = (function () {
     if (!settings.enabled) {
       document.querySelectorAll('link[data-mp-style]').forEach((l) => l.remove());
       try { if (MP.pages.home && MP.pages.home.unmount) MP.pages.home.unmount(); } catch (e) { /* ignore */ }
-      try { if (MP.shell) MP.shell.restore(); } catch (e) { /* ignore */ }
+      try { restoreCurrentPage(); } catch (e) { /* ignore */ }
     } else {
       MP.theme.injectCore();
       try {
-        if (MP.shell && !settings.redrawPages) MP.shell.restore();
+        const key = currentPageModule();
+        if (key && STABLE_PAGES.indexOf(key) < 0 && !settings.redrawPages) restoreCurrentPage();
         restyleAll();
       } catch (e) { console.warn('[MCMod+] 重绘失败', e); }
     }

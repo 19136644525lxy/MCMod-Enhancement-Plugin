@@ -1,0 +1,194 @@
+/* 分类页（/class/category/{cat}-{page}.html）专属版式。旧模板，结构和其他页不同。
+ * 通用件在 wiki.css；这里管卡片网格、榜单、以及保留的原生「模组元素」区换肤。
+ */
+
+/* .main 自带宽度，这里不要再套 max-width，否则和上方元素列表错位 */
+.mp-category-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------------- 卡片网格 ---------------- */
+
+.mp-ct-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
+  gap: 14px;
+}
+
+.mp-ct-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .2s var(--w-ease), box-shadow .2s var(--w-ease);
+}
+
+.mp-ct-card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(40, 32, 24, .16); }
+
+.mp-ct-cover {
+  aspect-ratio: 170 / 115;
+  background: var(--w-card-2);
+  overflow: hidden;
+}
+
+.mp-ct-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.mp-ct-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: var(--w-ink-3);
+}
+
+.mp-ct-body { padding: 10px 12px 12px; min-width: 0; }
+
+.mp-ct-name {
+  font-size: 13.5px;
+  font-weight: 650;
+  color: var(--w-ink);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+
+.mp-ct-card:hover .mp-ct-name { color: var(--w-accent); }
+
+.mp-ct-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--w-ink-3);
+}
+
+.mp-ct-stats .mp-hero-stat b { font-size: 12.5px; }
+
+/* 卡片里那排物品小图标，比侧栏的紧凑一档 */
+.mp-ct-body .mp-icon-list {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.mp-ct-body .mp-icon-img,
+.mp-ct-body .mp-icon-ph { width: 26px; height: 26px; font-size: 11px; }
+
+.mp-ct-body .mp-icon-name { display: none; }
+
+/* ---------------- 榜单 ---------------- */
+
+.mp-ct-ranks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.mp-ct-rank { border-radius: var(--w-radius); padding: 14px 16px 16px; }
+
+.mp-ct-rank-title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--w-ink);
+}
+
+.mp-ct-rank-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: mp-rank;
+}
+
+.mp-ct-rank-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 12.5px;
+  color: var(--w-ink-2);
+  border-bottom: 1px solid var(--w-hair);
+}
+
+.mp-ct-rank-list li:last-child { border-bottom: 0; }
+
+.mp-ct-rank-no {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--w-card-2);
+  color: var(--w-ink-3);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mp-ct-rank-list li:nth-child(1) .mp-ct-rank-no { background: var(--w-accent); color: #fff; }
+.mp-ct-rank-list li:nth-child(2) .mp-ct-rank-no { background: var(--w-accent-soft); color: var(--w-accent); }
+.mp-ct-rank-list li:nth-child(3) .mp-ct-rank-no { background: var(--w-accent-soft); color: var(--w-accent); }
+
+.mp-ct-rank-list a {
+  color: var(--w-ink-2);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-ct-rank-list a:hover { color: var(--w-accent); }
+
+/* ---------------- 保留的原生「模组元素」区 ---------------- */
+
+/* 原站用白底 + 浅灰边框画分隔，在深色下是一整块白板。 */
+body.mp-wiki-mode .center > .main > .class_block {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body.mp-wiki-mode .center > .main > .class_block .left > .title {
+  background: none !important;
+  color: var(--w-ink);
+  border-bottom: 1px solid var(--w-hair);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+body.mp-wiki-mode .center > .main > .class_block .left > .title .text {
+  color: var(--w-ink-3);
+  font-size: 12px;
+}
+
+body.mp-wiki-mode .class_category ul { margin: 0; padding: 0; }
+
+body.mp-wiki-mode .class_category li,
+body.mp-wiki-mode .class_category li a {
+  color: var(--w-ink-2);
+  font-size: 12.5px;
+}
+
+body.mp-wiki-mode .class_category a:hover { color: var(--w-accent); }
+
+/* 元素列表里的小方块（原站用来表示分类色块）保持原样，只压一层圆角 */
+body.mp-wiki-mode .class_category li { border-radius: 6px; }
+
+/* ---------------- 断点 ---------------- */
+
+@media (max-width: 720px) {
+  .mp-ct-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .mp-ct-ranks { grid-template-columns: minmax(0, 1fr); }
+}

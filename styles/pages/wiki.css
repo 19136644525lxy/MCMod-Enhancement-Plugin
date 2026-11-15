@@ -1,0 +1,553 @@
+/* wiki 页共享层：模组页（/class/{id}.html）、整合包检索（/modpack.html）、
+ * 分类页（/class/category/{cat}-{page}.html）三页共用。
+ *
+ * 变量前缀 --w-，与搜索页 --s-、个人主页 --c-、物品页 --i-、首页默认前缀分开，
+ * 各自定义互不污染。
+ *
+ * 这里只放「三页都要」的东西：主题变量、背景、毛玻璃、面板、键值表、胶囊、
+ * 图标网格、分页、顶栏换皮、右侧抽屉。页面特有的版式放各自 css。
+ */
+
+body.mp-wiki-mode {
+  --w-card: rgba(255, 255, 255, .8);
+  --w-card-2: rgba(255, 255, 255, .56);
+  --w-ink: #26231f;
+  --w-ink-2: #55504a;
+  --w-ink-3: #857f75;
+  --w-hair: rgba(38, 35, 31, .08);
+  --w-accent: #2f6f4f;
+  --w-accent-2: #57b98a;
+  --w-accent-soft: rgba(47, 111, 79, .13);
+  --w-radius: 18px;
+  --w-shadow: 0 8px 28px rgba(40, 32, 24, .09);
+  --w-dur: .34s;
+  --w-ease: cubic-bezier(.16, 1, .3, 1);
+
+  /* 晨雾是纯 CSS 渐变（不画 canvas），页面必须自己铺一层；
+     只写 background-color 的话看起来等于没背景。 */
+  --mp-bg-base: #f3f1ec;
+  --mp-spot-a: rgba(87, 185, 138, .16);
+  --mp-spot-b: rgba(214, 168, 96, .14);
+  --mp-spot-c: rgba(120, 140, 200, .10);
+
+  background-color: var(--mp-bg-base) !important;
+  background-image:
+    radial-gradient(1200px 600px at 15% -10%, var(--mp-spot-a), transparent 60%),
+    radial-gradient(900px 500px at 95% 5%, var(--mp-spot-b), transparent 55%),
+    radial-gradient(700px 600px at 50% 100%, var(--mp-spot-c), transparent 60%);
+  background-repeat: no-repeat;
+  color: var(--w-ink);
+}
+
+html[data-mp-theme="dark"] body.mp-wiki-mode {
+  --w-card: rgba(30, 28, 24, .78);
+  --w-card-2: rgba(30, 28, 24, .56);
+  --w-ink: #ece9e3;
+  --w-ink-2: #bdb7ac;
+  --w-ink-3: #8d877c;
+  --w-hair: rgba(255, 255, 255, .1);
+  --w-accent: #57b98a;
+  --w-accent-2: #7ed0a5;
+  --w-accent-soft: rgba(87, 185, 138, .15);
+  --w-shadow: 0 10px 32px rgba(0, 0, 0, .42);
+
+  --mp-bg-base: #14130f;
+  --mp-spot-a: rgba(87, 185, 138, .13);
+  --mp-spot-b: rgba(214, 168, 96, .09);
+  --mp-spot-c: rgba(120, 140, 200, .08);
+}
+
+/* 系统深色 + 用户没手动选浅色时同样生效。
+   这个 :not 分支三页所有深色规则都要写，漏了就会出现「系统深色但页面还是白的」。 */
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-wiki-mode {
+    --w-card: rgba(30, 28, 24, .78);
+    --w-card-2: rgba(30, 28, 24, .56);
+    --w-ink: #ece9e3;
+    --w-ink-2: #bdb7ac;
+    --w-ink-3: #8d877c;
+    --w-hair: rgba(255, 255, 255, .1);
+    --w-accent: #57b98a;
+    --w-accent-2: #7ed0a5;
+    --w-accent-soft: rgba(87, 185, 138, .15);
+    --w-shadow: 0 10px 32px rgba(0, 0, 0, .42);
+
+    --mp-bg-base: #14130f;
+    --mp-spot-a: rgba(87, 185, 138, .13);
+    --mp-spot-b: rgba(214, 168, 96, .09);
+    --mp-spot-c: rgba(120, 140, 200, .08);
+  }
+}
+
+body.mp-wiki-mode .mp-origin-hidden {
+  display: none !important;
+}
+
+body.mp-wiki-mode .mp-glass {
+  background: var(--w-card);
+  border: 1px solid var(--w-hair);
+  box-shadow: var(--w-shadow);
+  -webkit-backdrop-filter: blur(20px) saturate(1.45);
+  backdrop-filter: blur(20px) saturate(1.45);
+}
+
+/* 原站 .common-center 自带白底 + 5px 白边框（当留白用），
+   不清掉重绘区会浮在一块白板上。只清背景不动布局。 */
+body.mp-wiki-mode .common-frame,
+body.mp-wiki-mode .common-center,
+body.mp-wiki-mode .center,
+body.mp-wiki-mode .center-frame {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.mp-wiki-mode footer {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/* ---------------- 页面骨架 ---------------- */
+
+.mp-wiki-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 20px 90px;
+  position: relative;
+  z-index: 1;
+  animation: mp-w-in var(--w-dur) var(--w-ease) both;
+}
+
+@keyframes mp-w-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.mp-wiki-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--w-ink-3);
+}
+
+.mp-wiki-crumb { white-space: nowrap; }
+.mp-wiki-crumb + .mp-wiki-crumb::before { content: '/'; margin-right: 6px; opacity: .5; }
+.mp-wiki-crumb.is-here { color: var(--w-ink-2); }
+
+/* ---------------- hero ---------------- */
+
+.mp-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px 22px;
+  border-radius: var(--w-radius);
+  margin-bottom: 18px;
+}
+
+.mp-hero-cover {
+  flex: none;
+  width: 180px;
+  height: 180px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--w-card-2);
+  border: 1px solid var(--w-hair);
+}
+
+.mp-hero-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.mp-hero-main { flex: 1 1 auto; min-width: 0; }
+
+.mp-hero-title {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--w-ink);
+  overflow-wrap: anywhere;
+}
+
+.mp-hero-sub {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--w-ink-3);
+  overflow-wrap: anywhere;
+}
+
+.mp-hero-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+.mp-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--w-ink-3);
+}
+
+.mp-hero-stat b {
+  font-size: 15px;
+  color: var(--w-ink);
+  font-variant-numeric: tabular-nums;
+  margin-right: 3px;
+}
+
+.mp-hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
+.mp-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--w-hair);
+  background: var(--w-card-2);
+  color: var(--w-ink-2);
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+
+.mp-action:hover { background: var(--w-accent); border-color: var(--w-accent); color: #fff; }
+
+/* ---------------- 面板 ---------------- */
+
+.mp-panel {
+  border-radius: var(--w-radius);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.mp-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--w-hair);
+}
+
+.mp-panel-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--w-ink);
+  letter-spacing: .01em;
+}
+
+.mp-panel-aside { margin-left: auto; font-size: 12px; color: var(--w-ink-3); }
+.mp-panel-body { padding: 16px 18px 18px; }
+
+/* ---------------- 键值表 ---------------- */
+
+.mp-kv {
+  display: grid;
+  grid-template-columns: minmax(88px, max-content) minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.mp-kv dt { color: var(--w-ink-3); }
+.mp-kv dd { margin: 0; color: var(--w-ink); overflow-wrap: anywhere; }
+.mp-kv a { color: var(--w-accent); text-decoration: none; }
+.mp-kv a:hover { text-decoration: underline; }
+
+/* ---------------- 胶囊 ---------------- */
+
+.mp-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.mp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  border: 1px solid var(--w-hair);
+  background: var(--w-card-2);
+  color: var(--w-ink-2);
+  font-size: 12px;
+  line-height: 1;
+  text-decoration: none;
+  transition: background .16s ease, color .16s ease, border-color .16s ease;
+}
+
+.mp-chip:hover { background: var(--w-accent-soft); color: var(--w-accent); border-color: transparent; }
+.mp-chip-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mp-chip-count { font-size: 11px; color: var(--w-ink-3); font-variant-numeric: tabular-nums; }
+.mp-chip.is-ok { background: rgba(87, 185, 138, .16); color: #2f6f4f; border-color: transparent; }
+.mp-chip.is-info { background: rgba(74, 134, 200, .14); color: #2f5d8a; border-color: transparent; }
+.mp-chip.is-out { background: var(--w-accent); color: #fff; border-color: transparent; }
+
+html[data-mp-theme="dark"] body.mp-wiki-mode .mp-chip.is-ok { color: #7ed0a5; }
+html[data-mp-theme="dark"] body.mp-wiki-mode .mp-chip.is-info { color: #8fb8e0; }
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-wiki-mode .mp-chip.is-ok { color: #7ed0a5; }
+  html:not([data-mp-theme="light"]) body.mp-wiki-mode .mp-chip.is-info { color: #8fb8e0; }
+}
+
+/* ---------------- 图标网格 ---------------- */
+
+.mp-icon-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 10px 6px;
+}
+
+.mp-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 2px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background .16s ease;
+}
+
+.mp-icon-item:hover { background: var(--w-accent-soft); }
+
+.mp-icon-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: auto;
+  border-radius: 8px;
+}
+
+.mp-icon-list.is-round .mp-icon-img { border-radius: 50%; }
+
+.mp-icon-ph {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--w-card-2);
+  color: var(--w-ink-3);
+  font-size: 15px;
+}
+
+.mp-icon-name {
+  max-width: 100%;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--w-ink-3);
+  text-align: center;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+
+/* ---------------- 分页 ---------------- */
+
+.mp-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.mp-pager a,
+.mp-pager span {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--w-hair);
+  background: var(--w-card-2);
+  color: var(--w-ink-2);
+  font-size: 12.5px;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.mp-pager a:hover { background: var(--w-accent-soft); color: var(--w-accent); }
+.mp-pager .is-on { background: var(--w-accent); border-color: var(--w-accent); color: #fff; }
+.mp-pager .is-gap { border: 0; background: none; color: var(--w-ink-3); }
+
+/* ---------------- 杂项 ---------------- */
+
+.mp-muted { color: var(--w-ink-3); font-size: 13px; }
+
+.mp-prose {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--w-ink-2);
+  overflow-wrap: anywhere;
+}
+
+.mp-prose img { max-width: 100%; height: auto; border-radius: 8px; }
+.mp-prose a { color: var(--w-accent); }
+.mp-prose h1, .mp-prose h2, .mp-prose h3, .mp-prose h4 { color: var(--w-ink); line-height: 1.4; }
+.mp-prose table { width: 100%; border-collapse: collapse; }
+.mp-prose td, .mp-prose th { border: 1px solid var(--w-hair); padding: 6px 8px; }
+
+/* ---------------- 顶栏换皮 ----------------
+ * 只动颜色和排布，不动 position / overflow / z-index ——
+ * .header-container 本来就是 fixed + z-index 1000，动了会断 hover 和下拉。
+ */
+
+body.mp-wiki-mode .header-container {
+  background: rgba(250, 249, 246, .96) !important;
+  border-bottom: 1px solid var(--w-hair) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+}
+
+html[data-mp-theme="dark"] body.mp-wiki-mode .header-container {
+  background: rgba(24, 23, 20, .96) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-wiki-mode .header-container {
+    background: rgba(24, 23, 20, .96) !important;
+  }
+}
+
+body.mp-wiki-mode .header-container .header-frame,
+body.mp-wiki-mode .header-container .header-menu,
+body.mp-wiki-mode .header-container .header-logo { background: transparent !important; }
+
+body.mp-wiki-mode .header-container .header-menu-item,
+body.mp-wiki-mode .header-container .header-user,
+body.mp-wiki-mode .header-container .header-user a { color: var(--w-ink-2) !important; }
+
+body.mp-wiki-mode .header-container .header-menu-item:hover,
+body.mp-wiki-mode .header-container a:hover { color: var(--w-accent) !important; }
+
+/* 右侧原来是 float，塞进齿轮和日夜开关后会换行掉到第二排。 */
+body.mp-wiki-mode .header-container .header-right {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  float: right;
+}
+
+body.mp-wiki-mode .header-container .header-right > * { flex: none; }
+
+body.mp-wiki-mode .header-container .header-layer {
+  background: var(--w-card) !important;
+  border-color: var(--w-hair) !important;
+  box-shadow: var(--w-shadow) !important;
+}
+
+body.mp-wiki-mode .header-container .header-search form {
+  border-radius: 999px;
+  border-color: var(--w-hair);
+  background: var(--w-card-2);
+}
+
+/* ---------------- 右侧抽屉 ----------------
+ * 与搜索页 / 物品页同款；bottom 344px 是为了避开原站右下角 126×280 的 #backTop。
+ */
+
+.mp-fab-bar {
+  position: fixed;
+  right: 0;
+  bottom: 344px;
+  z-index: 2147482000;
+  display: flex;
+  align-items: center;
+  transition: transform .3s var(--w-ease);
+}
+
+.mp-fab-handle {
+  width: 28px;
+  height: 56px;
+  padding: 0;
+  border: 1px solid var(--w-hair);
+  border-right: 0;
+  border-radius: 50% 0 0 50% / 50% 0 0 50%;
+  background: var(--w-card);
+  color: var(--w-ink-2);
+  box-shadow: -2px 0 12px rgba(30, 24, 18, .1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+}
+
+.mp-fab-handle:hover { background: var(--w-accent); color: #fff; border-color: transparent; }
+.mp-fab-handle:focus { outline: none; }
+.mp-fab-handle:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 2px; }
+
+.mp-fab-sheet {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--w-card);
+  border: 1px solid var(--w-hair);
+  box-shadow: var(--w-shadow);
+  transform: translate(calc(100% + 12px), -50%) scale(.88);
+  transform-origin: right center;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .44s cubic-bezier(.34, 1.56, .64, 1), opacity .2s ease;
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+}
+
+.mp-fab-bar.is-open .mp-fab-sheet { transform: translate(0, -50%) scale(1); opacity: 1; pointer-events: auto; }
+
+.mp-fab {
+  white-space: nowrap;
+  flex: none;
+  min-width: 52px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--w-ink-2);
+  font-size: 12px;
+  letter-spacing: .4px;
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease;
+}
+
+.mp-fab:hover { background: var(--w-accent-soft); color: var(--w-accent); }
+.mp-fab.is-on { background: var(--w-accent); color: #fff; }
+.mp-fab-icon { min-width: 34px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* ---------------- 断点 ---------------- */
+
+@media (max-width: 900px) {
+  .mp-hero { flex-direction: column; }
+  .mp-hero-cover { width: 120px; height: 120px; }
+  .mp-kv { grid-template-columns: minmax(76px, max-content) minmax(0, 1fr); }
+  .mp-fab-bar { bottom: 200px; }
+}
+
+@media (max-width: 720px) {
+  .mp-wiki-page { padding: 16px 12px 70px; }
+  .mp-panel-head, .mp-panel-body { padding-left: 14px; padding-right: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-wiki-page { animation: none; }
+  .mp-fab-sheet { transition: none; }
+}
