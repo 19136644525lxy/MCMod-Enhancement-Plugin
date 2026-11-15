@@ -87,14 +87,33 @@
 
     var links = [];
     Array.prototype.forEach.call(infoEl ? infoEl.querySelectorAll('.common-link-frame a') : [], function (a) {
-      // 原站的相关链接图标是内联 <svg><use href="#common-icon-xxx">，
-      // 不是 <img>，所以 icon 基本永远是空，真正要用的是下面这段 svg 源码。
+      // 原站的相关链接图标是内联 <svg><use href="#common-icon-xxx">，不是 <img>。
+      // 但外层 <svg> 没有 viewBox，而 symbol 的 viewBox 是 0 0 1024 1024，
+      // 直接引用会按 1024 用户单位画进 18px 的框里，只剩中间一条（看起来像竖条）。
+      // 所以这里把 symbol 的路径抠出来，拼成带 viewBox 的完整 svg 再渲染。
       var svgEl = a.querySelector('svg');
+      var svg = '';
+      if (svgEl) {
+        var useEl = svgEl.querySelector('use');
+        var href = useEl
+          ? (useEl.getAttribute('xlink:href') || useEl.getAttribute('href') || '')
+          : '';
+        var symId = href.replace(/^#/, '');
+        var sym = symId ? doc.getElementById(symId) : null;
+        if (sym) {
+          svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' +
+            (sym.getAttribute('viewBox') || '0 0 24 24') +
+            '" preserveAspectRatio="xMidYMid meet" fill="currentColor" aria-hidden="true">' +
+            sym.innerHTML + '</svg>';
+        } else {
+          svg = svgEl.outerHTML;
+        }
+      }
       links.push({
         label: a.getAttribute('data-original-title') || T(a),
         href: a.getAttribute('href') || '',
         icon: a.querySelector('img') ? iconOf(a.querySelector('img')) : '',
-        svg: svgEl ? svgEl.outerHTML : ''
+        svg: svg
       });
     });
 

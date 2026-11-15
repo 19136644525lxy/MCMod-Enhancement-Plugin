@@ -317,6 +317,8 @@ body.mp-wiki-mode .class-card .text-block span {
 .mp-link-ico svg {
   width: 18px;
   height: 18px;
+  display: block;
+  flex: none;
   fill: currentColor;
   color: inherit;
 }
