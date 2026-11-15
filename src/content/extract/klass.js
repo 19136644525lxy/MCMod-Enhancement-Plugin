@@ -11,16 +11,54 @@
   function A(href) { return href ? MP.dom.absUrl(href) : ''; }
   function iconOf(img) { return img ? A(img.getAttribute('src')) : ''; }
 
-  function splitKV(text) {
+  function splitKV(text, el) {
     var m = String(text || '').match(/^([^：:]{2,10})\s*[：:]\s*([\s\S]*)$/);
     if (!m) return null;
     var value = m[2].replace(/显示更多成员|收起|展开/g, '').replace(/\s{2,}/g, ' ').trim();
     var key = m[1].trim();
     if (key === '支持的MC版本') {
+      // 纯文本只能拿到「NeoForge (共 12 个版本)」这种计数，具体版本号是链接，
+      // 必须回到 DOM 里抓 .platform-block。抓不到就退回摘要文本。
+      var versions = el ? parseVersions(el) : [];
       var summary = summarizeVersions(value);
+      if (versions.length) return { key: key, value: summary || value, versions: versions };
       return { key: key, value: summary || value, raw: value };
     }
     return { key: key, value: value };
+  }
+
+  /**
+   * 「支持的MC版本」在原站是一组 platform-block，块内 title / row 交替出现：
+   *   .mcver-title   loader 名 + (共 N 个版本)
+   *   .mcver-row     > .mcver-dropdown > ul.mcver-menu > li > a.dropdown-item
+   * 一个块里可能有多组（NeoForge 后面紧跟 Forge），所以要按顺序切段，
+   * 不能只取第一个 title 配所有链接 —— 否则 Forge 的版本会算进 NeoForge。
+   */
+  function parseVersions(li) {
+    var out = [];
+    Array.prototype.forEach.call(li.querySelectorAll('.platform-block'), function (block) {
+      var cur = null;
+      Array.prototype.forEach.call(block.children, function (child) {
+        if (child.classList.contains('mcver-title')) {
+          var totalEl = child.querySelector('.total');
+          cur = {
+            loader: T(child).replace(/\([^)]*\)/g, '').replace(/[：:]\s*$/, '').trim() || '版本',
+            total: totalEl ? (T(totalEl).match(/\d+/) || [''])[0] : '',
+            items: []
+          };
+          out.push(cur);
+          return;
+        }
+        if (child.classList.contains('mcver-row') && cur) {
+          Array.prototype.forEach.call(child.querySelectorAll('a.dropdown-item'), function (a) {
+            var label = T(a).trim();
+            var href = A(a.getAttribute('href'));
+            if (label && href) cur.items.push({ label: label, href: href });
+          });
+        }
+      });
+    });
+    return out.filter(function (g) { return g.items.length > 0; });
   }
 
   /** 「NeoForge (共 12 个版本):1.21.x(12)1.21.1…」→「NeoForge 12 个 · Forge 5 个」 */
@@ -75,7 +113,7 @@
     if (infoEl) {
       Array.prototype.forEach.call(infoEl.querySelectorAll(':scope > .class-info-left > ul > li'), function (li) {
         if (li.classList.contains('tag')) return;
-        var kv = splitKV(T(li));
+        var kv = splitKV(T(li), li);
         if (kv) info.push(kv);
       });
     }

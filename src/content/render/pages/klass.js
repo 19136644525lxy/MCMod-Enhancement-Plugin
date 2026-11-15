@@ -44,11 +44,37 @@
     );
   }
 
+  /**
+   * 「支持的MC版本」：原站是一组折叠下拉，这里平铺成一行行版本胶囊，
+   * 直接链到 /modlist.html?api=&mcver= 的版本检索页（不依赖站点 bootstrap JS）。
+   */
+  function verGroup(g) {
+    return h('div', { class: 'mp-ver-group' },
+      h('span', { class: 'mp-ver-loader' },
+        g.loader,
+        g.total ? h('span', { class: 'mp-ver-total' }, '共 ' + g.total + ' 个') : null
+      ),
+      h('span', { class: 'mp-ver-list' }, g.items.map(function (v) {
+        return h('a', {
+          class: 'mp-ver-chip',
+          href: v.href,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          title: '在版本检索里查看 ' + v.label
+        }, v.label);
+      }))
+    );
+  }
+
   function kv(rows) {
     var kids = [];
     rows.forEach(function (r) {
       kids.push(h('dt', null, r.key));
-      kids.push(h('dd', null, r.value || '—'));
+      if (r.versions && r.versions.length) {
+        kids.push(h('dd', { class: 'is-vers' }, r.versions.map(verGroup)));
+      } else {
+        kids.push(h('dd', null, r.value || '—'));
+      }
     });
     return h('dl', { class: 'mp-kv' }, kids);
   }

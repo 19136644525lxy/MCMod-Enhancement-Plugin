@@ -258,6 +258,35 @@ body.mp-wiki-mode footer {
 .mp-kv a { color: var(--w-accent); text-decoration: none; }
 .mp-kv a:hover { text-decoration: underline; }
 
+/* 「支持的MC版本」：loader 分组 + 版本胶囊，链到 /modlist.html?api=&mcver= */
+.mp-kv dd.is-vers { padding: 2px 0 4px; }
+.mp-ver-group { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+.mp-ver-group:last-child { margin-bottom: 0; }
+.mp-ver-loader { flex: none; font-size: 12px; color: var(--w-ink-3); }
+.mp-ver-total { margin-left: 4px; opacity: .8; }
+.mp-ver-list { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.mp-kv .mp-ver-chip {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--w-ink-2);
+  background: var(--w-card-2);
+  border: 1px solid var(--w-hair);
+  text-decoration: none;
+  transition: background-color .16s ease, color .16s ease, border-color .16s ease;
+}
+.mp-kv .mp-ver-chip:hover {
+  background: var(--w-accent);
+  border-color: var(--w-accent);
+  color: #fff;
+  text-decoration: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mp-kv .mp-ver-chip { transition: none; }
+}
+
 /* ---------------- 胶囊 ---------------- */
 
 .mp-chips { display: flex; flex-wrap: wrap; gap: 7px; }
