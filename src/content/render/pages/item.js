@@ -15,7 +15,7 @@
     return MP.dom.h.apply(null, [tag].concat(Array.prototype.slice.call(arguments, 1)));
   }
 
-  var HIDE_SEL = '.common-center > .common-nav, .common-center > .center, .common-center > .right';
+  var HIDE_SEL = '.common-center > .common-nav, .right > .item-row';
   var HOST_ID = 'mp-item-host';
   var hidden = [];
   var chrome = null;
@@ -24,6 +24,7 @@
   /* ---------------- 小组件 ---------------- */
 
   function panel(title, body, aside) {
+    if (aside && aside.aside) aside = aside.aside;
     return h('section', { class: 'mp-panel mp-glass' },
       h('header', { class: 'mp-panel-head' },
         h('h2', { class: 'mp-panel-title' }, title),
@@ -156,6 +157,13 @@
         ),
         stats.length ? h('div', { class: 'mp-i-stats' }, stats) : null
       ),
+      (d.actions && d.actions.length)
+        ? h('div', { class: 'mp-i-actions' },
+            d.actions.map(function (a) {
+              return h('a', { class: 'mp-i-action', href: a.href, target: '_blank', rel: 'noopener' }, a.label);
+            })
+          )
+        : null,
       d.give ? giveBar(d.give) : null
     );
 
@@ -182,19 +190,10 @@
       main.push(panel('暂无内容', h('p', { class: 'mp-muted' }, '没从页面里解析到物品数据，可以切回「原始」看原站页面。')));
     }
 
-    var side = [];
-    (d.related || []).forEach(function (group) {
-      if (!group.list.length) return;
-      side.push(panel(group.title, iconList(group.list, {
-        round: /编辑|浏览|参与/.test(group.title)
-      }), { aside: h('span', { class: 'mp-panel-aside' }, group.list.length + '') }));
-    });
-
     return h('div', { id: HOST_ID, class: 'mp-item-page' },
       hero,
       h('div', { class: 'mp-i-body' },
-        h('div', { class: 'mp-i-main' }, main),
-        side.length ? h('aside', { class: 'mp-i-side' }, side) : null
+        h('div', { class: 'mp-i-main' }, main)
       )
     );
   }
@@ -229,7 +228,11 @@
       hidden.push(el);
     });
 
-    anchor.insertBefore(build(d), anchor.firstChild);
+    // 插在 .right 里，而不是 .common-center 的直接子级：
+    // .common-center 现在是两列网格（左列原生侧栏 / 右列重绘内容），
+    // 宿主如果直接挂在 .common-center 下会多出一列把布局挤散。
+    var rightBox = anchor.querySelector(':scope > .right') || anchor;
+    rightBox.insertBefore(build(d), rightBox.firstChild);
 
     fab = MP.pageChrome.fab({
       id: 'mp-item-fab',

@@ -142,6 +142,17 @@
       crumbs.push(t);
     });
 
+    // 原站的操作入口：编辑 / 加合成表 / 查看合成用途。
+    // 这些是写操作，不接管，但入口要留在页面上，否则用户必须切回原始视图才能点。
+    var actions = [];
+    Array.prototype.forEach.call(main.querySelectorAll('.itemname .tool a'), function (a) {
+      actions.push({ label: T(a).trim(), href: A(a.getAttribute('href')) });
+    });
+    var tabLink = main.querySelector('.item-info-table .common-icon-text a');
+    if (tabLink) {
+      actions.push({ label: T(tabLink).trim() || '查看合成/用途', href: A(tabLink.getAttribute('href')) });
+    }
+
     // 简介正文在 .item-content 里（原站「简介」那一块），之前漏掉了
     var contentEl = main.querySelector('.item-content');
     var desc = contentEl ? contentEl.innerHTML : '';
@@ -166,6 +177,7 @@
       recommend: recommend,
       like: like,
       desc: desc,
+      actions: actions,
       crumbs: crumbs
     };
   };

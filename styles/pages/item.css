@@ -842,3 +842,124 @@ html[data-mp-theme="dark"] body.mp-item-mode .header-frame {
   #mp-item-fab .mp-fab-sheet,
   body.mp-item-mode .mp-gear-btn { animation: none !important; transition: none !important; }
 }
+
+/* ── 两列：原生侧栏 / 重绘主内容 ──────────────────────────────
+   原站 .center 和 .right 都是 float + 固定宽度，直接叠加在网格里会错位。 */
+body.mp-item-mode .common-center {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+body.mp-item-mode .common-center > .center,
+body.mp-item-mode .common-center > .right {
+  float: none !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.mp-item-mode .common-center > .center > .left {
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 原生侧栏的每个小块都换成玻璃卡 */
+body.mp-item-mode .center > .left > ul,
+body.mp-item-mode .center > .left > div {
+  background: var(--i-card);
+  border: 1px solid var(--i-hair);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 0 0 12px;
+  color: var(--i-ink-2);
+  font-size: 12.5px;
+  box-sizing: border-box;
+}
+
+body.mp-item-mode .center > .left > *:last-child { margin-bottom: 0; }
+
+body.mp-item-mode .center > .left .title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--i-ink);
+  margin-bottom: 8px;
+}
+
+body.mp-item-mode .center > .left .more {
+  font-size: 11.5px;
+  color: var(--i-ink-3);
+  font-weight: 400;
+}
+
+body.mp-item-mode .center > .left li,
+body.mp-item-mode .center > .left a {
+  color: var(--i-ink-2) !important;
+}
+
+body.mp-item-mode .center > .left a:hover { color: var(--i-accent) !important; }
+
+body.mp-item-mode .center > .left img {
+  border-radius: 6px;
+  background: transparent;
+}
+
+body.mp-item-mode .center > .left .common-imglist-block ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 6px;
+  margin: 0;
+}
+
+body.mp-item-mode .center > .left .common-imglist-block li {
+  text-align: center;
+  font-size: 11px;
+  overflow: hidden;
+}
+
+body.mp-item-mode .center > .left .common-imglist-block li img {
+  display: block;
+  margin: 0 auto 4px;
+  width: 32px;
+  height: 32px;
+}
+
+/* 正文变单栏（侧栏已经由原生 DOM 承担） */
+body.mp-item-mode .mp-i-body {
+  display: block;
+}
+
+/* hero 里的原站操作入口：编辑 / 加合成表 / 查看合成用途 */
+body.mp-item-mode .mp-i-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+body.mp-item-mode .mp-i-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--i-hair);
+  background: var(--i-card-soft);
+  color: var(--i-ink-2);
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+
+body.mp-item-mode .mp-i-action:hover {
+  background: var(--i-accent);
+  border-color: transparent;
+  color: #fff;
+  text-decoration: none;
+}
