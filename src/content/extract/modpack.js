@@ -79,7 +79,12 @@
   }
 
   MP.extract = MP.extract || {};
-  MP.extract.modpack = function (doc) {
+  /**
+   * 检索页抽取器，/modpack.html 与 /modlist.html 共用。
+   * 两页的 DOM 完全同构（.modlist-frame > 筛选 + 列表 + 分页），只有语义不同，
+   * 所以 kind 由调用方传入，用于文案与调试。
+   */
+  MP.extract.modpack = function (doc, kind) {
     var frame = doc.querySelector('.modlist-frame');
     if (!frame) return { ok: false, reason: 'no-modlist-frame' };
 
@@ -103,7 +108,7 @@
     var p = pager(doc);
     return {
       ok: true,
-      kind: 'modpack',
+      kind: kind || 'modpack',
       url: p.url,
       crumbs: crumbs(doc),
       cards: cards,

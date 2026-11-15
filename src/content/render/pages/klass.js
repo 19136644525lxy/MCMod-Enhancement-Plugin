@@ -151,7 +151,7 @@
       d.cover ? h('div', { class: 'mp-hero-cover' }, h('img', { src: d.cover, alt: '', loading: 'lazy' })) : null,
       h('div', { class: 'mp-hero-main' },
         crumbs,
-        h('h1', { class: 'mp-hero-title' }, d.title || '模组'),
+        h('h1', { class: 'mp-hero-title' }, d.title || (d.kind === 'modpack' ? '整合包' : '模组')),
         (d.badges || []).length ? h('div', { class: 'mp-hero-badges' }, d.badges.map(badgeOf)) : null,
         (d.categories || []).length
           ? h('div', { class: 'mp-hero-cats mp-chips' }, d.categories.map(chipOf))
@@ -189,12 +189,17 @@
     return !!document.getElementById(HOST_ID);
   }
 
+  function isModpackDetail() {
+    return /^\/modpack\/\d+\.html$/i.test(window.location.pathname || '');
+  }
+
   function mount(settings) {
     if (isEnhanced()) return true;
 
-    var d = MP.extract.klass(document);
+    // 整合包详情页与模组页同构，抽取器换一个、渲染完全复用
+    var d = isModpackDetail() ? MP.extract.modpackDetail(document) : MP.extract.klass(document);
     if (!d || !d.ok) {
-      console.warn('[MCMod+] 模组页抽取失败', d && d.reason);
+      console.warn('[MCMod+] ' + (isModpackDetail() ? '整合包详情页' : '模组页') + '抽取失败', d && d.reason);
       return false;
     }
 
@@ -255,7 +260,9 @@
   MP.pages = MP.pages || {};
   MP.pages.klass = {
     match: function (url) {
-      return /^\/class\/\d+\.html$/i.test((url || window.location).pathname || '');
+      var p = (url || window.location).pathname || '';
+      // 整合包详情页与模组页同构，共用这一套抽取 + 渲染
+      return /^\/class\/\d+\.html$/i.test(p) || /^\/modpack\/\d+\.html$/i.test(p);
     },
     mount: mount,
     unmount: unmount,

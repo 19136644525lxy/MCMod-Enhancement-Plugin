@@ -1,8 +1,12 @@
 /**
- * 整合包检索页重绘：/modpack.html
+ * 检索页重绘：/modpack.html（整合包检索）与 /modlist.html（模组检索）
  *
- * 保留 .modlist-filter-frame（筛选条是 GET 表单 + onclick 跳转，属站点行为），
- * 只隐藏 .modlist-list-frame，在原位置插入自绘的卡片网格 + 分页。
+ * 两页 DOM 完全同构：`.modlist-frame` > `.modlist-filter-frame` + `HR` +
+ * `.modlist-list-frame` + `UL.pagination`，卡片都是 `.modlist-block`。
+ * 所以一套渲染、一套样式，用 LIST_PAGES 区分文案与宿主 id。
+ *
+ * 保留 .modlist-filter-frame（筛选是 GET 表单 + onclick 跳转，属站点行为），
+ * 只隐藏列表与它外面的分页/分隔线，在原位置插入自绘的卡片网格 + 分页。
  */
 (function () {
   'use strict';
@@ -12,10 +16,35 @@
     return MP.dom.h.apply(null, [tag, attrs].concat(Array.prototype.slice.call(arguments, 2)));
   }
 
-  var HOST_ID = 'mp-modpack-host';
+  var LIST_PAGES = {
+    modpack: {
+      key: 'modpack',
+      label: '整合包',
+      noun: '整合包',
+      match: /^\/modpack\.html$/i,
+      hostId: 'mp-modpack-host',
+      fabId: 'mp-modpack-fab'
+    },
+    modlist: {
+      key: 'modlist',
+      label: '模组',
+      noun: '模组',
+      match: /^\/modlist\.html$/i,
+      hostId: 'mp-modlist-host',
+      fabId: 'mp-modlist-fab'
+    }
+  };
+
   var hidden = [];
   var chrome = null;
   var fab = null;
+  var mountedKey = '';
+
+  /** 当前页面配置（两个检索页共用一套实现） */
+  function pageCfg() {
+    var path = (window.location && window.location.pathname) || '';
+    return LIST_PAGES.modlist.match.test(path) ? LIST_PAGES.modlist : LIST_PAGES.modpack;
+  }
 
   /* ---------------- 渲染 ---------------- */
 
@@ -62,15 +91,15 @@
     );
   }
 
-  function build(d) {
+  function build(d, cfg) {
     var total = d.cards.length;
     var heroSub = d.pager && d.pager.info ? d.pager.info : ('本页 ' + total + ' 个');
 
-    return h('div', { id: HOST_ID, class: 'mp-wiki-page mp-modpack-page' },
+    return h('div', { id: cfg.hostId, class: 'mp-wiki-page mp-modpack-page' },
       crumbsBar(d.crumbs),
       h('header', { class: 'mp-hero mp-glass' },
         h('div', { class: 'mp-hero-main' },
-          h('h1', { class: 'mp-hero-title' }, '整合包'),
+          h('h1', { class: 'mp-hero-title' }, cfg.label),
           h('p', { class: 'mp-hero-sub' }, heroSub),
           h('div', { class: 'mp-hero-stats' },
             h('span', { class: 'mp-hero-stat' }, h('b', null, total), '本页收录')
@@ -81,7 +110,7 @@
         ? h('div', { class: 'mp-mp-grid' }, d.cards.map(card))
         : h('div', { class: 'mp-panel mp-glass' },
           h('div', { class: 'mp-panel-body' },
-            h('p', { class: 'mp-muted' }, '这一页没有整合包，换个筛选条件或翻页看看。'))),
+            h('p', { class: 'mp-muted' }, '这一页没有' + cfg.noun + '，换个筛选条件或翻页看看。'))),
       pager(d.pager)
     );
   }
@@ -89,7 +118,7 @@
   /* ---------------- 挂载 ---------------- */
 
   function isEnhanced() {
-    return !!document.getElementById(HOST_ID);
+    return !!document.getElementById(pageCfg().hostId);
   }
 
   /**
@@ -113,11 +142,12 @@
   }
 
   function mount(settings) {
+    var cfg = pageCfg();
     if (isEnhanced()) return true;
 
-    var d = MP.extract.modpack(document);
+    var d = MP.extract.modpack(document, cfg.key);
     if (!d || !d.ok) {
-      console.warn('[MCMod+] 整合包页抽取失败', d && d.reason);
+      console.warn('[MCMod+] ' + cfg.label + '检索页抽取失败', d && d.reason);
       return false;
     }
 
@@ -136,10 +166,11 @@
     hidden.forEach(function (el) { el.classList.add('mp-origin-hidden'); });
 
     // 插在列表原来的位置：筛选条在上、卡片网格在下，和原站顺序一致
-    anchor.parentNode.insertBefore(build(d), anchor);
+    anchor.parentNode.insertBefore(build(d, cfg), anchor);
+    mountedKey = cfg.key;
 
     fab = MP.pageChrome.fab({
-      id: 'mp-modpack-fab',
+      id: cfg.fabId,
       isEnhanced: isEnhanced,
       onEnhance: function () {
         MP.store.getSync().then(function (s) {
@@ -149,7 +180,7 @@
         });
       },
       onOriginal: function () {
-        MP.pages.modpack.unmount();
+        unmount();
       }
     });
 
@@ -157,11 +188,13 @@
   }
 
   function unmount() {
-    var host = document.getElementById(HOST_ID);
+    var cfg = LIST_PAGES[mountedKey] || pageCfg();
+    var host = document.getElementById(cfg.hostId);
     if (host) host.remove();
 
     hidden.forEach(function (el) { el.classList.remove('mp-origin-hidden'); });
     hidden = [];
+    mountedKey = '';
 
     if (chrome) { chrome.restore(); chrome = null; }
 
@@ -171,12 +204,15 @@
   }
 
   MP.pages = MP.pages || {};
-  MP.pages.modpack = {
-    match: function (url) {
-      return /^\/modpack\.html$/i.test((url || window.location).pathname || '');
-    },
-    mount: mount,
-    unmount: unmount,
-    isActive: isEnhanced
-  };
+  Object.keys(LIST_PAGES).forEach(function (key) {
+    var cfg = LIST_PAGES[key];
+    MP.pages[key] = {
+      match: function (url) {
+        return cfg.match.test((url || window.location).pathname || '');
+      },
+      mount: mount,
+      unmount: unmount,
+      isActive: isEnhanced
+    };
+  });
 })();

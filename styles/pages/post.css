@@ -1,0 +1,182 @@
+/* 教程页 /post/{id}.html
+ *
+ * 共享部分（顶栏、hero、crumbs、panel、背景、抽屉）全在 wiki.css，
+ * 这里只处理「两栏布局 + 原生侧栏换皮 + 正文/评论换皮」。
+ *
+ * 注意：原站是 `.common-center .left{position:absolute}` + `.right{padding-left:245px}`，
+ * 改成 grid 必须把 position / left / top / z-index 一起复位，只清 float 会让第一列空置。
+ */
+
+body.mp-wiki-mode.mp-post-mode .common-center > .center {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+body.mp-wiki-mode.mp-post-mode .common-center > .center > .left {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  right: auto !important;
+  z-index: auto !important;
+  float: none !important;
+  width: auto !important;
+  padding: 0 !important;
+  order: 2;
+}
+
+body.mp-wiki-mode.mp-post-mode .common-center > .center > .right {
+  position: static !important;
+  float: none !important;
+  width: auto !important;
+  padding: 0 !important;
+  order: 1;
+  min-width: 0;
+}
+
+/* 侧栏：每个原生块套成玻璃卡（保留站点的折叠/跳转行为） */
+body.mp-wiki-mode.mp-post-mode .center > .left > * {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: var(--w-radius);
+  background: var(--w-card);
+  border: 1px solid var(--w-hair);
+  box-shadow: var(--w-shadow);
+}
+
+body.mp-wiki-mode.mp-post-mode .center > .left .title {
+  background: none !important;
+  border: 0 !important;
+  padding: 0 0 8px !important;
+  margin: 0 0 6px !important;
+  color: var(--w-ink) !important;
+  font-size: 13px !important;
+  font-weight: 600;
+  border-bottom: 1px solid var(--w-hair) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .center > .left .title a {
+  color: var(--w-ink) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .center > .left li,
+body.mp-wiki-mode.mp-post-mode .center > .left a {
+  color: var(--w-ink-2) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .center > .left a:hover {
+  color: var(--w-accent) !important;
+}
+
+/* 正文：保留原 DOM，只换皮 */
+body.mp-wiki-mode.mp-post-mode .mp-post-body {
+  padding: 24px 28px 28px;
+  border-radius: var(--w-radius);
+  background: var(--w-card);
+  border: 1px solid var(--w-hair);
+  box-shadow: var(--w-shadow);
+  color: var(--w-ink-2);
+  font-size: 14.5px;
+  line-height: 1.9;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body .text > *:first-child {
+  margin-top: 0;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body a {
+  color: var(--w-accent);
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body h1,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h2,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h3,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h4,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h5,
+body.mp-wiki-mode.mp-post-mode .mp-post-body strong,
+body.mp-wiki-mode.mp-post-mode .mp-post-body b {
+  color: var(--w-ink);
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body td,
+body.mp-wiki-mode.mp-post-mode .mp-post-body th {
+  border: 1px solid var(--w-hair);
+  padding: 6px 10px;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body pre,
+body.mp-wiki-mode.mp-post-mode .mp-post-body code {
+  background: var(--w-card-2);
+  border-radius: 6px;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body pre {
+  padding: 12px 14px;
+  overflow: auto;
+}
+
+/* 评论：同样是原生块换皮 */
+body.mp-wiki-mode.mp-post-mode .mp-post-comment {
+  margin-top: 16px;
+  padding: 18px 20px;
+  border-radius: var(--w-radius);
+  background: var(--w-card);
+  border: 1px solid var(--w-hair);
+  box-shadow: var(--w-shadow);
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .comment-title,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .title {
+  background: none !important;
+  border: 0 !important;
+  color: var(--w-ink) !important;
+  font-size: 15px !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment :not(img):not(svg):not(path):not(use) {
+  color: var(--w-ink-2);
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment a {
+  color: var(--w-accent) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment textarea,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment input {
+  background: var(--w-card-2) !important;
+  border: 1px solid var(--w-hair) !important;
+  border-radius: 8px !important;
+  color: var(--w-ink) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment textarea:focus,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment input:focus {
+  outline: none;
+  border-color: var(--w-accent) !important;
+  box-shadow: 0 0 0 3px var(--w-accent-soft);
+}
+
+/* 窄屏：侧栏下移 */
+@media (max-width: 980px) {
+  body.mp-wiki-mode.mp-post-mode .common-center > .center {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body.mp-wiki-mode.mp-post-mode .common-center > .center > .left {
+    order: 2;
+  }
+  body.mp-wiki-mode.mp-post-mode .mp-post-body {
+    padding: 18px;
+  }
+}
