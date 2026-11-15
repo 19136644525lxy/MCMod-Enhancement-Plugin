@@ -2,6 +2,10 @@ node_modules/
 dist/
 build/
 output/
+
+# 开发用，不随插件发布
+tools/
+docs/
 .DS_Store
 Thumbs.db
 *.log
