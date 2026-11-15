@@ -454,6 +454,37 @@ body.mp-wiki-mode .header-container .header-search form {
   background: var(--w-card-2);
 }
 
+/* ---------------- 顶栏齿轮（共享） ----------------
+ * MP.pageChrome 在所有重绘页都会插这个按钮，样式必须落在共享层；
+ * 之前只写在 item.css 里，模组页拿到的是一个裸 <button>。
+ */
+#mp-page-gear {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--w-hair);
+  background: var(--w-card);
+  color: var(--w-ink-2);
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .24s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+#mp-page-gear:hover {
+  color: #fff;
+  background: var(--w-accent);
+  border-color: transparent;
+  transform: rotate(90deg);
+}
+
+#mp-page-gear:active { transform: rotate(90deg) scale(.94); }
+
+#mp-page-gear svg { width: 17px; height: 17px; display: block; }
+
 /* ---------------- 右侧抽屉 ----------------
  * 与搜索页 / 物品页同款；bottom 344px 是为了避开原站右下角 126×280 的 #backTop。
  */

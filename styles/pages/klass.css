@@ -169,6 +169,85 @@ body.mp-wiki-mode .class-menu-main .block {
   border-radius: 12px;
 }
 
+/* 正文里逐层的文字也要显式给色：原站给 li / p 单独写过深灰，
+   只在外层 .class-menu-main 上设 color 继承不过去。 */
+body.mp-wiki-mode .class-menu-main li,
+body.mp-wiki-mode .class-menu-main p {
+  color: var(--w-ink-2);
+}
+
+/* ---------------- 分类标签 ----------------
+ * 原站把每个标签写死 width:70px; height:26px（style.css），
+ * 两字标签被拉成方块、四字标签被裁。这里改成宽度自适应的胶囊。
+ * a.normal 的 background-color / color 是每个分类的品牌色（内联），不要覆盖。
+ */
+body.mp-wiki-mode .common-class-category li {
+  float: none !important;
+  display: inline-block;
+  height: auto;
+  margin: 0;
+}
+
+body.mp-wiki-mode .common-class-category li a {
+  width: auto !important;
+  min-width: 0;
+  height: 26px;
+  line-height: 24px;
+  padding: 0 12px;
+  margin: 0 6px 6px 0;
+  border-radius: 999px;
+  font-size: 12px !important;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+body.mp-wiki-mode .common-class-category li.main a {
+  width: 30px !important;
+  padding: 0;
+  line-height: 24px;
+  background: var(--w-card-2);
+  border-color: var(--w-hair);
+}
+
+body.mp-wiki-mode .common-class-category li.main a svg {
+  width: 15px;
+  height: 15px;
+  vertical-align: -2px;
+}
+
+/* ---------------- 红黑票 ----------------
+ * 原站是 bootstrap 的 progress-bar-striped + 动画，深色下是一条会动的亮黄条。
+ * 去掉斜纹和动画，换成主题色的细进度条。
+ */
+body.mp-wiki-mode .class-card .progress {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--w-card-2);
+  box-shadow: inset 0 0 0 1px var(--w-hair);
+}
+
+body.mp-wiki-mode .class-card .progress-bar {
+  background-image: none !important;
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+body.mp-wiki-mode .class-card .progress-bar.red { background-color: #d9534f !important; }
+body.mp-wiki-mode .class-card .progress-bar.black { background-color: #4a453d !important; }
+
+body.mp-wiki-mode .class-card .text-block {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+body.mp-wiki-mode .class-card .text-block span {
+  color: var(--w-ink-2);
+  font-size: 12px;
+}
+
 /* ---------------- 断点 ---------------- */
 
 @media (max-width: 980px) {
