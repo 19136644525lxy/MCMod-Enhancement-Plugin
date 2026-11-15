@@ -44,6 +44,7 @@
         "src/content/core/selectors.js",
         "src/content/core/theme.js",
         "src/content/core/fetch-page.js",
+        "src/content/core/page-chrome.js",
         "src/content/render/components.js",
         "src/content/extract/search.js",
         "src/content/extract/modlist.js",

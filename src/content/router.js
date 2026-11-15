@@ -70,10 +70,14 @@ MP.router = (function () {
     return null;
   }
 
+  // 已定稿的页面不受「结构重绘（实验）」开关限制；其余先留门控。
+  const STABLE_PAGES = ['item'];
+
   function tryMountPage() {
-    if (!settings || !settings.redrawPages) return false;
     const key = currentPageModule();
     if (!key) return false;
+    const stable = STABLE_PAGES.indexOf(key) >= 0;
+    if (!stable && (!settings || !settings.redrawPages)) return false;
     return MP.pages[key].mount(settings) !== false;
   }
 

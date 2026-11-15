@@ -1,136 +1,268 @@
 /**
  * 物品页重绘：/item/{id}.html
- * 只读展示；编辑/评论/收藏等写操作全部保留在原生页面（切回「原始」即可）。
+ *
+ * 策略：完全隐藏原生内容区（.common-nav / .center / .right），自己画整页。
+ * 不做 adopt —— 之前把 .center > .left 搬进侧栏时，依赖父级的站点 CSS 全失效，
+ * 页面直接散架。这里只加 display:none，DOM 还在，切回「原始」能完整恢复。
+ *
+ * 只读展示；编辑 / 评论 / 收藏等写操作全留在原生页面。
  */
 (function () {
   'use strict';
   var MP = window.MP;
 
-  function h(tag, attrs) { return MP.dom.h.apply(null, [tag, attrs].concat(Array.prototype.slice.call(arguments, 2))); }
-  var T = function (el) { return MP.dom.text(el); };
+  function h(tag) {
+    return MP.dom.h.apply(null, [tag].concat(Array.prototype.slice.call(arguments, 1)));
+  }
 
-  function commandCopy(give) {
-    var code = give.replace(/^\/give\s+@p\s+/, '');
-    var btn = h('button', { class: 'mp-mini-btn', type: 'button', title: '复制物品命令' }, '复制');
+  var HIDE_SEL = '.common-center > .common-nav, .common-center > .center, .common-center > .right';
+  var HOST_ID = 'mp-item-host';
+  var hidden = [];
+  var chrome = null;
+  var fab = null;
+
+  /* ---------------- 小组件 ---------------- */
+
+  function panel(title, body, aside) {
+    return h('section', { class: 'mp-panel mp-glass' },
+      h('header', { class: 'mp-panel-head' },
+        h('h2', { class: 'mp-panel-title' }, title),
+        aside || null
+      ),
+      h('div', { class: 'mp-panel-body' }, body)
+    );
+  }
+
+  function kv(rows) {
+    var kids = [];
+    rows.forEach(function (r) {
+      kids.push(h('dt', null, r.key));
+      kids.push(h('dd', null, r.value || '—'));
+    });
+    return h('dl', { class: 'mp-kv' }, kids);
+  }
+
+  function chip(it, opts) {
+    opts = opts || {};
+    var tag = it.href ? 'a' : 'span';
+    return h(tag, {
+      class: 'mp-chip' + (opts.out ? ' is-out' : ''),
+      href: it.href || undefined,
+      target: it.href ? '_blank' : undefined,
+      rel: it.href ? 'noopener' : undefined,
+      title: it.title || it.label
+    },
+      h('span', { class: 'mp-chip-label' }, it.title || it.label),
+      it.count > 1 ? h('span', { class: 'mp-chip-count' }, '×' + it.count) : null
+    );
+  }
+
+  function craft(c) {
+    var mats = c.materials.map(function (m) { return chip(m); });
+    var outs = c.outputs.map(function (m) { return chip(m, { out: true }); });
+    return h('div', { class: 'mp-craft' },
+      c.source ? h('div', { class: 'mp-craft-src' }, h('span', null, '使用'), h('b', null, c.source)) : null,
+      h('div', { class: 'mp-craft-row' },
+        h('div', { class: 'mp-craft-col' },
+          h('span', { class: 'mp-craft-label' }, '材料'),
+          h('div', { class: 'mp-chips' }, mats.length ? mats : h('span', { class: 'mp-muted' }, '—'))
+        ),
+        h('div', { class: 'mp-craft-arrow', 'aria-hidden': 'true' }, '→'),
+        h('div', { class: 'mp-craft-col' },
+          h('span', { class: 'mp-craft-label' }, '产物'),
+          h('div', { class: 'mp-chips' }, outs.length ? outs : h('span', { class: 'mp-muted' }, '—'))
+        )
+      ),
+      c.remarks ? h('p', { class: 'mp-craft-note' }, c.remarks) : null
+    );
+  }
+
+  function iconList(list, opts) {
+    opts = opts || {};
+    return h('div', { class: 'mp-icon-list' + (opts.round ? ' is-round' : '') },
+      list.map(function (it) {
+        return h('a', {
+          class: 'mp-icon-item',
+          href: it.href || undefined,
+          target: it.href ? '_blank' : undefined,
+          rel: it.href ? 'noopener' : undefined,
+          title: it.label
+        },
+          it.icon
+            ? h('img', { class: 'mp-icon-img', src: it.icon, alt: '', loading: 'lazy' })
+            : h('span', { class: 'mp-icon-ph' }, (it.label || '?').slice(0, 1)),
+          h('span', { class: 'mp-icon-name' }, it.label)
+        );
+      })
+    );
+  }
+
+  function giveBar(give) {
+    var btn = h('button', { class: 'mp-copy', type: 'button' }, '复制');
     btn.addEventListener('click', function () {
-      var done = function () { btn.textContent = '已复制'; setTimeout(function () { btn.textContent = '复制'; }, 1500); };
+      var done = function () {
+        btn.textContent = '已复制';
+        btn.classList.add('is-done');
+        setTimeout(function () {
+          btn.textContent = '复制';
+          btn.classList.remove('is-done');
+        }, 1500);
+      };
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(give).then(done, done);
-        } else {
-          var ta = document.createElement('textarea');
-          ta.value = give;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand('copy');
-          ta.remove();
-          done();
+          return;
         }
+        var ta = document.createElement('textarea');
+        ta.value = give;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        done();
       } catch (e) { done(); }
     });
     return h('div', { class: 'mp-give' },
       h('span', { class: 'mp-give-label' }, '物品命令'),
-      h('code', { class: 'mp-give-code', title: code }, give),
+      h('code', { class: 'mp-give-code' }, give),
       btn
     );
   }
 
-  function craftBlock(craft) {
-    var mat = craft.materials.length
-      ? h('div', { class: 'mp-craft-items' }, craft.materials.map(function (m) {
-          return h(m.href ? 'a' : 'span', { class: 'mp-item-chip', href: m.href || undefined, target: m.href ? '_blank' : undefined, rel: 'noopener' },
-            m.title, m.count > 1 ? h('span', { class: 'mp-item-count' }, '×' + m.count) : null);
-        }))
-      : h('span', { class: 'mp-craft-remark' }, '（无材料信息）');
-    var out = craft.outputs.length
-      ? h('div', { class: 'mp-craft-items' }, craft.outputs.map(function (m) {
-          return h(m.href ? 'a' : 'span', { class: 'mp-item-chip is-out', href: m.href || undefined, target: m.href ? '_blank' : undefined, rel: 'noopener' },
-            m.title, m.count > 1 ? h('span', { class: 'mp-item-count' }, '×' + m.count) : null);
-        }))
-      : h('span', { class: 'mp-craft-remark' }, '（无产物信息）');
-    return h('div', { class: 'mp-craft' },
-      craft.source ? h('div', { class: 'mp-craft-source' }, '使用：' + craft.source) : null,
-      h('div', { class: 'mp-craft-flow' },
-        h('div', { class: 'mp-craft-side' }, h('div', { class: 'mp-craft-label' }, '材料'), mat),
-        h('div', { class: 'mp-craft-arrow' }, '→'),
-        h('div', { class: 'mp-craft-side' }, h('div', { class: 'mp-craft-label' }, '产物'), out)
+  /* ---------------- 渲染 ---------------- */
+
+  function build(d) {
+    var crumbs = h('nav', { class: 'mp-i-crumbs', 'aria-label': '面包屑' },
+      (d.crumbs || []).map(function (t, i, arr) {
+        return h('span', { class: 'mp-i-crumb' + (i === arr.length - 1 ? ' is-here' : '') }, t);
+      })
+    );
+
+    var stats = [];
+    if (d.views) stats.push(h('span', { class: 'mp-i-stat' }, h('b', null, d.views), '浏览'));
+    if (d.recommend) stats.push(h('span', { class: 'mp-i-stat' }, h('b', null, d.recommend), '推荐'));
+    if (d.like) stats.push(h('span', { class: 'mp-i-stat' }, h('b', null, d.like), '收藏'));
+
+    var hero = h('header', { class: 'mp-i-hero mp-glass' },
+      crumbs,
+      h('div', { class: 'mp-i-head' },
+        h('div', { class: 'mp-i-icon' },
+          d.icon ? h('img', { src: d.icon, alt: d.nameZh || d.title }) : null
+        ),
+        h('div', { class: 'mp-i-names' },
+          h('h1', { class: 'mp-i-title' }, d.nameZh || d.title),
+          d.nameEn ? h('p', { class: 'mp-i-en' }, d.nameEn) : null,
+          d.jump ? h('p', { class: 'mp-i-jump' }, d.jump) : null
+        ),
+        stats.length ? h('div', { class: 'mp-i-stats' }, stats) : null
       ),
-      craft.remarks ? h('div', { class: 'mp-craft-remark' }, craft.remarks) : null
+      d.give ? giveBar(d.give) : null
+    );
+
+    var main = [];
+    if (d.data.length) main.push(panel('基本信息', kv(d.data)));
+    if (d.crafts.length) {
+      main.push(panel('合成表', h('div', { class: 'mp-craft-list' }, d.crafts.map(craft)), {
+        aside: h('span', { class: 'mp-panel-aside' }, d.crafts.length + ' 个配方')
+      }));
+    }
+    if (d.dict.length) {
+      main.push(panel('矿物词典', h('div', { class: 'mp-chips' },
+        d.dict.map(function (it) { return chip({ label: it.label, title: it.label, href: it.href }); })
+      ), { aside: h('span', { class: 'mp-panel-aside' }, d.dict.length + ' 项') }));
+    }
+    if (!main.length) {
+      main.push(panel('暂无内容', h('p', { class: 'mp-muted' }, '没从页面里解析到物品数据，可以切回「原始」看原站页面。')));
+    }
+
+    var side = [];
+    (d.related || []).forEach(function (group) {
+      if (!group.list.length) return;
+      side.push(panel(group.title, iconList(group.list, {
+        round: /编辑|浏览|参与/.test(group.title)
+      }), { aside: h('span', { class: 'mp-panel-aside' }, group.list.length + '') }));
+    });
+
+    return h('div', { id: HOST_ID, class: 'mp-item-page' },
+      hero,
+      h('div', { class: 'mp-i-body' },
+        h('div', { class: 'mp-i-main' }, main),
+        side.length ? h('aside', { class: 'mp-i-side' }, side) : null
+      )
     );
   }
 
-  function render(d) {
-    var main = [];
-    var side = [];
+  /* ---------------- 挂载 ---------------- */
 
-    var badges = [];
-    if (d.jump) badges.push(MP.ui.chip(d.jump, { muted: true }));
+  function isEnhanced() {
+    return !!document.getElementById(HOST_ID);
+  }
 
-    if (d.data.length) {
-      main.push(MP.shell.card('基本信息', MP.shell.kv(d.data)));
+  function mount(settings) {
+    if (isEnhanced()) return true;
+
+    var d = MP.extract.item(document);
+    if (!d || !d.ok) {
+      console.warn('[MCMod+] 物品页抽取失败', d && d.reason);
+      return false;
     }
 
-    if (d.give) main.push(MP.shell.card('获取方式', commandCopy(d.give)));
+    var anchor = document.querySelector('.common-center');
+    if (!anchor) return false;
 
-    if (d.crafts.length) {
-      main.push(MP.shell.card('合成表', h('div', null, d.crafts.map(craftBlock)), {
-        aside: h('span', { class: 'mp-pager-info' }, d.crafts.length + ' 个配方')
-      }));
-    }
-
-    if (d.dict.length) {
-      main.push(MP.shell.card('矿物词典', h('div', { class: 'mp-chips' }, d.dict.map(function (it) {
-        return MP.ui.chip(it.label, { href: it.href });
-      }))));
-    }
-
-    if (d.related.length) {
-      main.push(MP.shell.card('相关物品', h('div', null, d.related.map(function (g) {
-        return h('div', null,
-          h('div', { class: 'mp-craft-label' }, g.title),
-          MP.shell.iconGrid(g.list)
-        );
-      }))));
-    }
-
-    if (!main.length) main.push(MP.shell.card('暂无数据', MP.ui.empty('未从页面解析到内容', '可切换到「原始」查看原站页面')));
-
-    if (!side.length) side = null;
-
-    var page = MP.shell.build({
-      kind: 'item',
-      title: d.nameZh || d.title,
-      subtitle: d.nameEn || '',
-      icon: d.icon,
-      crumbs: d.crumbs,
-      badges: badges,
-      actions: MP.ui.button('原始视图（编辑 / 评论）', { variant: 'ghost', onclick: function () { MP.shell.toggleView(true); } }),
-      main: main,
-      side: side
+    chrome = MP.pageChrome.attach({
+      mode: 'mp-item-mode',
+      css: ['styles/pages/item.css'],
+      settings: settings || {}
     });
 
-    return page;
+    hidden = [];
+    Array.prototype.forEach.call(document.querySelectorAll(HIDE_SEL), function (el) {
+      el.classList.add('mp-origin-hidden');
+      hidden.push(el);
+    });
+
+    anchor.insertBefore(build(d), anchor.firstChild);
+
+    fab = MP.pageChrome.fab({
+      id: 'mp-item-fab',
+      isEnhanced: isEnhanced,
+      onEnhance: function () {
+        MP.store.getSync().then(function (s) {
+          mount(s || settings || {});
+        }).catch(function () {
+          mount(settings || {});
+        });
+      },
+      onOriginal: function () {
+        MP.pages.item.unmount();
+      }
+    });
+
+    return true;
+  }
+
+  function unmount() {
+    var host = document.getElementById(HOST_ID);
+    if (host) host.remove();
+
+    hidden.forEach(function (el) { el.classList.remove('mp-origin-hidden'); });
+    hidden = [];
+
+    if (chrome) { chrome.restore(); chrome = null; }
+
+    try { MP.background.destroy(); } catch (e) { /* 背景可能本来就没起 */ }
+
+    if (fab) { fab.sync(); fab = null; }
   }
 
   MP.pages = MP.pages || {};
   MP.pages.item = {
     match: function (url) {
-      return /^\/item\/\d+\.html$/i.test((url || location).pathname || '');
+      return /^\/item\/\d+\.html$/i.test((url || window.location).pathname || '');
     },
-    mount: function (settings) {
-      var d = MP.extract.item(document);
-      if (!d || !d.ok) {
-        console.warn('[MCMod+] 物品页抽取失败', d && d.reason);
-        return false;
-      }
-      MP.theme.inject('styles/pages/pages.css');
-      var page = render(d);
-      MP.shell.mount(page, ['.common-center > .common-nav', '.right > .item-row', '.center'], function () {
-        MP.pages.item.mount(settings);
-      }, document.querySelector('.common-center'), [
-        { from: '.center > .left', into: '.mp-side' }
-      ]);
-      return true;
-    }
+    mount: mount,
+    unmount: unmount,
+    isActive: isEnhanced
   };
 })();
