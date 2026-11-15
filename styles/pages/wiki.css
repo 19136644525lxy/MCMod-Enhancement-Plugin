@@ -582,3 +582,83 @@ body.mp-wiki-mode .header-container .header-search form {
   .mp-wiki-page { animation: none; }
   .mp-fab-sheet { transition: none; }
 }
+
+
+/* ---------------- 原站互动条（推荐 / 收藏 / 关注 / 分享） ---------------- */
+
+body.mp-wiki-mode .common-fuc-group { margin: 10px 0; }
+
+body.mp-wiki-mode .common-fuc-group li {
+  border: 1px solid var(--w-hair);
+  border-radius: 999px;
+  background: var(--w-card);
+  overflow: hidden;
+  transition: background .16s ease, border-color .16s ease;
+}
+
+body.mp-wiki-mode .common-fuc-group li:hover {
+  border-color: var(--w-accent);
+  background: var(--w-accent-soft);
+}
+
+body.mp-wiki-mode .common-fuc-group i,
+body.mp-wiki-mode .common-fuc-group span { color: var(--w-ink-2); }
+
+body.mp-wiki-mode .common-fuc-group .nums { color: var(--w-ink-3); }
+
+body.mp-wiki-mode .common-fuc-group .action {
+  background: var(--w-card-2);
+  color: var(--w-ink);
+}
+
+body.mp-wiki-mode .common-fuc-group li:hover i,
+body.mp-wiki-mode .common-fuc-group li:hover span { color: var(--w-accent); }
+
+/* ---------------- 原站留言板 ---------------- */
+
+body.mp-wiki-mode .common-comment-block {
+  padding: 18px 20px;
+  border: 1px solid var(--w-hair);
+  border-radius: var(--w-radius);
+  background: var(--w-card);
+  box-shadow: var(--w-shadow);
+  color: var(--w-ink-2);
+}
+
+body.mp-wiki-mode .common-comment-block textarea,
+body.mp-wiki-mode .common-comment-block input[type="text"],
+body.mp-wiki-mode .common-comment-block input[type="email"] {
+  background: var(--w-card-2);
+  border: 1px solid var(--w-hair);
+  border-radius: 10px;
+  color: var(--w-ink);
+}
+
+body.mp-wiki-mode .common-comment-block textarea:focus,
+body.mp-wiki-mode .common-comment-block input:focus {
+  border-color: var(--w-accent);
+  box-shadow: 0 0 0 3px var(--w-accent-soft);
+  outline: none;
+}
+
+body.mp-wiki-mode .common-comment-block a { color: var(--w-accent); }
+
+body.mp-wiki-mode .common-comment-block .btn,
+body.mp-wiki-mode .common-comment-block button {
+  background: var(--w-accent);
+  border-color: var(--w-accent);
+  border-radius: 999px;
+  color: #fff;
+}
+
+html[data-mp-theme="dark"] body.mp-wiki-mode .common-comment-block :not(img):not(svg):not(path):not(use),
+html[data-mp-theme="dark"] body.mp-wiki-mode .common-fuc-group :not(img):not(svg):not(path):not(use) {
+  color: var(--w-ink-2) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-wiki-mode .common-comment-block :not(img):not(svg):not(path):not(use),
+  html:not([data-mp-theme="light"]) body.mp-wiki-mode .common-fuc-group :not(img):not(svg):not(path):not(use) {
+    color: var(--w-ink-2) !important;
+  }
+}

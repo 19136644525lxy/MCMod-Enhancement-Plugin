@@ -85,25 +85,46 @@ body.mp-wiki-mode .center > .left .common-imglist li { color: var(--w-ink-3); }
 
 /* ---------------- 原站 tab 区（Mod介绍 / Mod下载） ---------------- */
 
+/* 原站 .class-menu-page 是 swiper 容器：直接子级只有 UL.swiper-wrapper.page-ul，
+   真正的横向排布由 swiper 接管（wrapper 带 transform，slide 带绝对宽度）。
+   所以 flex 必须加在 wrapper 上，加在容器上会和 swiper 打架，三个胶囊会叠在一起。 */
 body.mp-wiki-mode .class-menu-page {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
   padding: 4px;
   margin: 0 0 12px;
-  width: fit-content;
+  overflow: hidden;
   border: 1px solid var(--w-hair);
   border-radius: 999px;
   background: var(--w-card);
   box-shadow: var(--w-shadow);
 }
 
+body.mp-wiki-mode .class-menu-page .swiper-wrapper.page-ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: auto !important;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: none !important;
+}
+
+/* 原站给 li 写过 border-right / border-top（当分隔线用），这里一并清掉。 */
 body.mp-wiki-mode .class-menu-page .page-li {
+  width: auto !important;
+  flex: none;
+  transform: none !important;
   margin: 0 !important;
   padding: 7px 18px !important;
+  border: 0 !important;
   border-radius: 999px;
+  line-height: 1.4;
   font-size: 13px;
   color: var(--w-ink-2);
+  white-space: nowrap;
   cursor: pointer;
   transition: background .16s ease, color .16s ease;
 }
