@@ -20,6 +20,24 @@
     return m ? A(m[1]) : '';
   }
 
+  /** 面包屑：.common-nav li 里 li.line 是分隔符，最后一项是纯文本当前页 */
+  function crumbs(doc) {
+    var out = [];
+    Array.prototype.forEach.call(doc.querySelectorAll('.common-nav li'), function (li) {
+      if (li.classList.contains('line')) return;
+      var a = li.querySelector('a');
+      var label = T(li);
+      if (!label && a && a.classList.contains('home')) label = '首页';
+      if (!label) return;
+      out.push({
+        label: label,
+        href: a ? A(a.getAttribute('href')) : '',
+        current: !a
+      });
+    });
+    return out;
+  }
+
   function filters(doc) {
     var out = [];
     Array.prototype.forEach.call(doc.querySelectorAll('.modlist-filter-block'), function (block) {
@@ -87,6 +105,7 @@
       ok: true,
       kind: 'modpack',
       url: p.url,
+      crumbs: crumbs(doc),
       cards: cards,
       filters: filters(doc),
       pager: p

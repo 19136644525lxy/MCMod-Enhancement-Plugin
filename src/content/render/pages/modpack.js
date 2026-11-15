@@ -49,11 +49,25 @@
     );
   }
 
+  /** 面包屑：复用 wiki.css 的 .mp-wiki-crumbs（相邻 .mp-wiki-crumb 自动补 / 分隔符） */
+  function crumbsBar(list) {
+    if (!list || !list.length) return null;
+    return h('nav', { class: 'mp-wiki-crumbs' },
+      list.map(function (c) {
+        var cls = 'mp-wiki-crumb' + (c.current ? ' is-here' : '');
+        return c.href
+          ? h('a', { class: cls, href: c.href }, c.label)
+          : h('span', { class: cls }, c.label);
+      })
+    );
+  }
+
   function build(d) {
     var total = d.cards.length;
     var heroSub = d.pager && d.pager.info ? d.pager.info : ('本页 ' + total + ' 个');
 
     return h('div', { id: HOST_ID, class: 'mp-wiki-page mp-modpack-page' },
+      crumbsBar(d.crumbs),
       h('header', { class: 'mp-hero mp-glass' },
         h('div', { class: 'mp-hero-main' },
           h('h1', { class: 'mp-hero-title' }, '整合包'),
@@ -87,7 +101,9 @@
     var out = [];
     var list = document.querySelector('.modlist-list-frame');
     var frame = document.querySelector('.modlist-frame');
+    var nav = document.querySelector('.common-center > .common-nav');
     if (list) out.push(list);
+    if (nav) out.push(nav);
     if (frame) {
       Array.prototype.forEach.call(frame.children, function (el) {
         if (el.tagName === 'HR' || (el.matches && el.matches('ul.pagination'))) out.push(el);

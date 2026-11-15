@@ -486,6 +486,22 @@ body.mp-wiki-mode .header-container .header-search form {
   background: var(--w-card-2);
 }
 
+/* 原站面包屑是 #f5f5f5 浅灰条 + #DDD 边，深色主题下会横一条白带。
+   正常路径是由各页隐藏它并自绘 .mp-wiki-crumbs，这里只是兜底。 */
+body.mp-wiki-mode .common-nav {
+  background-color: transparent;
+  border-color: var(--w-hair);
+}
+
+body.mp-wiki-mode .common-nav li,
+body.mp-wiki-mode .common-nav a {
+  color: var(--w-ink-3);
+}
+
+body.mp-wiki-mode .common-nav a.home {
+  color: var(--w-ink-2);
+}
+
 /* ---------------- 顶栏齿轮（共享） ----------------
  * MP.pageChrome 在所有重绘页都会插这个按钮，样式必须落在共享层；
  * 之前只写在 item.css 里，模组页拿到的是一个裸 <button>。
