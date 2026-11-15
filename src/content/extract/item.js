@@ -142,6 +142,10 @@
       crumbs.push(t);
     });
 
+    // 简介正文在 .item-content 里（原站「简介」那一块），之前漏掉了
+    var contentEl = main.querySelector('.item-content');
+    var desc = contentEl ? contentEl.innerHTML : '';
+
     var loc = (doc.defaultView && doc.defaultView.location && doc.defaultView.location.href) || '';
 
     return {
@@ -161,6 +165,7 @@
       views: views,
       recommend: recommend,
       like: like,
+      desc: desc,
       crumbs: crumbs
     };
   };

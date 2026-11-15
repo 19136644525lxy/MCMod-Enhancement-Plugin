@@ -160,6 +160,13 @@
     );
 
     var main = [];
+    if (d.desc) {
+      // 原站正文自己带一个「简介」小标题，面板头已经有了，去掉避免重复
+      var frag = MP.dom.safeHtml(d.desc);
+      var first = frag.firstElementChild;
+      if (first && /^(简介|介绍)$/.test((first.textContent || '').trim())) first.remove();
+      main.push(panel('简介', h('div', { class: 'mp-prose' }, frag)));
+    }
     if (d.data.length) main.push(panel('基本信息', kv(d.data)));
     if (d.crafts.length) {
       main.push(panel('合成表', h('div', { class: 'mp-craft-list' }, d.crafts.map(craft)), {

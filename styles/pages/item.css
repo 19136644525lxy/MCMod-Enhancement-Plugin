@@ -636,6 +636,187 @@ body.mp-item-mode .mp-topbar-daynight {
   justify-content: center;
 }
 
+/* ---------------- 顶栏换皮 ---------------- */
+/* 物品页用的是 .header-container > .header-frame 这套（和搜索页 / 个人主页同源），
+   原站是深色渐变条。这里只换配色和排列，不动 position / z-index ——
+   它本来就是 fixed + z-index:1000，改了会破坏吸顶和下拉的 hover 区。 */
+
+body.mp-item-mode .header-container,
+body.mp-item-mode .header-frame {
+  background-color: rgba(250, 249, 246, .96) !important;
+  background-image: none !important;
+  box-shadow: 0 1px 0 var(--i-hair), 0 6px 24px rgba(24, 22, 20, .06) !important;
+}
+
+body.mp-item-mode .header-menu-widget > a,
+body.mp-item-mode .header-menu-item {
+  color: var(--i-ink-2) !important;
+}
+
+body.mp-item-mode .header-menu-widget > a:hover,
+body.mp-item-mode .header-menu-widget.active > a {
+  color: var(--i-ink) !important;
+  background: var(--i-accent-soft) !important;
+  box-shadow: none !important;
+}
+
+body.mp-item-mode .header-user,
+body.mp-item-mode .header-user-name,
+body.mp-item-mode .header-user-msg {
+  color: var(--i-ink-2) !important;
+}
+
+body.mp-item-mode .header-user-msg b,
+body.mp-item-mode .header-user-msg .num {
+  color: var(--i-ink) !important;
+}
+
+/* 右侧工具区：原站是 float，插入的齿轮和滑块会换行掉到第二排，改成 flex。 */
+body.mp-item-mode .header-container .header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  float: right;
+}
+
+body.mp-item-mode .header-container .header-right > * {
+  flex: none;
+}
+
+/* 顶栏搜索框（原站白底小黑边） */
+body.mp-item-mode .header-search form {
+  border: 1px solid var(--i-hair) !important;
+  border-radius: 999px !important;
+  background: var(--i-card-2) !important;
+  overflow: hidden;
+}
+
+body.mp-item-mode .header-search input {
+  color: var(--i-ink) !important;
+  -webkit-text-fill-color: var(--i-ink) !important;
+  background: transparent !important;
+}
+
+/* 下拉面板（主站 / 整合包 / 实用工具 这些） */
+body.mp-item-mode .header-layer {
+  background: var(--i-card) !important;
+  border-color: var(--i-hair) !important;
+  box-shadow: var(--i-shadow) !important;
+}
+
+body.mp-item-mode .header-layer .title,
+body.mp-item-mode .header-layer .text-muted {
+  color: var(--i-ink-3) !important;
+}
+
+body.mp-item-mode .header-layer a {
+  color: var(--i-ink-2) !important;
+}
+
+body.mp-item-mode .header-layer a:hover {
+  color: var(--i-accent) !important;
+}
+
+html[data-mp-theme="dark"] body.mp-item-mode .header-container,
+html[data-mp-theme="dark"] body.mp-item-mode .header-frame {
+  background-color: rgba(24, 23, 20, .96) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .08), 0 6px 24px rgba(0, 0, 0, .4) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-item-mode .header-container,
+  html:not([data-mp-theme="light"]) body.mp-item-mode .header-frame {
+    background-color: rgba(24, 23, 20, .96) !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .08), 0 6px 24px rgba(0, 0, 0, .4) !important;
+  }
+}
+
+/* ---------------- 简介正文（原站 .item-content 的富文本） ---------------- */
+
+.mp-prose {
+  font-size: 13.5px;
+  line-height: 1.72;
+  color: var(--i-ink-2);
+}
+
+.mp-prose > *:first-child { margin-top: 0; }
+.mp-prose > *:last-child { margin-bottom: 0; }
+
+.mp-prose h1,
+.mp-prose h2,
+.mp-prose h3,
+.mp-prose h4 {
+  margin: 18px 0 8px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--i-ink);
+  line-height: 1.4;
+}
+
+.mp-prose p { margin: 0 0 10px; }
+
+.mp-prose ul,
+.mp-prose ol {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+
+.mp-prose li { margin: 3px 0; }
+
+.mp-prose a {
+  color: var(--i-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.mp-prose a:hover { border-bottom-color: var(--i-accent); }
+
+.mp-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin: 8px 0;
+}
+
+.mp-prose strong { color: var(--i-ink); }
+
+.mp-prose code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--i-card-2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.mp-prose blockquote {
+  margin: 10px 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--i-accent-soft);
+  border-radius: 0 8px 8px 0;
+  background: var(--i-card-2);
+  color: var(--i-ink-2);
+}
+
+.mp-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 12.5px;
+}
+
+.mp-prose th,
+.mp-prose td {
+  padding: 6px 9px;
+  border: 1px solid var(--i-hair);
+  text-align: left;
+}
+
+.mp-prose th {
+  background: var(--i-card-2);
+  color: var(--i-ink);
+  font-weight: 600;
+}
+
 /* ---------------- 断点 ---------------- */
 
 @media (max-width: 980px) {
