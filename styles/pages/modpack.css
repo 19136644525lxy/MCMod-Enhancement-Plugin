@@ -67,12 +67,35 @@ body.mp-wiki-mode .modlist-filter-block li.main {
   transition: background .16s ease, color .16s ease, border-color .16s ease;
 }
 
-/* 原站给按钮里的 a 写了 .normal / .gray / .text-danger 的具体色值，
-   继承盖不住，这里统一按 li 的颜色走。 */
-body.mp-wiki-mode .modlist-filter-block li.main > a,
-body.mp-wiki-mode .modlist-filter-block li.main > span {
+/* 原站把「胶囊」直接画在了子元素上：
+     li.main > a    { border:1px solid #DDD; border-radius:5px; padding:4px 10px; color:#555 }
+     li.main > span { border:1px solid #DDD; border-radius:5px; padding:4px 10px;
+                      background-color:#444; color:#FFF }   ← 「全部」的黑块就是它
+   只改 li 的话，里面还会再套一层小胶囊，亮色主题下就是黑底深字 + 双层描边。
+   这里把子元素的装饰全部清零，边框/底色/圆角只由 li.main 提供。 */
+body.mp-wiki-mode .modlist-filter-block ul:not(.common-class-category) li.main > a,
+body.mp-wiki-mode .modlist-filter-block ul:not(.common-class-category) li.main > span {
+  display: inline;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
   color: inherit !important;
+  font-size: 12px !important;
+  line-height: inherit !important;
   text-decoration: none;
+}
+
+/* 原站 a:hover 会再刷一层 #F5F5F5 */
+body.mp-wiki-mode .modlist-filter-block ul:not(.common-class-category) li.main > a:hover {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* 原站给元素组设了 max-height:220px + overflow:auto，内容多时会被截断/加滚动条 */
+body.mp-wiki-mode .modlist-filter-block.category {
+  max-height: none;
+  overflow: visible;
 }
 
 body.mp-wiki-mode .modlist-filter-block li.main:hover {
