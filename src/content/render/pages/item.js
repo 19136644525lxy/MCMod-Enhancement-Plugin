@@ -218,7 +218,7 @@
 
     chrome = MP.pageChrome.attach({
       mode: 'mp-item-mode',
-      css: ['styles/pages/item.css'],
+      css: ['styles/pages/item.css', 'styles/lightbox.css'],
       settings: settings || {}
     });
 

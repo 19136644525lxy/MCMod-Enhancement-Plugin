@@ -680,6 +680,7 @@ MP.pages.center = (function () {
 
     try {
       MP.theme.inject('styles/pages/center.css');
+    MP.theme.inject('styles/lightbox.css');
     } catch (e) {}
 
     // 背景：和首页共用同一套（styles/background.css 的选择器同时认

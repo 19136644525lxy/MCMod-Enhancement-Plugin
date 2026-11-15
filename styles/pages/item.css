@@ -1166,3 +1166,20 @@ body.mp-item-mode .center > .left .common-rowlist-2 > li > :last-child {
   text-overflow: clip;
   font-variant-numeric: tabular-nums;
 }
+
+/* 侧栏元信息是纯文本 li（没有子元素），flex 会让文本节点变成匿名项而错位；
+   改回块级，靠字号/行距/分隔线做层次，长文本允许换行但不溢出 */
+body.mp-item-mode .center > .left .common-rowlist-2 > li {
+  display: block !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  padding: 7px 0 !important;
+  border-bottom: 1px solid var(--i-hair);
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+  color: var(--i-ink-2) !important;
+}
+
+body.mp-item-mode .center > .left .common-rowlist-2 > li:first-child { padding-top: 0 !important; }
+body.mp-item-mode .center > .left .common-rowlist-2 > li:last-child { border-bottom: 0; padding-bottom: 0 !important; }
