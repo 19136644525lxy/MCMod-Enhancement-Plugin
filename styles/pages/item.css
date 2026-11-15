@@ -1117,3 +1117,52 @@ html[data-mp-theme="dark"] body.mp-item-mode .common-comment-block input {
     color: #e6e1d8 !important;
   }
 }
+
+/* 侧栏元信息改成「标签在上、数值在下」的两行式，
+   比一行「标签：数值」更好扫读，也不会在 210px 里显得挤 */
+body.mp-item-mode .center > .left .common-rowlist-2 {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.mp-item-mode .center > .left .common-rowlist-2 > li {
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 7px 0 !important;
+  border-bottom: 1px solid var(--i-hair);
+  line-height: 1.35 !important;
+  white-space: normal;
+}
+
+body.mp-item-mode .center > .left .common-rowlist-2 > li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0 !important;
+}
+
+body.mp-item-mode .center > .left .common-rowlist-2 > li:first-child {
+  padding-top: 0 !important;
+}
+
+body.mp-item-mode .center > .left .common-rowlist-2 > li > :first-child {
+  font-size: 11px !important;
+  color: var(--i-ink-3) !important;
+  letter-spacing: 0.02em;
+}
+
+body.mp-item-mode .center > .left .common-rowlist-2 > li > :last-child {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--i-ink) !important;
+  text-align: left;
+  overflow: visible;
+  text-overflow: clip;
+  font-variant-numeric: tabular-nums;
+}
