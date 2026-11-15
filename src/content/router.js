@@ -70,8 +70,8 @@ MP.router = (function () {
     return null;
   }
 
-  // 已定稿的页面不受「结构重绘（实验）」开关限制；其余先留门控。
-  const STABLE_PAGES = ['item', 'klass', 'modpack', 'category'];
+  // 四页（item / klass / modpack / category）都已定稿，统一走自绘视图，
+  // 不再有「结构重绘」开关；哪些页能挂载由 PAGE_MODULES 决定。
 
   /** 把当前页恢复成原站视图。各页的 unmount 自己负责撤宿主 / 解除隐藏 / 收外壳。 */
   function restoreCurrentPage() {
@@ -92,8 +92,6 @@ MP.router = (function () {
   function tryMountPage() {
     const key = currentPageModule();
     if (!key) return false;
-    const stable = STABLE_PAGES.indexOf(key) >= 0;
-    if (!stable && (!settings || !settings.redrawPages)) return false;
     return MP.pages[key].mount(settings) !== false;
   }
 
@@ -191,8 +189,6 @@ MP.router = (function () {
     } else {
       MP.theme.injectCore();
       try {
-        const key = currentPageModule();
-        if (key && STABLE_PAGES.indexOf(key) < 0 && !settings.redrawPages) restoreCurrentPage();
         restyleAll();
       } catch (e) { console.warn('[MCMod+] 重绘失败', e); }
     }

@@ -205,9 +205,6 @@ MP.settingsPanel = (function () {
     body.appendChild(group('高级', [
       row('搜索页重绘', '重写搜索结果列表', sw(s.redrawSearch, function (v) {
         save({ redrawSearch: v });
-      })),
-      row('结构重绘（实验）', '物品 / 模组 / 整合包 / 分类页', sw(s.redrawPages, function (v) {
-        save({ redrawPages: v });
       }))
     ]));
 
