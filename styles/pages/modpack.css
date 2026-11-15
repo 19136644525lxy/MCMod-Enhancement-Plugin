@@ -104,7 +104,37 @@ body.mp-wiki-mode .modlist-filter-block li.main:hover {
   color: var(--w-accent);
 }
 
-/* 选中态：原站有的挂在 li 上，有的挂在里面的 a 上，两种都吃 */
+/* 热门版本：原站用内联 style="color:#FF3366;border:1px solid #FF99CC" 标出，
+   但上面子元素清零的 !important 会把内联样式一起抹掉。
+   这里把「热门」转移到 li 上表达，保持单层胶囊。 */
+body.mp-wiki-mode .modlist-filter-block li.main:has(> a[style*="#FF3366"]) {
+  color: #ff3366;
+  border-color: rgba(255, 51, 102, .38);
+  background: rgba(255, 51, 102, .08);
+}
+
+body.mp-wiki-mode .modlist-filter-block li.main:has(> a[style*="#FF3366"]):hover {
+  color: #ff3366;
+  border-color: rgba(255, 51, 102, .6);
+  background: rgba(255, 51, 102, .16);
+}
+
+html[data-mp-theme="dark"] body.mp-wiki-mode .modlist-filter-block li.main:has(> a[style*="#FF3366"]) {
+  color: #ff7a99;
+  border-color: rgba(255, 122, 153, .34);
+  background: rgba(255, 122, 153, .10);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mp-theme="light"]) body.mp-wiki-mode .modlist-filter-block li.main:has(> a[style*="#FF3366"]) {
+    color: #ff7a99;
+    border-color: rgba(255, 122, 153, .34);
+    background: rgba(255, 122, 153, .10);
+  }
+}
+
+/* 选中态：原站有的挂在 li 上，有的挂在里面的 a 上，两种都吃。
+   写在热门态之后，绿底白字优先于粉色。 */
 body.mp-wiki-mode .modlist-filter-block li.main.active,
 body.mp-wiki-mode .modlist-filter-block li.main:has(> a.active) {
   background: var(--w-accent);
