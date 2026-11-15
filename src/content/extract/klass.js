@@ -50,11 +50,18 @@
           return;
         }
         if (child.classList.contains('mcver-row') && cur) {
-          Array.prototype.forEach.call(child.querySelectorAll('a.dropdown-item'), function (a) {
-            var label = T(a).trim();
-            var href = A(a.getAttribute('href'));
-            if (label && href) cur.items.push({ label: label, href: href });
-          });
+          // 两种形态都要收：
+          //   版本 ≥ 2 → 折叠菜单，链接是 a.dropdown-item
+          //   版本 = 1 → 平铺，链接直接是 a.text-danger（没有 dropdown 结构）
+          // 用 href 里必带 mcver= 做兜底匹配，比只认类名稳。
+          Array.prototype.forEach.call(
+            child.querySelectorAll('a.dropdown-item, a[href*="mcver="]'),
+            function (a) {
+              var label = T(a).trim();
+              var href = A(a.getAttribute('href'));
+              if (label && href && href.indexOf('mcver=') > -1) cur.items.push({ label: label, href: href });
+            }
+          );
         }
       });
     });
