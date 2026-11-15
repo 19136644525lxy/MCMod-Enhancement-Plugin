@@ -18,8 +18,9 @@
 /* ---------------- 筛选条 ---------------- */
 
 body.mp-wiki-mode .modlist-filter-frame {
-  padding: 14px 16px;
-  margin-bottom: 16px;
+  /* 底部只给 6px：最后一块自己带 margin-bottom，否则整卡底部会多出一段空白 */
+  padding: 16px 18px 6px;
+  margin-bottom: 18px;
   border: 1px solid var(--w-hair);
   border-radius: var(--w-radius);
   background: var(--w-card);
@@ -28,13 +29,16 @@ body.mp-wiki-mode .modlist-filter-frame {
   backdrop-filter: blur(20px) saturate(1.45);
 }
 
-body.mp-wiki-mode .modlist-filter-block { margin-bottom: 10px; }
-body.mp-wiki-mode .modlist-filter-block:last-child { margin-bottom: 0; }
+body.mp-wiki-mode .modlist-filter-block { margin-bottom: 14px; }
+body.mp-wiki-mode .modlist-filter-block:last-child { margin-bottom: 10px; }
 
 body.mp-wiki-mode .modlist-filter-block .title {
+  margin: 0 0 8px;
   color: var(--w-ink-3);
-  font-size: 12px;
-  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  line-height: 1.4;
 }
 
 body.mp-wiki-mode .modlist-filter-block ul {
@@ -49,41 +53,45 @@ body.mp-wiki-mode .modlist-filter-block ul {
 body.mp-wiki-mode .modlist-filter-block li.main {
   display: inline-flex;
   align-items: center;
-  line-height: 1.5;
   margin: 0 !important;
-  padding: 4px 12px;
-  border: 1px solid var(--w-hair);
+  padding: 5px 13px;
+  /* 常态不描边：白边框比按钮底色还亮，一排看过去像白框阵列。
+     保留 1px 只是为了让 hover/选中时不出 1px 抖动。 */
+  border: 1px solid transparent;
   border-radius: 999px;
   background: var(--w-card-2);
   color: var(--w-ink-2);
-  font-size: 12.5px;
+  font-size: 12px;
+  line-height: 1.5;
   cursor: pointer;
   transition: background .16s ease, color .16s ease, border-color .16s ease;
 }
 
 /* 原站给按钮里的 a 写了 .normal / .gray / .text-danger 的具体色值，
-   继承盖不住，这里统一按 li 的颜色走；选中态由 li.active 决定。 */
+   继承盖不住，这里统一按 li 的颜色走。 */
 body.mp-wiki-mode .modlist-filter-block li.main > a,
 body.mp-wiki-mode .modlist-filter-block li.main > span {
   color: inherit !important;
   text-decoration: none;
 }
 
-body.mp-wiki-mode .modlist-filter-block li.main.active,
-body.mp-wiki-mode .modlist-filter-block li.main.active > a {
-  color: #fff !important;
-}
-
 body.mp-wiki-mode .modlist-filter-block li.main:hover {
   background: var(--w-accent-soft);
-  color: var(--w-accent);
   border-color: transparent;
+  color: var(--w-accent);
 }
 
-body.mp-wiki-mode .modlist-filter-block li.main.active {
+/* 选中态：原站有的挂在 li 上，有的挂在里面的 a 上，两种都吃 */
+body.mp-wiki-mode .modlist-filter-block li.main.active,
+body.mp-wiki-mode .modlist-filter-block li.main:has(> a.active) {
   background: var(--w-accent);
   border-color: var(--w-accent);
   color: #fff;
+}
+
+body.mp-wiki-mode .modlist-filter-block li.main.active > a,
+body.mp-wiki-mode .modlist-filter-block li.main.active > span {
+  color: #fff !important;
 }
 
 /* ---------------- 卡片网格 ---------------- */
