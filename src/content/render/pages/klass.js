@@ -86,7 +86,7 @@
       href: it.href || undefined,
       target: it.href ? '_blank' : undefined,
       rel: it.href ? 'noopener' : undefined,
-      title: it.title || it.label
+      title: it.title || (it.href ? '在模组检索里查看 ' + it.label : it.label)
     }, h('span', { class: 'mp-chip-label' }, it.label));
   }
 

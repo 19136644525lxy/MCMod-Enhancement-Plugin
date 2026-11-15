@@ -93,7 +93,13 @@
 
     var categories = [];
     Array.prototype.forEach.call(text.querySelectorAll('.common-class-category li'), function (li) {
+      // li.main 是「展开全部分类」的图标项：里面只有 <i>，文字为空，
+      // data-original-title 放的是整段分类说明（很长）。它既不能当标签文字，
+      // 也没有独立的分类含义，直接跳过。
+      if (li.classList.contains('main')) return;
       var a = li.querySelector('a');
+      var label = (T(li) || T(a)).trim();
+      if (!label) return;
       var color = '';
       if (a) {
         var st = a.getAttribute('style') || '';
@@ -101,7 +107,7 @@
         if (cm) color = cm[1].trim();
       }
       categories.push({
-        label: T(li) || T(a),
+        label: label,
         href: a ? A(a.getAttribute('href')) : '',
         color: color,
         title: a ? (a.getAttribute('data-original-title') || '') : ''

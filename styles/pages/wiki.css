@@ -275,7 +275,7 @@ body.mp-wiki-mode footer {
   background: var(--w-card-2);
   border: 1px solid var(--w-hair);
   text-decoration: none;
-  transition: background-color .16s ease, color .16s ease, border-color .16s ease;
+  transition: background-color .16s ease, color .16s ease, border-color .16s ease, transform .1s ease;
 }
 .mp-kv .mp-ver-chip:hover {
   background: var(--w-accent);
@@ -283,6 +283,8 @@ body.mp-wiki-mode footer {
   color: #fff;
   text-decoration: none;
 }
+.mp-kv .mp-ver-chip:active { transform: scale(.97); }
+.mp-chip:not([href]) { cursor: default; }
 @media (prefers-reduced-motion: reduce) {
   .mp-kv .mp-ver-chip { transition: none; }
 }
@@ -305,10 +307,11 @@ body.mp-wiki-mode footer {
   font-size: 12px;
   line-height: 1;
   text-decoration: none;
-  transition: background .16s ease, color .16s ease, border-color .16s ease;
+  transition: background .16s ease, color .16s ease, border-color .16s ease, transform .1s ease;
 }
 
 .mp-chip:hover { background: var(--w-accent-soft); color: var(--w-accent); border-color: transparent; }
+.mp-chip:active { transform: scale(.97); }
 .mp-chip-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mp-chip-count { font-size: 11px; color: var(--w-ink-3); font-variant-numeric: tabular-nums; }
 .mp-chip.is-ok { background: rgba(87, 185, 138, .16); color: #2f6f4f; border-color: transparent; }
