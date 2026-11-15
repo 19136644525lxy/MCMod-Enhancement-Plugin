@@ -64,6 +64,24 @@
     }, h('span', { class: 'mp-chip-label' }, it.label));
   }
 
+  /** 相关链接：原站是 <svg><use href="#common-icon-xxx">，直接把那段源码挂进去。 */
+  function linkChip(it) {
+    var kids = [];
+    if (it.svg) {
+      var ico = h('span', { class: 'mp-link-ico', 'aria-hidden': 'true' });
+      ico.innerHTML = it.svg;
+      kids.push(ico);
+    }
+    kids.push(h('span', { class: 'mp-link-label' }, it.label));
+    return h('a', {
+      class: 'mp-link',
+      href: it.href || undefined,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      title: it.label
+    }, kids);
+  }
+
   function badgeOf(b) {
     var cls = 'mp-chip';
     if (b.tone === 'ok') cls += ' is-ok';
@@ -130,7 +148,7 @@
       }));
     }
     if (d.links && d.links.length) {
-      main.push(panel('相关链接', h('div', { class: 'mp-chips' }, d.links.map(chipOf))));
+      main.push(panel('相关链接', h('div', { class: 'mp-chips' }, d.links.map(linkChip))));
     }
     if (!main.length) {
       main.push(panel('暂无数据', h('p', { class: 'mp-muted' }, '没从页面里解析到模组信息，可以切回「原始」看原站页面。')));

@@ -87,10 +87,14 @@
 
     var links = [];
     Array.prototype.forEach.call(infoEl ? infoEl.querySelectorAll('.common-link-frame a') : [], function (a) {
+      // 原站的相关链接图标是内联 <svg><use href="#common-icon-xxx">，
+      // 不是 <img>，所以 icon 基本永远是空，真正要用的是下面这段 svg 源码。
+      var svgEl = a.querySelector('svg');
       links.push({
         label: a.getAttribute('data-original-title') || T(a),
         href: a.getAttribute('href') || '',
-        icon: a.querySelector('img') ? iconOf(a.querySelector('img')) : ''
+        icon: a.querySelector('img') ? iconOf(a.querySelector('img')) : '',
+        svg: svgEl ? svgEl.outerHTML : ''
       });
     });
 

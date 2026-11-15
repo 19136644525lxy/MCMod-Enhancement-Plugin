@@ -280,3 +280,67 @@ body.mp-wiki-mode .class-card .text-block span {
   body.mp-wiki-mode .center > .left { order: 2; }
   body.mp-wiki-mode .center > .right { order: 1; }
 }
+
+
+/* ---------------- 相关链接（图标 + 名称胶囊） ---------------- */
+
+.mp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 13px 0 8px;
+  border: 1px solid var(--w-hair);
+  border-radius: 999px;
+  background: var(--w-card);
+  color: var(--w-ink-2);
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: border-color .16s ease, background .16s ease, color .16s ease;
+}
+
+.mp-link:hover {
+  border-color: var(--w-accent);
+  background: var(--w-accent-soft);
+  color: var(--w-accent);
+}
+
+.mp-link-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.mp-link-ico svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  color: inherit;
+}
+
+.mp-link-label { line-height: 1; }
+
+/* ---------------- 原站正文（Mod介绍 / 资料 tab）文本主题化 ---------------- */
+
+/* 原站给 div/span/strong 逐个写过 #545b62，继承不过去，只能整片压一遍；
+   svg / path / use / img 以及相关链接胶囊排除在外。 */
+body.mp-wiki-mode .class-menu-main :not(svg):not(path):not(use):not(img):not(.mp-link):not(.mp-link *) {
+  color: var(--w-ink-2);
+}
+
+body.mp-wiki-mode .class-menu-main h1,
+body.mp-wiki-mode .class-menu-main h2,
+body.mp-wiki-mode .class-menu-main h3,
+body.mp-wiki-mode .class-menu-main h4,
+body.mp-wiki-mode .class-menu-main h5,
+body.mp-wiki-mode .class-menu-main h6,
+body.mp-wiki-mode .class-menu-main strong,
+body.mp-wiki-mode .class-menu-main .common-text-title-1,
+body.mp-wiki-mode .class-menu-main .common-text-title-2 {
+  color: var(--w-ink);
+}
+
+body.mp-wiki-mode .class-menu-main a { color: var(--w-accent); }
