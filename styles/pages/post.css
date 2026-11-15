@@ -127,6 +127,95 @@ body.mp-wiki-mode.mp-post-mode .mp-post-body pre {
   overflow: auto;
 }
 
+/* 正文：原站 .common-text 一族的选择器（.common-text p / .common-text.font14 /
+   .common-text img / .common-text table th …）特异性比「继承」高，必须逐个用
+   !important 压掉，否则父级的 color / font-size 根本传不下去。 */
+body.mp-wiki-mode.mp-post-mode .mp-post-body,
+body.mp-wiki-mode.mp-post-mode .mp-post-body * {
+  word-break: normal !important;
+  overflow-wrap: anywhere;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body p {
+  color: var(--w-ink-2) !important;
+  font-size: 14.5px !important;
+  line-height: 1.9 !important;
+  margin: 0 0 10px !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body ul,
+body.mp-wiki-mode.mp-post-mode .mp-post-body ol {
+  color: var(--w-ink-2) !important;
+  padding-left: 2em !important;
+  margin-bottom: 12px !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body li {
+  line-height: 1.85;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body h1,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h2,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h3,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h4,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h5,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h6 {
+  color: var(--w-ink) !important;
+  line-height: 1.45 !important;
+  margin: 20px 0 10px !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body h1 { font-size: 24px !important; }
+body.mp-wiki-mode.mp-post-mode .mp-post-body h2 { font-size: 20px !important; }
+body.mp-wiki-mode.mp-post-mode .mp-post-body h3 { font-size: 17px !important; }
+body.mp-wiki-mode.mp-post-mode .mp-post-body h4,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h5,
+body.mp-wiki-mode.mp-post-mode .mp-post-body h6 { font-size: 15px !important; }
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body img {
+  max-height: none !important;
+  margin: 10px auto !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body .figcaption,
+body.mp-wiki-mode.mp-post-mode .mp-post-body figcaption {
+  color: var(--w-ink-3) !important;
+  font-size: 12px !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body table {
+  width: 100% !important;
+  max-width: 100%;
+  border: 1px solid var(--w-hair) !important;
+  margin: 12px 0 !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body th {
+  background: var(--w-card-2) !important;
+  color: var(--w-ink) !important;
+  font-weight: 600;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body mark {
+  background: rgba(255, 209, 102, 0.35) !important;
+  color: inherit !important;
+  padding: 0 2px;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body code {
+  color: var(--w-ink) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body blockquote {
+  border-left: 3px solid var(--w-hair) !important;
+  padding-left: 14px !important;
+  color: var(--w-ink-3) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-body hr {
+  border-color: var(--w-hair) !important;
+}
+
 /* 评论：同样是原生块换皮 */
 body.mp-wiki-mode.mp-post-mode .mp-post-comment {
   margin-top: 16px;
@@ -145,8 +234,72 @@ body.mp-wiki-mode.mp-post-mode .mp-post-comment .title {
   font-size: 15px !important;
 }
 
+/* 评论是 .common-comment-block.lazy —— 快照里只有一张 loading gif，
+   真实内容是站点 JS 异步注入的。所以这里只能用通配兜底，不假设内部类名。 */
 body.mp-wiki-mode.mp-post-mode .mp-post-comment :not(img):not(svg):not(path):not(use) {
-  color: var(--w-ink-2);
+  color: var(--w-ink-2) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .comment-title,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .title,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .name,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .author {
+  color: var(--w-ink) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .time,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .date,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .text-muted,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .floor {
+  color: var(--w-ink-3) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment hr,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .line,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .comment-item {
+  border-color: var(--w-hair) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment blockquote {
+  border-left-color: var(--w-hair) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .btn,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment button {
+  background: var(--w-accent) !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  padding: 6px 16px !important;
+  font-size: 12.5px !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment .btn:hover,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment button:hover {
+  filter: brightness(1.06);
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment select {
+  background: var(--w-card-2) !important;
+  border: 1px solid var(--w-hair) !important;
+  border-radius: 8px !important;
+  color: var(--w-ink) !important;
+}
+
+body.mp-wiki-mode.mp-post-mode .mp-post-comment input::placeholder,
+body.mp-wiki-mode.mp-post-mode .mp-post-comment textarea::placeholder {
+  color: var(--w-ink-3) !important;
+}
+
+/* lazy 期的 loading gif：深色下别太扎眼 */
+body.mp-wiki-mode.mp-post-mode .mp-post-comment img[src*="loading"] {
+  opacity: 0.55;
 }
 
 body.mp-wiki-mode.mp-post-mode .mp-post-comment a {
