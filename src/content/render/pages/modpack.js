@@ -78,6 +78,24 @@
     return !!document.getElementById(HOST_ID);
   }
 
+  /**
+   * 需要隐藏的原站节点。
+   * 分页和分隔线是 .modlist-frame 的直接子级、并不在 .modlist-list-frame 里面，
+   * 只藏列表会留下一条白底分页（「当前 1 / 48 页…」被挤断的就是它）。
+   */
+  function hideTargets() {
+    var out = [];
+    var list = document.querySelector('.modlist-list-frame');
+    var frame = document.querySelector('.modlist-frame');
+    if (list) out.push(list);
+    if (frame) {
+      Array.prototype.forEach.call(frame.children, function (el) {
+        if (el.tagName === 'HR' || (el.matches && el.matches('ul.pagination'))) out.push(el);
+      });
+    }
+    return out;
+  }
+
   function mount(settings) {
     if (isEnhanced()) return true;
 
@@ -98,11 +116,8 @@
       settings: settings || {}
     });
 
-    hidden = [];
-    if (list) {
-      list.classList.add('mp-origin-hidden');
-      hidden.push(list);
-    }
+    hidden = hideTargets();
+    hidden.forEach(function (el) { el.classList.add('mp-origin-hidden'); });
 
     // 插在列表原来的位置：筛选条在上、卡片网格在下，和原站顺序一致
     anchor.parentNode.insertBefore(build(d), anchor);

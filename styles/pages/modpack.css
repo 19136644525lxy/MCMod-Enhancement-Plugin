@@ -8,6 +8,9 @@
   max-width: none;
   margin: 0;
   padding: 0;
+  clear: both;
+  position: relative;
+  z-index: 1;
 }
 
 .mp-modpack-page .mp-hero { padding: 18px 22px; }
@@ -44,6 +47,9 @@ body.mp-wiki-mode .modlist-filter-block ul {
 }
 
 body.mp-wiki-mode .modlist-filter-block li.main {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.5;
   margin: 0 !important;
   padding: 4px 12px;
   border: 1px solid var(--w-hair);
@@ -53,6 +59,19 @@ body.mp-wiki-mode .modlist-filter-block li.main {
   font-size: 12.5px;
   cursor: pointer;
   transition: background .16s ease, color .16s ease, border-color .16s ease;
+}
+
+/* 原站给按钮里的 a 写了 .normal / .gray / .text-danger 的具体色值，
+   继承盖不住，这里统一按 li 的颜色走；选中态由 li.active 决定。 */
+body.mp-wiki-mode .modlist-filter-block li.main > a,
+body.mp-wiki-mode .modlist-filter-block li.main > span {
+  color: inherit !important;
+  text-decoration: none;
+}
+
+body.mp-wiki-mode .modlist-filter-block li.main.active,
+body.mp-wiki-mode .modlist-filter-block li.main.active > a {
+  color: #fff !important;
 }
 
 body.mp-wiki-mode .modlist-filter-block li.main:hover {
