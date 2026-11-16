@@ -54,6 +54,7 @@
         "src/content/extract/modpack-detail.js",
         "src/content/extract/post.js",
         "src/content/extract/tools.js",
+        "src/content/extract/history.js",
         "src/content/extract/category.js",
         "src/content/extract/home.js",
         "src/content/render/page-shell.js",
@@ -69,6 +70,7 @@
         "src/content/render/pages/category.js",
         "src/content/render/pages/post.js",
         "src/content/render/pages/tools.js",
+        "src/content/render/pages/history.js",
         "src/content/widgets/command-palette.js",
         "src/content/router.js"
       ]
@@ -87,3 +89,4 @@
     }
   ]
 }
+
