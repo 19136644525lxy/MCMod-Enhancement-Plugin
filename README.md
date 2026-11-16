@@ -14,15 +14,19 @@ MC百科（mcmod.cn）全站增强浏览器扩展。目标是把 MC百科 的浏
 - **模组检索页重绘**：与整合包检索共用一套网格与筛选条样式，文案换成模组。
 - **整合包详情页重绘**：与模组页共用渲染，封面、分类、基本信息、支持版本胶囊、成员模组与下载 tab。
 - **教程页重绘**：标题 hero + 正文与评论保留原生 DOM 只换皮，侧栏统计与原站一致。
+- **教程列表页重绘**：原站 6 列表格换成行卡片（标题 + 关联模组 / 作者 / 协议 / 热度 / 时间），原生筛选条与分页保留。
 - **分类页重绘**：保留原生「模组元素列表」，模组卡列表 + 日/周/月榜 + 分页重绘。
+- **实用工具页重绘**：`/tools/` 的静态卡片列表换成工具网格（图标 + 名称 + 一句话说明），一键跳转对应小工具。
+- **历史编辑记录重绘**：`/history.html` 的最近 100 条记录换成时间轴（操作者 / 动作 / 时间），原生「选择条件」弹窗与筛选保留。
 - **首页重绘**：毛玻璃卡片风格，顶栏 + 全部内容区自绘（导航、搜索、模组卡三 tab、编辑动态、教程、社群动态、最受欢迎、版本检索、贡献榜、热门标签、评比排行、九大分类），原首页整块隐藏，可一键回滚；模组卡每 8 秒本地轮换（零网络请求）。
 - **我的足迹**：登录状态下读取公开的编辑记录（`history.html?userid=`），按天聚合成热力图，显示近 30 天 / 连续天数 / 涉及条目与最近 4 条编辑；只发 1 次请求，本地缓存 6 小时。
-- **背景预设**：晨雾 / 极光 / 像素夜空 / 草方块 / 星空，五套全部本地生成（CSS 渐变或 Canvas 绘制），不请求任何图片；极光是唯一带动画的，12fps 且页面不可见时暂停。设置面板「外观 → 背景」里切换，立即生效。`r`n- **自定义背景**：可上传自己的图（压缩到 1920 宽、JPEG 0.82 后存 IndexedDB），带 0–100% 遮罩强度滑块，避免花哨图片吃掉毛玻璃卡片的对比度。
+- **背景预设**：晨雾 / 极光 / 像素夜空 / 草方块 / 星空，五套全部本地生成（CSS 渐变或 Canvas 绘制），不请求任何图片；极光是唯一带动画的，12fps 且页面不可见时暂停。设置面板「外观 → 背景」里切换，立即生效。
+- **自定义背景**：可上传自己的图（压缩到 1920 宽、JPEG 0.82 后存 `chrome.storage.local`），带 0–100% 遮罩强度滑块，避免花哨图片吃掉毛玻璃卡片的对比度。
 - **设计系统**：tokens.css + base.css + wiki.css，浅色 / 深色 / 跟随系统，紧凑模式。
 - **调试面板**：`Ctrl + Shift + D` 查看抽取结果、当前接管状态、网络请求统计与设置，可导出当前页面 HTML 快照。
 - **设置页 / 弹窗**：总开关、主题、面板、重绘、紧凑五项开关，`chrome.storage.sync` 同步。
 
-> 物品 / 模组 / 整合包详情 / 整合包检索 / 模组检索 / 分类 / 教程 七页已定稿，默认重绘；首页、个人主页与搜索页同样默认开启。没有「结构重绘」开关了——哪些页支持重绘由代码决定。
+> 物品 / 模组 / 整合包详情 / 整合包检索 / 模组检索 / 教程 / 教程列表 / 分类 / 实用工具 / 历史编辑记录 十页已定稿，默认重绘；首页、个人主页与搜索页同样默认开启。没有「结构重绘」开关了——哪些页支持重绘由代码决定。
 
 ## 安装（开发态）
 
@@ -36,7 +40,7 @@ MC百科（mcmod.cn）全站增强浏览器扩展。目标是把 MC百科 的浏
 ## 目录结构
 
 ```
-manifest.json                 MV3 清单（22 个内容脚本按序注入）
+manifest.json                 MV3 清单（36 个内容脚本按序注入）
 src/bg.js                     service worker：跨子域抓取代理 + 缓存 + 限流
 src/content/
   core/dom.js                 h() 渲染、文本清理、safeHtml、关键词高亮
@@ -44,35 +48,57 @@ src/content/
   core/selectors.js           站点选择器集中表
   core/theme.js               样式注入与主题切换
   core/fetch-page.js          经 background 抓取并解析远程页面
+  core/page-chrome.js         页面外壳：背景 + 日夜开关 + 齿轮 + 右下抽屉
   extract/search.js           搜索结果 DOM → JSON
   extract/modlist.js          模组列表 DOM → JSON
   extract/item.js             物品页 DOM → JSON
-  extract/klass.js            模组页 DOM → JSON
-  extract/modpack.js          整合包检索页 DOM → JSON
+  extract/klass.js            模组页 / 整合包详情 DOM → JSON
+  extract/modpack.js          整合包检索 / 模组检索 DOM → JSON
+  extract/modpack-detail.js   整合包详情（复用 klass 抽取器）
+  extract/post.js             教程详情 DOM → JSON
+  extract/post-list.js        教程列表 DOM → JSON
+  extract/tools.js            实用工具 DOM → JSON
+  extract/history.js          历史编辑记录 DOM → JSON
   extract/category.js         分类页 DOM → JSON
   extract/home.js             首页 DOM → JSON
   render/components.js        chip / button / card / skeleton / empty
-  render/page-shell.js        页面外壳：标题区 + 双栏 + 增强/原始切换
+  render/page-shell.js        旧版页面外壳（已不再被页面引用）
   render/pages/search.js      搜索页重绘
-  widgets/footprint.js        编辑足迹（热力图 + 统计）
-  widgets/background.js       首页背景预设（5 套，本地绘制）
+  render/pages/center.js      个人主页重绘
   render/pages/home.js        首页毛玻璃重绘
   render/pages/item.js        物品页重绘
-  render/pages/klass.js       模组页重绘
-  render/pages/modpack.js     整合包检索页重绘
+  render/pages/klass.js       模组页 / 整合包详情重绘
+  render/pages/modpack.js     整合包检索 / 模组检索重绘
   render/pages/category.js    分类页重绘
+  render/pages/post.js        教程页重绘
+  render/pages/post-list.js   教程列表重绘
+  render/pages/tools.js       实用工具重绘
+  render/pages/history.js     历史编辑记录重绘
+  widgets/footprint.js        编辑足迹（热力图 + 统计）
+  widgets/background.js       背景预设（6 套，本地绘制 + 自定义图）
+  widgets/settings-panel.js   顶栏齿轮打开的快捷设置
   widgets/command-palette.js  Cmd+K 命令面板
   router.js                   入口：分发、快捷键、设置响应
 styles/tokens.css             设计令牌
 styles/base.css               组件样式
-styles/pages/wiki.css         模组 / 整合包 / 分类三页共享层
+styles/day-night.css          日夜切换滑块
+styles/mp-toggle.css          胶囊开关
+styles/lightbox.css           图片灯箱
+styles/settings-panel.css     快捷设置面板
+styles/background.css         背景层
+styles/pages/wiki.css         模组 / 整合包 / 分类 / 教程等页共享层
 styles/pages/item.css         物品页样式
 styles/pages/klass.css        模组页样式
-styles/pages/modpack.css      整合包页样式
+styles/pages/modpack.css      整合包 / 模组检索样式
 styles/pages/category.css     分类页样式
+styles/pages/post.css         教程页样式
+styles/pages/post-list.css    教程列表样式
+styles/pages/tools.css        实用工具样式
+styles/pages/history.css      历史编辑记录样式
 styles/pages/home.css         首页毛玻璃样式
+styles/pages/center.css       个人主页样式
+styles/pages/search.css       搜索页样式
 popup/ options/               弹窗与设置页
-docs/                         方案、设计分析、WAF 事件记录
 ```
 
 ## 设计原则
@@ -100,16 +126,18 @@ docs/                         方案、设计分析、WAF 事件记录
 | 里程碑 | 内容 | 状态 |
 | --- | --- | --- |
 | M1 | 骨架 + 设计系统 + Cmd+K + 搜索页重绘 | 已完成 |
-| M2 | 首页排版重做（待用原始 CSS 重做） | 暂停 |
-| M3 | 物品页 + 模组页 + 整合包页 + 分类页 | 已完成（待真机验证） |
-| M4 | 检索页 + 桥接层 + Vite/Preact 迁移 + 打磨 | 待开始 |
+| M2 | 首页毛玻璃重绘（顶栏 / 背景 / 足迹 / 设置面板 / 抽屉） | 已完成 |
+| M3 | 物品 / 模组 / 整合包检索 / 整合包详情 / 分类 | 已完成 |
+| M4 | 个人主页（视觉层 + 收藏 / 设置 tab） | 已完成 |
+| M5 | 教程 / 教程列表 / 模组检索 / 实用工具 / 历史编辑 | 已完成 |
+| M6 | 全站收尾：代码整理、文档、发布 | 进行中 |
 
 ## 开发说明
 
 - 原型阶段不引入构建工具，改完刷新扩展即可。
-- 本地校验：`node tools/test-wiki.js`（需 `jsdom`），用真实页面快照驱动抽取与渲染；其余套件见 `tools/test-*.js`。
-- `output/preview-*.html` 是离线预览（内联全部 CSS、去掉站点 JS），可直接双击查看重绘效果。
-- M4 将迁移到 Vite + `@crxjs/vite-plugin` + Preact（约 4KB），组件签名保持不变。
+- 本地校验：`$env:NODE_PATH="$env:TEMP\mp-test\node_modules"` 后跑 `tools/test-*.js`（需 `jsdom`），用真实页面快照驱动抽取与渲染；`tools/make-wiki-preview.js` 生成 `output/preview-*.html` 离线预览。
+- `output/` 下的 `preview-*.html` 内联全部 CSS、去掉站点 JS，可直接双击查看重绘效果。
+- 工具脚本与 `docs/` 只留在本地（`.gitignore` 已排除），不进仓库。
 
 ## 许可
 
