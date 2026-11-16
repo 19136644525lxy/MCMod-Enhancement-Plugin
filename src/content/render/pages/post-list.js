@@ -2,8 +2,11 @@
  * 教程列表页重绘：/post/
  *
  * 原站是一张 6 列的表格 + 两组筛选 + 分页。表格在窄屏下会横向滚动，
- * 所以这里换成「行卡片」：左边标题 + 关联模组，右边作者 / 协议 / 热度 / 时间。
- * 筛选是 GET 链接（属于站点行为），保留原样只换皮。
+ * 所以这里换成「列对齐的紧凑列表」：标题（两行）+ 关联模组占左侧一大列，
+ * 右侧依次是作者 / 协议 / 热度 / 时间，桌面端按网格对齐，可纵向扫读。
+ *
+ * 筛选条（教程权限 / 排序）是纯 GET 链接，属于站点行为，**保留原生 DOM**
+ * 只换皮——藏掉它会连带丢失 filter/order 参数与选中态。
  */
 (function () {
   'use strict';
@@ -23,6 +26,18 @@
 
   /* ---------------- 渲染 ---------------- */
 
+  function headRow() {
+    return h('div', { class: 'mp-pl-head', 'aria-hidden': 'true' },
+      h('span', { class: 'mp-pl-h-main' }, '教程'),
+      h('span', { class: 'mp-pl-head-meta' },
+        h('span', { class: 'mp-pl-h-author' }, '作者'),
+        h('span', { class: 'mp-pl-h-license' }, '协议'),
+        h('span', { class: 'mp-pl-h-heat' }, '热度'),
+        h('span', { class: 'mp-pl-h-time' }, '时间')
+      )
+    );
+  }
+
   function row(it) {
     var main = [
       it.href
@@ -39,19 +54,27 @@
       ));
     }
 
+    // 每个格子都渲染出来（哪怕是空的），否则网格列会错位
     return h('li', { class: 'mp-pl-item' },
       h('div', { class: 'mp-pl-main' }, main),
       h('div', { class: 'mp-pl-meta' },
-        it.author
-          ? (it.authorHref
-            ? h('a', { class: 'mp-pl-author', href: it.authorHref, target: '_blank', rel: 'noopener' }, it.author)
-            : h('span', { class: 'mp-pl-author' }, it.author))
-          : null,
-        it.license ? h('span', { class: 'mp-pl-tag' }, it.license) : null,
-        it.heat ? h('span', { class: 'mp-pl-heat' }, it.heat) : null,
-        it.time
-          ? h('time', { class: 'mp-pl-time', datetime: it.timeTitle || undefined, title: it.timeTitle || undefined }, it.time)
-          : null
+        h('span', { class: 'mp-pl-author' },
+          it.authorHref
+            ? h('a', { href: it.authorHref, target: '_blank', rel: 'noopener' }, it.author)
+            : (it.author || '')),
+        h('span', { class: 'mp-pl-license', title: it.licenseTitle || undefined }, it.license || ''),
+        h('span', { class: 'mp-pl-heat', title: it.heatRaw || undefined }, it.heat || ''),
+        h('span', { class: 'mp-pl-time' },
+          h('time', {
+            class: 'mp-pl-time-main',
+            datetime: it.timeEditedTitle || undefined,
+            title: it.timeEditedTitle || undefined
+          }, it.timeEdited || it.time || ''),
+          it.timePublished
+            ? h('span', { class: 'mp-pl-time-sub', title: it.timePublishedTitle || undefined },
+              '发布 ' + it.timePublished)
+            : null
+        )
       )
     );
   }
@@ -65,6 +88,14 @@
           ? h('a', { class: cls, href: it.href }, it.label)
           : h('span', { class: cls }, it.label);
       })
+    );
+  }
+
+  function pageInfo(p, perPage) {
+    if (!p || !p.total) return null;
+    return h('div', { class: 'mp-pl-pageinfo' },
+      '第 ', h('b', null, p.current || 1), ' / ', h('b', null, p.total), ' 页',
+      perPage ? h('span', { class: 'mp-pl-perpage' }, ' · 每页 ' + perPage + ' 条') : null
     );
   }
 
@@ -82,14 +113,17 @@
 
   function build(d) {
     var total = d.items.length;
+    var pg = d.pager || {};
     return h('div', { id: HOST_ID, class: 'mp-wiki-page mp-postlist-page' },
       crumbsBar(d.crumbs),
       h('header', { class: 'mp-hero mp-glass' },
         h('div', { class: 'mp-hero-main' },
           h('h1', { class: 'mp-hero-title' }, d.title || '教程列表'),
-          h('p', { class: 'mp-hero-sub' }, '发布至 MC百科 的教程，可按权限与排序筛选。'),
+          h('p', { class: 'mp-hero-sub' },
+            d.desc || '发布至 MC百科 的教程，可在下方自定义筛选 / 排序。'),
           h('div', { class: 'mp-hero-stats' },
-            h('span', { class: 'mp-hero-stat' }, h('b', null, total), '条本页教程')
+            h('span', { class: 'mp-hero-stat' }, h('b', null, total), ' 条本页'),
+            pg.total ? h('span', { class: 'mp-hero-stat' }, '共 ', h('b', null, pg.total), ' 页') : null
           )
         ),
         h('div', { class: 'mp-hero-actions' },
@@ -97,11 +131,14 @@
         )
       ),
       total
-        ? h('ol', { class: 'mp-pl-list' }, d.items.map(row))
+        ? h('div', { class: 'mp-pl-table' },
+          headRow(),
+          h('ol', { class: 'mp-pl-list' }, d.items.map(row)))
         : h('div', { class: 'mp-panel mp-glass' },
           h('div', { class: 'mp-panel-body' },
             h('p', { class: 'mp-muted' }, '这一页没有教程。'))),
-      pager(d.pager)
+      pager(d.pager),
+      pageInfo(d.pager, total)
     );
   }
 
@@ -111,13 +148,19 @@
     return !!document.getElementById(HOST_ID);
   }
 
+  /**
+   * 只藏「标题块 + 表格 + 分页」，`.class_block` 里的 `.menu`（筛选条）必须留着：
+   * 藏掉整块会把教程权限 / 排序一起吞了。
+   */
   function hideTargets() {
     var out = [];
     var mbx = document.querySelector('.center > .main > .mbx');
-    var block = document.querySelector('.center > .main > .class_block');
+    var title = document.querySelector('.center > .main > .class_block .left > .title');
+    var table = document.querySelector('.center > .main > .class_block table.mcmodCommonTable');
     var pages = document.querySelector('.center > .main > .pages_system');
     if (mbx) out.push(mbx);
-    if (block) out.push(block);
+    if (title) out.push(title);
+    if (table) out.push(table);
     if (pages) out.push(pages);
     return out;
   }
@@ -132,8 +175,7 @@
     }
 
     var block = document.querySelector('.center > .main > .class_block');
-    var anchor = block || document.querySelector('.center > .main');
-    if (!anchor) return false;
+    if (!block) return false;
 
     chrome = MP.pageChrome.attach({
       mode: 'mp-wiki-mode',
@@ -144,7 +186,8 @@
     hidden = hideTargets();
     hidden.forEach(function (el) { el.classList.add('mp-origin-hidden'); });
 
-    anchor.parentNode.insertBefore(build(d), anchor);
+    // 插在 .class_block 之后，这样顺序是 hero → 筛选条 → 列表 → 分页
+    block.parentNode.insertBefore(build(d), block.nextSibling);
 
     fab = MP.pageChrome.fab({
       id: FAB_ID,

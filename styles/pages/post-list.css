@@ -1,56 +1,178 @@
 /**
  * 教程列表页专用样式（/post/）
  *
- * 公共部分在 wiki.css；这里只补「行卡片」列表。
- * 原站是 6 列表格，这里改成：左标题 + 关联模组，右侧作者 / 协议 / 热度 / 时间。
+ * 公共部分在 wiki.css；这里负责两件事：
+ *   1. 原生筛选条（.class_block 里的 .menu）换皮——它是纯 GET 链接，保留 DOM；
+ *   2. 把 6 列表格换成「列对齐的紧凑列表」，桌面端五列对齐、窄屏堆叠。
  */
 body.mp-wiki-mode .mp-postlist-page {
-  max-width: 1180px;
-  margin: 0 auto;
+  /* 原站 .center 是满宽容器，这里不要再套 max-width，
+     否则筛选条（在 .center 里）会和下面的列表左右错开。 */
+  max-width: none;
+  margin: 0;
   padding: 0 0 40px;
+}
+
+/* ---------------- 原生筛选条换皮 ---------------- */
+
+body.mp-wiki-mode .center > .main > .class_block {
+  padding: 14px 16px 2px;
+  margin: 16px 0 14px;
+  border: 1px solid var(--w-hair);
+  border-radius: var(--w-radius);
+  background: var(--w-card);
+  box-shadow: var(--w-shadow);
+  -webkit-backdrop-filter: blur(20px) saturate(1.45);
+  backdrop-filter: blur(20px) saturate(1.45);
+}
+
+body.mp-wiki-mode .center > .main > .class_block .list,
+body.mp-wiki-mode .center > .main > .class_block .menu {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  float: none;
+}
+
+body.mp-wiki-mode .center > .main > .class_block .menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  border-top: 0;
+}
+
+body.mp-wiki-mode .center > .main > .class_block .menu .block {
+  float: none;
+  width: auto;
+  margin-bottom: 12px;
+}
+
+body.mp-wiki-mode .center > .main > .class_block .menu .tit {
+  width: auto;
+  float: none;
+  margin: 0 0 7px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  line-height: 1.4;
+  color: var(--w-ink-3);
+}
+
+body.mp-wiki-mode .center > .main > .class_block .menu ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  float: none;
+  margin: 0;
+  padding: 0;
+}
+
+body.mp-wiki-mode .center > .main > .class_block .menu li {
+  float: none;
+  margin: 0;
+  list-style: none;
+}
+
+body.mp-wiki-mode .center > .main > .class_block .menu li a,
+body.mp-wiki-mode .center > .main > .class_block .menu li span {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--w-card-2);
+  color: var(--w-ink-2);
+  font-size: 12px;
+  line-height: 1.6;
+  text-decoration: none;
+  transition: background .16s ease, color .16s ease;
+}
+
+body.mp-wiki-mode .center > .main > .class_block .menu li a:hover {
+  color: var(--w-accent);
+}
+
+body.mp-wiki-mode .center > .main > .class_block .menu li span {
+  background: var(--w-accent);
+  color: #fff;
+}
+
+/* ---------------- 列表：五列对齐 ---------------- */
+
+.mp-postlist-page {
+  /* 右侧四列固定宽，保证 20 行纵向对齐：130+116+74+106 + 3×12 间距 = 462 */
+  --pl-meta: 462px;
+  --pl-cols: 130px 116px 74px 106px;
+  --pl-gap: 16px;
+}
+
+.mp-postlist-page .mp-pl-table {
+  margin-top: 16px;
+}
+
+.mp-postlist-page .mp-pl-head,
+.mp-postlist-page .mp-pl-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--pl-meta);
+  gap: var(--pl-gap);
+  align-items: center;
+}
+
+.mp-postlist-page .mp-pl-head {
+  padding: 0 16px 8px;
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--w-ink-3);
+}
+
+.mp-postlist-page .mp-pl-head-meta,
+.mp-postlist-page .mp-pl-meta {
+  display: grid;
+  grid-template-columns: var(--pl-cols);
+  gap: 0 12px;
+  align-items: center;
+}
+
+.mp-postlist-page .mp-pl-h-heat,
+.mp-postlist-page .mp-pl-heat {
+  text-align: right;
 }
 
 .mp-postlist-page .mp-pl-list {
   list-style: none;
-  margin: 18px 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .mp-postlist-page .mp-pl-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 13px 16px;
-  border-radius: 14px;
-  background: var(--w-card);
+  padding: 11px 16px;
   border: 1px solid var(--w-hair);
-  transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+  border-radius: 12px;
+  background: var(--w-card);
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
 }
 
 .mp-postlist-page .mp-pl-item:hover {
-  transform: translateY(-1px);
   border-color: var(--w-accent);
-  box-shadow: 0 8px 22px -14px rgba(20, 16, 12, .45);
+  transform: translateY(-1px);
 }
 
 .mp-postlist-page .mp-pl-main {
-  flex: 1 1 auto;
   min-width: 0;
 }
 
 .mp-postlist-page .mp-pl-title {
-  display: block;
-  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13.5px;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--w-ink);
   text-decoration: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .mp-postlist-page a.mp-pl-title:hover {
@@ -58,8 +180,9 @@ body.mp-wiki-mode .mp-postlist-page {
 }
 
 .mp-postlist-page .mp-pl-mod {
-  margin-top: 4px;
-  font-size: 12px;
+  margin-top: 3px;
+  font-size: 11.5px;
+  line-height: 1.5;
   color: var(--w-ink-3);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -82,129 +205,102 @@ body.mp-wiki-mode .mp-postlist-page {
 }
 
 .mp-postlist-page .mp-pl-meta {
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
   font-size: 11.5px;
   color: var(--w-ink-3);
-  padding-top: 3px;
 }
 
-.mp-postlist-page .mp-pl-author {
-  color: var(--w-ink-2);
-  text-decoration: none;
-  max-width: 120px;
+.mp-postlist-page .mp-pl-author,
+.mp-postlist-page .mp-pl-license,
+.mp-postlist-page .mp-pl-heat {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.mp-postlist-page .mp-pl-author:hover {
-  color: var(--w-accent);
+.mp-postlist-page .mp-pl-author {
+  color: var(--w-ink-2);
 }
 
-.mp-postlist-page .mp-pl-tag {
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--w-card-2);
-  color: var(--w-ink-3);
-  white-space: nowrap;
+.mp-postlist-page .mp-pl-author a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mp-postlist-page .mp-pl-author a:hover {
+  color: var(--w-accent);
 }
 
 .mp-postlist-page .mp-pl-heat {
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  color: var(--w-ink-2);
 }
 
 .mp-postlist-page .mp-pl-time {
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  opacity: .85;
-}
-
-/* ---------------- 原生筛选条换皮（保留 GET 链接） ---------------- */
-
-body.mp-wiki-mode .main > .class_block .menu {
   display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  margin: 0 0 6px;
+  flex-direction: column;
+  line-height: 1.35;
+  white-space: nowrap;
 }
 
-body.mp-wiki-mode .main > .class_block .menu .block {
-  float: none;
-  width: auto;
+.mp-postlist-page .mp-pl-time-main {
+  color: var(--w-ink-2);
+  font-variant-numeric: tabular-nums;
 }
 
-body.mp-wiki-mode .main > .class_block .menu .tit {
-  width: auto;
-  float: none;
+.mp-postlist-page .mp-pl-time-sub {
+  font-size: 10.5px;
+  color: var(--w-ink-3);
+  opacity: .9;
+}
+
+/* ---------------- 页码信息 ---------------- */
+
+.mp-postlist-page .mp-pl-pageinfo {
+  margin-top: 12px;
+  text-align: center;
   font-size: 11.5px;
   color: var(--w-ink-3);
-  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
 }
 
-body.mp-wiki-mode .main > .class_block .menu ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  float: none;
-}
-
-body.mp-wiki-mode .main > .class_block .menu li {
-  float: none;
-  margin: 0;
-  list-style: none;
-}
-
-body.mp-wiki-mode .main > .class_block .menu li a,
-body.mp-wiki-mode .main > .class_block .menu li span {
-  display: inline-block;
-  padding: 4px 11px;
-  border-radius: 999px;
-  font-size: 12px;
-  line-height: 1.6;
-  border: 1px solid transparent;
-  background: var(--w-card-2);
+.mp-postlist-page .mp-pl-pageinfo b {
+  font-weight: 600;
   color: var(--w-ink-2);
-  text-decoration: none;
 }
 
-body.mp-wiki-mode .main > .class_block .menu li a:hover {
-  color: var(--w-accent);
-  border-color: var(--w-hair);
-}
-
-body.mp-wiki-mode .main > .class_block .menu li span {
-  background: var(--w-accent);
-  color: #fff;
+.mp-postlist-page .mp-pl-perpage {
+  opacity: .8;
 }
 
 /* ---------------- 断点 ---------------- */
 
-@media (max-width: 860px) {
+@media (max-width: 1000px) {
+  .mp-postlist-page {
+    --pl-meta: 0px;
+  }
+  .mp-postlist-page .mp-pl-head {
+    display: none;
+  }
   .mp-postlist-page .mp-pl-item {
-    flex-direction: column;
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
   }
   .mp-postlist-page .mp-pl-meta {
-    padding-top: 0;
+    display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
   }
-  .mp-postlist-page .mp-pl-title {
-    white-space: normal;
+  .mp-postlist-page .mp-pl-h-heat,
+  .mp-postlist-page .mp-pl-heat {
+    text-align: left;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mp-postlist-page .mp-pl-item {
-    transition: none;
-  }
+  .mp-postlist-page .mp-pl-item,
   .mp-postlist-page .mp-pl-item:hover {
+    transition: none;
     transform: none;
   }
 }

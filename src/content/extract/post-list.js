@@ -61,15 +61,22 @@
   function pager(doc) {
     var pages = [];
     var seen = {};
+    var total = 0;
+    var current = 0;
     Array.prototype.forEach.call(doc.querySelectorAll('.pages_system a'), function (a) {
       var label = T(a);
       var href = A(a.getAttribute('href'));
       var key = label + '|' + href;
+      // 「尾页」带着最大页码，用它反推总页数（页面上没有直接的「共 N 页」文本）
+      var num = (href.match(/[?&]page=(\d+)/) || [])[1];
+      if (num) total = Math.max(total, parseInt(num, 10) || 0);
       if (!label || seen[key]) return;
       seen[key] = true;
-      pages.push({ label: label, href: href, active: !href && a.classList.contains('Pbtn_on') });
+      var active = !href && a.classList.contains('Pbtn_on');
+      if (active) current = parseInt(label, 10) || 1;
+      pages.push({ label: label, href: href, active: active });
     });
-    return { pages: pages };
+    return { pages: pages, total: total, current: current || 1 };
   }
 
   MP.extract = MP.extract || {};
@@ -91,7 +98,12 @@
       var modExtra = modA ? modText.replace(T(modA), '').trim() : '';
 
       var authorA = tds[2].querySelector('a');
-      var timeEl = tds[5].querySelector('span');
+      // 第 6 列是「最后编辑 / 发布」两段时间，用 " / " 连接
+      var timeSpans = tds[5] ? tds[5].querySelectorAll('span') : [];
+      var edited = timeSpans[0] || null;
+      var published = timeSpans[1] || null;
+      var heatTd = tds[4];
+      var licenseTd = tds[3];
 
       items.push({
         title: title,
@@ -101,10 +113,17 @@
         modExtra: modExtra,
         author: T(authorA) || T(tds[2]),
         authorHref: authorA ? A(authorA.getAttribute('href')) : '',
-        license: T(tds[3]),
-        heat: T(tds[4]),
-        time: timeEl ? T(timeEl) : T(tds[5]),
-        timeTitle: timeEl ? (timeEl.getAttribute('title') || '') : ''
+        license: T(licenseTd),
+        licenseTitle: (licenseTd && licenseTd.getAttribute('title')) || T(licenseTd),
+        heat: T(heatTd),
+        // 原站在 title 里放精确数字（32445），显示文本是「3.24万」
+        heatRaw: (heatTd && heatTd.getAttribute('title')) || T(heatTd),
+        time: edited ? T(edited) : T(tds[5]),
+        timeTitle: edited ? (edited.getAttribute('title') || '') : '',
+        timeEdited: edited ? T(edited) : T(tds[5]),
+        timeEditedTitle: edited ? (edited.getAttribute('title') || '') : '',
+        timePublished: published ? T(published) : '',
+        timePublishedTitle: published ? (published.getAttribute('title') || '') : ''
       });
     });
 
@@ -112,7 +131,10 @@
       ok: true,
       kind: 'post-list',
       title: T(doc.querySelector('.main > .class_block .title .icon')) || '教程列表',
-      desc: T(doc.querySelector('.main > .class_block .title .text')),
+      // 原站说明文字末尾挂着「[写新教程]」链接，渲染层有自己的按钮，这里切掉
+      desc: T(doc.querySelector('.main > .class_block .title .text'))
+        .replace(/\s*\[写新教程\]\s*$/, '')
+        .trim(),
       items: items,
       filters: filters(doc),
       pager: pager(doc),
