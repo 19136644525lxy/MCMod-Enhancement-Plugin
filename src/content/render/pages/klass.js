@@ -66,12 +66,47 @@
     );
   }
 
+  /**
+   * 制作团队：原站是「头像 + 名字 + 职责」的竖排列表，
+   * 这里排成自适应网格卡片，名字可点进作者页。
+   */
+  function memberList(members) {
+    return h('div', { class: 'mp-members' }, members.map(function (m) {
+      var initial = String(m.name || '?').trim().slice(0, 1);
+      return h('div', { class: 'mp-member' },
+        m.avatar
+          ? h('img', {
+            class: 'mp-member-avatar',
+            src: m.avatar,
+            alt: '',
+            loading: 'lazy',
+            referrerpolicy: 'no-referrer'
+          })
+          : h('span', { class: 'mp-member-avatar is-empty' }, initial),
+        h('span', { class: 'mp-member-body' },
+          h(m.href ? 'a' : 'span', {
+            class: 'mp-member-name',
+            href: m.href || undefined,
+            target: m.href ? '_blank' : undefined,
+            rel: m.href ? 'noopener noreferrer' : undefined,
+            title: m.name
+          }, m.name),
+          m.role ? h('span', { class: 'mp-member-role' }, m.role) : null
+        )
+      );
+    }));
+  }
+
   function kv(rows) {
     var kids = [];
     rows.forEach(function (r) {
-      kids.push(h('dt', null, r.key));
+      var label = r.key;
+      if (r.count) label += ' · ' + r.count + ' 人';
+      kids.push(h('dt', null, label));
       if (r.versions && r.versions.length) {
         kids.push(h('dd', { class: 'is-vers' }, r.versions.map(verGroup)));
+      } else if (r.members && r.members.length) {
+        kids.push(h('dd', { class: 'is-members' }, memberList(r.members)));
       } else {
         kids.push(h('dd', null, r.value || '—'));
       }

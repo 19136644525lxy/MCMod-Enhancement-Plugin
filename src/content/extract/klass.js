@@ -77,6 +77,38 @@
     return out.length ? out.join(' · ') : '';
   }
 
+  /**
+   * 「制作团队 / 作者」那条 li 不能按文本切：成员是
+   *   <li><span class="avatar"><a><img></a></span>
+   *       <span class="member"><span class="name"><a>名字</a></span>
+   *                       <span class="position">职责</span></span></li>
+   * 直接取 textContent 会得到「名字职责名字职责」连写，必须回 DOM 拆字段。
+   */
+  function parseMembers(li) {
+    var out = [];
+    Array.prototype.forEach.call(li.querySelectorAll('.frame ul > li'), function (item) {
+      var nameEl = item.querySelector('.member .name a') || item.querySelector('.member .name');
+      var name = T(nameEl).trim();
+      if (!name) return;
+      var a = item.querySelector('.member .name a') || item.querySelector('.avatar a');
+      var img = item.querySelector('.avatar img') || item.querySelector('img');
+      var roleEl = item.querySelector('.member .position') || item.querySelector('.position');
+      out.push({
+        name: name,
+        href: a ? A(a.getAttribute('href')) : '',
+        avatar: iconOf(img),
+        role: T(roleEl).trim()
+      });
+    });
+    return out;
+  }
+
+  /** 「整合包制作团队(2)」→ key「制作团队」+ count 2 */
+  function teamKey(text) {
+    var m = String(text || '').match(/^(?:Mod|模组)?(?:整合包)?(制作团队|作者)\s*[(（]?\s*(\d*)/);
+    return { key: (m && m[1]) || '制作团队', count: m && m[2] ? Number(m[2]) : 0 };
+  }
+
   MP.extract = MP.extract || {};
   MP.extract.klass = function (doc) {
     var text = doc.querySelector('.class-text');
@@ -126,6 +158,19 @@
     if (infoEl) {
       Array.prototype.forEach.call(infoEl.querySelectorAll(':scope > .class-info-left > ul > li'), function (li) {
         if (li.classList.contains('tag')) return;
+        // 团队/作者这条 li 的成员是结构化节点，先按成员拆，拆不到再退回文本切分
+        if (li.classList.contains('author')) {
+          var members = parseMembers(li);
+          if (members.length) {
+            var meta = teamKey(T(li));
+            info.push({
+              key: meta.key || '制作团队',
+              count: meta.count || members.length,
+              members: members
+            });
+            return;
+          }
+        }
         var kv = splitKV(T(li), li);
         if (kv) info.push(kv);
       });

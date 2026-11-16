@@ -289,6 +289,66 @@ body.mp-wiki-mode footer {
   .mp-kv .mp-ver-chip { transition: none; }
 }
 
+/* 制作团队：头像 + 名字 + 职责的成员卡 */
+.mp-kv dd.is-members { padding: 2px 0 4px; }
+.mp-members {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+}
+.mp-member {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--w-hair);
+  border-radius: 10px;
+  background: var(--w-card-2);
+}
+.mp-member-avatar {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--w-hair);
+}
+.mp-member-avatar.is-empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--w-ink-3);
+}
+.mp-member-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  line-height: 1.4;
+}
+.mp-member-name {
+  font-size: 12.5px;
+  color: var(--w-ink-2);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+a.mp-member-name:hover { color: var(--w-accent); text-decoration: none; }
+.mp-member-role {
+  font-size: 10.5px;
+  color: var(--w-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .mp-members { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ---------------- 胶囊 ---------------- */
 
 .mp-chips { display: flex; flex-wrap: wrap; gap: 7px; }
