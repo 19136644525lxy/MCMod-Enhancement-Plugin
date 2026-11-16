@@ -1,0 +1,210 @@
+/**
+ * 教程列表页专用样式（/post/）
+ *
+ * 公共部分在 wiki.css；这里只补「行卡片」列表。
+ * 原站是 6 列表格，这里改成：左标题 + 关联模组，右侧作者 / 协议 / 热度 / 时间。
+ */
+body.mp-wiki-mode .mp-postlist-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 0 40px;
+}
+
+.mp-postlist-page .mp-pl-list {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mp-postlist-page .mp-pl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  background: var(--w-card);
+  border: 1px solid var(--w-hair);
+  transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+}
+
+.mp-postlist-page .mp-pl-item:hover {
+  transform: translateY(-1px);
+  border-color: var(--w-accent);
+  box-shadow: 0 8px 22px -14px rgba(20, 16, 12, .45);
+}
+
+.mp-postlist-page .mp-pl-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mp-postlist-page .mp-pl-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--w-ink);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-postlist-page a.mp-pl-title:hover {
+  color: var(--w-accent);
+}
+
+.mp-postlist-page .mp-pl-mod {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--w-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-postlist-page .mp-pl-mod a {
+  color: var(--w-ink-2);
+  text-decoration: none;
+}
+
+.mp-postlist-page .mp-pl-mod a:hover {
+  color: var(--w-accent);
+  text-decoration: underline;
+}
+
+.mp-postlist-page .mp-pl-more {
+  margin-left: 4px;
+  opacity: .8;
+}
+
+.mp-postlist-page .mp-pl-meta {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  color: var(--w-ink-3);
+  padding-top: 3px;
+}
+
+.mp-postlist-page .mp-pl-author {
+  color: var(--w-ink-2);
+  text-decoration: none;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-postlist-page .mp-pl-author:hover {
+  color: var(--w-accent);
+}
+
+.mp-postlist-page .mp-pl-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--w-card-2);
+  color: var(--w-ink-3);
+  white-space: nowrap;
+}
+
+.mp-postlist-page .mp-pl-heat {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.mp-postlist-page .mp-pl-time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: .85;
+}
+
+/* ---------------- 原生筛选条换皮（保留 GET 链接） ---------------- */
+
+body.mp-wiki-mode .main > .class_block .menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 0 0 6px;
+}
+
+body.mp-wiki-mode .main > .class_block .menu .block {
+  float: none;
+  width: auto;
+}
+
+body.mp-wiki-mode .main > .class_block .menu .tit {
+  width: auto;
+  float: none;
+  font-size: 11.5px;
+  color: var(--w-ink-3);
+  margin-bottom: 6px;
+}
+
+body.mp-wiki-mode .main > .class_block .menu ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  float: none;
+}
+
+body.mp-wiki-mode .main > .class_block .menu li {
+  float: none;
+  margin: 0;
+  list-style: none;
+}
+
+body.mp-wiki-mode .main > .class_block .menu li a,
+body.mp-wiki-mode .main > .class_block .menu li span {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.6;
+  border: 1px solid transparent;
+  background: var(--w-card-2);
+  color: var(--w-ink-2);
+  text-decoration: none;
+}
+
+body.mp-wiki-mode .main > .class_block .menu li a:hover {
+  color: var(--w-accent);
+  border-color: var(--w-hair);
+}
+
+body.mp-wiki-mode .main > .class_block .menu li span {
+  background: var(--w-accent);
+  color: #fff;
+}
+
+/* ---------------- 断点 ---------------- */
+
+@media (max-width: 860px) {
+  .mp-postlist-page .mp-pl-item {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mp-postlist-page .mp-pl-meta {
+    padding-top: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .mp-postlist-page .mp-pl-title {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-postlist-page .mp-pl-item {
+    transition: none;
+  }
+  .mp-postlist-page .mp-pl-item:hover {
+    transform: none;
+  }
+}
