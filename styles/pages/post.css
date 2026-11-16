@@ -7,6 +7,10 @@
  * 改成 grid 必须把 position / left / top / z-index 一起复位，只清 float 会让第一列空置。
  */
 
+/* 注意：grid 的列宽按 DOM 顺序分配，.left 在前就拿第一列。
+   这里不能写 order —— 一旦给 .right 设了更小的 order，正文就会被塞进
+   220px 的窄列（教程页曾经就这样）。两栏顺序与原站一致：侧栏左、正文右。
+   单栏断点里再让侧栏排到正文后面。 */
 body.mp-wiki-mode.mp-post-mode .common-center > .center {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
@@ -23,7 +27,6 @@ body.mp-wiki-mode.mp-post-mode .common-center > .center > .left {
   float: none !important;
   width: auto !important;
   padding: 0 !important;
-  order: 2;
 }
 
 body.mp-wiki-mode.mp-post-mode .common-center > .center > .right {
@@ -31,8 +34,20 @@ body.mp-wiki-mode.mp-post-mode .common-center > .center > .right {
   float: none !important;
   width: auto !important;
   padding: 0 !important;
-  order: 1;
   min-width: 0;
+}
+
+/* 原站没有给 .post-row 写任何布局，这里显式复位，防止以后站点加样式把它再挤窄 */
+body.mp-wiki-mode.mp-post-mode .center > .right > .post-row {
+  float: none;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* 评论区与正文之间的呼吸位 */
+body.mp-wiki-mode.mp-post-mode .center > .right > .common-comment-block {
+  margin-top: 16px;
 }
 
 /* 侧栏：每个原生块套成玻璃卡（保留站点的折叠/跳转行为） */
