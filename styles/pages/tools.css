@@ -1,0 +1,129 @@
+﻿/**
+ * 实用工具页专用样式（/tools/）
+ *
+ * 公共部分（变量、面包屑、hero、panel、抽屉、顶栏换皮）都在 wiki.css，
+ * 这里只补「工具卡片」这一种原站没有的新组件。
+ */
+body.mp-wiki-mode .mp-tools-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 0 40px;
+}
+
+/* ---------------- 卡片网格 ---------------- */
+
+.mp-tools-page .mp-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.mp-tools-page .mp-tool-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 16px;
+  border-radius: 16px;
+  color: inherit;
+  text-decoration: none;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+
+.mp-tools-page .mp-tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--w-shadow-hover, 0 10px 26px -12px rgba(20, 16, 12, .4));
+}
+
+.mp-tools-page .mp-tool-ico {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--w-card-2);
+  overflow: hidden;
+}
+
+.mp-tools-page .mp-tool-ico img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mp-tools-page .mp-tool-ico b {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--w-ink-3);
+}
+
+.mp-tools-page .mp-tool-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.mp-tools-page .mp-tool-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--w-ink);
+  line-height: 1.4;
+}
+
+.mp-tools-page .mp-tool-desc {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--w-ink-3);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mp-tools-page .mp-tool-go {
+  flex: none;
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--w-ink-3);
+  opacity: .5;
+  transition: opacity .16s ease, transform .16s ease, color .16s ease;
+}
+
+.mp-tools-page .mp-tool-card:hover .mp-tool-go {
+  opacity: 1;
+  color: var(--w-accent);
+  transform: translateX(2px);
+}
+
+/* ---------------- 浅色下按钮更实一点 ---------------- */
+
+html:not([data-mp-theme="dark"]) body.mp-wiki-mode .mp-tool-ico {
+  background: rgba(38, 35, 31, .06);
+}
+
+/* ---------------- 断点 ---------------- */
+
+@media (max-width: 720px) {
+  .mp-tools-page .mp-tool-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .mp-tools-page .mp-tool-card {
+    padding: 12px 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-tools-page .mp-tool-card,
+  .mp-tools-page .mp-tool-go {
+    transition: none;
+  }
+  .mp-tools-page .mp-tool-card:hover {
+    transform: none;
+  }
+}
+

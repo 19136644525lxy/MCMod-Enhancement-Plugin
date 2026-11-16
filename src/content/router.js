@@ -60,7 +60,7 @@ MP.router = (function () {
 
   /* ---------------- 结构重绘页面分发 ---------------- */
 
-  const PAGE_MODULES = ['item', 'klass', 'modpack', 'modlist', 'category', 'post'];
+  const PAGE_MODULES = ['item', 'klass', 'modpack', 'modlist', 'category', 'post', 'tools'];
 
   function currentPageModule() {
     for (const key of PAGE_MODULES) {
